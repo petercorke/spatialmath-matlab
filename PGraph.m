@@ -1,80 +1,91 @@
-%PGraph Simple graph class
+%PGraph Graph class
 %
 %   g = PGraph()        create a 2D, planar, undirected graph
 %   g = PGraph(n)       create an n-d, undirected graph
 %
-% Graphs::
+% Provides support for graphs that:
 %   - are undirected
-%   - are symmetric cost edges (A to B is same cost as B to A)
 %   - are embedded in coordinate system
+%   - have symmetric cost edges (A to B is same cost as B to A)
 %   - have no loops (edges from A to A)
-%   - vertices are represented by integer ids, vid
-%   - edges are represented by integer ids, eid
-%
-%   Graph connectivity is maintained by a labeling algorithm and this
-%   is updated every time an edge is added.
+%   - have vertices are represented by integers vid
+%   - have edges are represented by integers, eid
 %
 % Methods::
 %
 % Constructing the graph::
 %   g.add_node(coord)      add vertex, return vid
-%   g.add_node(coord, v)   add vertex and edge to v, return vid
 %   g.add_edge(v1, v2)     add edge from v1 to v2, return eid
-%
-%   g.clear()              remove all nodes and edges from the graph
+%   g.setcost(e, c)        set cost for edge e
+%   g.setdata(v, u)        set user data for vertex v
+%   g.data(v)              get user data for vertex v
+%   g.clear()              remove all vertices and edges from the graph
 %
 % Information from graph::
-%   g.edges(e)             return vid for edge
-%   g.cost(e)              return cost for edge list
-%   g.coord(v)             return coordinate of node v
-%   g.neighbours(v)        return vid for edge
-%   g.component(v)         return component id for vertex
-%   g.connectivity()       return number of edges for all nodes
+%   g.edges(v)             list of edges for vertex v
+%   g.cost(e)              cost of edge e
+%   g.neighbours(v)        neighbours of vertex v
+%   g.component(v)         component id for vertex v
+%   g.connectivity()       number of edges for all vertices
 %
-%   g.plot()               set goal vertex for path planning
-%   g.pick()               return vertex id closest to picked point
+% Display::
 %
-%   char(g)                display summary info about the graph
+%   g.plot()                   set goal vertex for path planning
+%   g.highlight_node(v)        highlight vertex v
+%   g.highlight_edge(e)        highlight edge e
+%   g.highlight_component(c)   highlight all nodes in component c
+%   g.highlight_path(p)        highlight nodes and edge along path p
+%
+%   g.pick(coord)              vertex closest to coord
+%
+%   g.char()                   convert graph to string
+%   g.display()                display summary of graph
+%
+% Matrix representations::
+%   g.adjacency()          adjacency matrix
+%   g.incidence()          incidence matrix
+%   g.degree()             degree matrix
+%   g.laplacian()          Laplacian  matrix
 %
 % Planning paths through the graph::
+%   g.Astar(s, g)          shortest path from s to g
 %   g.goal(v)              set goal vertex, and plan paths
-%   g.next(v)              return d of neighbour of v closest to goal
-%   g.path(v)              return list of nodes from v to goal
+%   g.path(v)              list of vertices from v to goal
 %
 % Graph and world points::
-%   g.distance(v1, v2)     distance between v1 and v2 as the crow flies
-%   g.closest(coord)       return vertex closest to coord
-%   g.distances(coord)     return sorted distances from coord and vertices
+%   g.coord(v)             coordinate of vertex v
+%   g.distance(v1, v2)     distance between v1 and v2
+%   g.distances(coord)     return sorted distances from coord to all vertices
+%   g.closest(coord)       vertex closest to coord
 %
-% To change the distance metric create a subclass of PGraph and override the 
-% method distance_metric().
+% Object properties (read only)::
+%   g.n            number of vertices
+%   g.ne           number of edges
+%   g.nc           number of components
 %
-% Object properties (read/write)::
-%   g.n            number of nodes
-%
+% Notes::
+% - Graph connectivity is maintained by a labeling algorithm and this
+%   is updated every time an edge is added.
+% - Nodes and edges cannot be deleted.
 
 % Peter Corke 8/2009.
 
-% TODO: add support for arbitrary distance function
-%       add A* for distance between 2 vertices
+% TODO: 
 %       be able to delete nodes, must update connectivity
-%       add adjacency matrix
 
 classdef PGraph < handle
 
-    properties
-        vertexlist        % vertex coordinates, columnwise, vertex number is the column number
+    properties (SetAccess=private, GetAccess=private)
+        vertexlist      % vertex coordinates, columnwise, vertex number is the column number
         edgelist        % 2xNe matrix, each column is vertex index of edge start and end
         edgelen         % length (cost) of this edge    
 
         curLabel        % current label
         ncomponents     % number of components
-        labels          % label of each vertex
-        labelset        % set of labels
+        labels          % label of each vertex (1xN)
+        labelset        % set of all labels (1xNc)
 
         goaldist        % distance from goal, after planning
-        
-        n               % number of nodes Nv
         
         userdata        % per vertex data, cell array
         ndims           % number of coordinate dimensions, height of vertices matrix
@@ -82,21 +93,30 @@ classdef PGraph < handle
         measure         % distance measure: 'Euclidean', 'SE2'
     end
 
+    properties (Dependent)
+        n               % number of nodes/vertices 
+        ne              % number of edges
+        nc              % number of components
+    end
+
     methods
 
         function g = PGraph(ndims, varargin)
         %PGraph.PGraph Graph class constructor
         %
-        % G = PGraph(D, OPTIONS) returns a graph object embedded 
-        % in D dimensions.
+        % G=PGraph(D, OPTIONS) is a graph object embedded in D dimensions.
         %
         % Options::
-        %  'distance', M   Use the distance metric M for path planning
-        %  'verbose'       Specify verbose operation
+        %  'distance',M   Use the distance metric M for path planning which is either
+        %                 'Euclidean' (default) or 'SE2'.
+        %  'verbose'      Specify verbose operation
         %
         % Note::
-        % - The distance metric is either 'Euclidean' or 'SE2' which is the sum of
-        %   the squares of the difference in position and angle modulo 2pi.
+        % - Number of dimensions is not limited to 2 or 3.
+        % - The distance metric 'SE2' is the sum of the squares of the difference 
+        %   in position and angle modulo 2pi.
+        % - To use a different distance metric create a subclass of PGraph and 
+        %   override the method distance_metric().
 
             if nargin < 1
                 ndims = 2;  % planar by default
@@ -108,12 +128,42 @@ classdef PGraph < handle
             g.clear();
             g.verbose = opt.verbose;
             g.measure = opt.distance;
+            g.userdata = {};
+        end
+
+        function n = get.n(g)
+        %Pgraph.n Number of vertices
+        %
+        % G.n is the number of vertices in the graph.
+        %
+        % See also PGraph.ne.
+            n = numcols(g.vertexlist);
+        end
+
+        function ne = get.ne(g)
+        %Pgraph.ne Number of edges
+        %
+        % G.ne is the number of edges in the graph.
+        %
+        % See also PGraph.n.
+            ne = numcols(g.edgelist);
+        end
+
+        function ne = get.nc(g)
+        %Pgraph.nc Number of components
+        %
+        % G.nc is the number of components in the graph.
+        %
+        % See also PGraph.component.
+
+            ne = g.ncomponents;
         end
 
         function clear(g)
-        %PGraph.CLEAR Clear the graph
+        %PGraph.clear Clear the graph
         %
-        % G.CLEAR() removes all nodes and edges.
+        % G.clear() removes all vertices, edges and components.
+
             g.labelset = zeros(1, 0);
             g.labels = zeros(1, 0);
             g.edgelist = zeros(2, 0);
@@ -122,20 +172,20 @@ classdef PGraph < handle
 
             g.ncomponents = 0;
             g.curLabel = 0;
-            g.n = 0;
         end
 
         function v = add_node(g, coord, varargin)
-        %PGraph.add_node Add a node to the graph
+        %PGraph.add_node Add a node
         %
-        % V = G.add_node(X) adds a node with coordinate X, where X is Dx1, and
-        % returns the node id V.
+        % V = G.add_node(X) adds a node/vertex with coordinate X (Dx1) and
+        % returns the integer node id V.
         %
-        % V = G.add_node(X, V) adds a node with coordinate X and connected to
-        % node V by an edge.
+        % V = G.add_node(X, V2) as above but connected by an edge to vertex V2 with cost
+        % equal to the distance between the vertices.
         %
-        % V = G.add_node(X, V, C) adds a node with coordinate X and connected to
-        % node V by an edge with cost C.
+        % V = G.add_node(X, V2, C) as above but the added edge has cost C.
+        %
+        % See also PGraph.add_edge, PGraph.data, PGraph.getdata.
 
             if length(coord) ~= g.ndims
                 error('coordinate length different to graph coordinate dimensions');
@@ -145,31 +195,61 @@ classdef PGraph < handle
             g.vertexlist = [g.vertexlist coord(:)];
             v = numcols(g.vertexlist);
             g.labels(v) = g.newlabel();
-            if nargin > 2
-                g.add_edge(v, varargin{:});
-            end
-            g.n = g.n + 1;
+
             if g.verbose
                 fprintf('add node (%d) = ', v);
                 fprintf('%f ', coord);
                 fprintf('\n');
             end
+
+            % optionally add an edge
+            if nargin > 2
+                g.add_edge(v, varargin{:});
+            end
         end
+
+        function u = setdata(g, v, u)
+        %PGraph.setdata Set user data for node
+        %
+        % G.setdata(V, U) sets the user data of vertex V to U which can be of any 
+        % type such as number, struct, object or cell array.
+        %
+        % See also PGraph.data.
+
+            g.userdata{v} = u;
+        end
+
+        function u = data(g, v)
+        %PGraph.data Get user data for node
+        %
+        % U = G.data(V) gets the user data of vertex V which can be of any 
+        % type such as number, struct, object or cell array.
+        %
+        % See also PGraph.setdata.
+            u = g.userdata{v};
+        end
+
         
         function add_edge(g, v1, v2, d)
-        %PGraph.add_edge Add an edge to the graph
+        %PGraph.add_edge Add an edge
         %
-        % E = G.add_edge(V1, V2) add an edge between nodes with id V1 and V2, and
-        % returns the edge id E.
+        % E = G.add_edge(V1, V2) adds an edge between vertices with id V1 and V2, and
+        % returns the edge id E.  The edge cost is the distance between the vertices.
         %
-        % E = G.add_edge(V1, V2, C) add an edge between nodes with id V1 and V2 with
+        % E = G.add_edge(V1, V2, C) as above but the edge cost is C.
         % cost C.
+        %
+        % Note::
+        % - Graph connectivity is maintained by a labeling algorithm and this
+        %   is updated every time an edge is added.
+        %
+        % See also PGraph.add_node.
             if g.verbose
                 fprintf('add edge %d -> %d\n', v1, v2);
             end
             for vv=v2(:)'
                 g.edgelist = [g.edgelist [v1; vv]];
-                if nargin < 4
+                if (nargin < 4) || isempty(d)
                     d = g.distance(v1, vv);
                 end
                 g.edgelen = [g.edgelen d];
@@ -180,6 +260,9 @@ classdef PGraph < handle
         end
 
         function c = component(g, v)
+        %PGraph.component Graph component
+        %
+        % C = G.component(V) is the id of the graph component 
             c = [];
             for vv=v
                 tf = ismember(g.labelset, g.labels(vv));
@@ -192,27 +275,26 @@ classdef PGraph < handle
         function e = edges(g, v)
         %PGraph.edges Find edges given vertex
         %
-        % E = G.edges(V) return the id of all edges from node id V.
+        % E = G.edges(V) return the id of all edges from vertex id V.
             e = [find(g.edgelist(1,:) == v) find(g.edgelist(2,:) == v)];
         end
 
         function v = vertices(g, e)
         %PGraph.vertices Find vertices given edge
         %
-        % V = G.vertices(E) return the id of the nodes that define edge E.
+        % V = G.vertices(E) return the id of the vertices that define edge E.
             v = g.edgelist(:,e);
         end
 
 
         function [n,c] = neighbours(g, v)
-        %PGraph.neighbours Neighbours of a node
+        %PGraph.neighbours Neighbours of a vertex
         %
-        % N = G.neighbours(V) return a vector of ids for all nodes which are
-        % directly connected neighbours of node id V.
+        % N = G.neighbours(V) is a vector of ids for all vertices which are
+        % directly connected neighbours of vertex V.
         %
-        % [N,C] = G.neighbours(V) return a vector N of ids for all nodes which are
-        % directly connected neighbours of node id V.  The elements of C are the
-        % edge costs of the paths to the corresponding node ids in N.
+        % [N,C] = G.neighbours(V) as above but also returns a vector C whose elements
+        % are the edge costs of the paths corresponding to the vertex ids in N.
             e = g.edges(v);
             n = g.edgelist(:,e);
             n = n(:)';
@@ -225,30 +307,38 @@ classdef PGraph < handle
         function d = cost(g, e)
         %PGraph.cost Cost of edge
         %
-        % C = G.cost(E) return cost of edge id E.
+        % C = G.cost(E) is the cost of edge id E.
             d = g.edgelen(e);
+        end
+
+        function d = setcost(g, e, c)
+        %PGraph.cost Set cost of edge
+        %
+        % G.setcost(E, C) set cost of edge id E to C.
+            g.edgelen(e) = c;
         end
 
         function p = coord(g, v)
         %PGraph.coord Coordinate of node
         %
-        % X = G.coord(V) return coordinate vector, Dx1, of node id V.
-            p = g.vertexlist(:,v);
-        end
+        % X = G.coord(V) is the coordinate vector (Dx1) of vertex id V.
 
-        function showComponent(g, c)
-        %PGraph.showcomponent
-        %
-        % G.showcomponent(C) plots the nodes that belong to graph component C.
-            k = g.labels == c;
-            showVertices(g, k);
+            p = g.vertexlist(:,v);
         end
 
 
         function c = connectivity(g)
         %PGraph.connectivity Graph connectivity
         %
-        % C = G.connectivity() returns the total number of edges in the graph.
+        % C = G.connectivity() is a vector (Nx1) with the number of edges per
+        % vertex.
+        %
+        % The average vertex connectivity is
+        %         mean(g.connectivity())
+        %
+        % and the minimum vertex connectivity is
+        %         min(g.connectivity())
+
             for k=1:g.n
                 c(k) = length(g.edges(k));
             end
@@ -257,16 +347,21 @@ classdef PGraph < handle
         function plot(g, varargin)
         %PGraph.plot Plot the graph
         %
-        % G.plot(OPT) plot the graph in the current figure.  Nodes
+        % G.plot(OPT) plots the graph in the current figure.  Nodes
         % are shown as colored circles.
         %
         % Options::
-        %  'labels'              Display node id (default false)
+        %  'labels'              Display vertex id (default false)
         %  'edges'               Display edges (default true)
         %  'edgelabels'          Display edge id (default false)
-        %  'MarkerSize',S        Size of node circle
-        %  'MarkerFaceColor',C   Node circle color
-        %  'MarkerEdgeColor',C   Node circle edge color
+        %  'NodeSize',S          Size of vertex circle (default 8)
+        %  'NodeFaceColor',C     Node circle color (default blue)
+        %  'NodeEdgeColor',C     Node circle edge color (default blue)
+        %  'NodeLabelSize',S     Node label text sizer (default 16)
+        %  'NodeLabelColor',C    Node label text color (default blue)
+        %  'EdgeColor',C         Edge color (default black)
+        %  'EdgeLabelSize',S     Edge label text size (default black)
+        %  'EdgeLabelColor',C    Edge label text color (default black)
         %  'componentcolor'      Node color is a function of graph component
 
             colorlist = 'bgmyc';
@@ -280,9 +375,14 @@ classdef PGraph < handle
             opt.labels = false;
             opt.edges = true;
             opt.edgelabels = false;
-            opt.MarkerSize = 8;
-            opt.MarkerFaceColor = 'b';
-            opt.MarkerEdgeColor = 'b';
+            opt.NodeSize = 8;
+            opt.NodeFaceColor = 'b';
+            opt.NodeEdgeColor = 'b';
+            opt.NodeLabelSize = 16;
+            opt.NodeLabelColor = 'b';
+            opt.EdgeColor = 'k';
+            opt.EdgeLabelSize = 8;
+            opt.EdgeLabelColor = 'k';
 
             [opt,args] = tb_optparse(opt, varargin);
             
@@ -293,7 +393,7 @@ classdef PGraph < handle
                 mcolor = 'b';
             end
 
-            % show the nodes as filled circles
+            % show the vertices as filled circles
             for i=1:g.n
                 % for each node
                 if opt.componentcolor
@@ -304,9 +404,9 @@ classdef PGraph < handle
                 end
                 args = {'LineStyle', 'None', ...
                     'Marker', 'o', ...
-                    'MarkerFaceColor', opt.MarkerFaceColor, ...
-                    'MarkerSize', opt.MarkerSize, ...
-                    'MarkerEdgeColor', opt.MarkerEdgeColor };
+                    'MarkerFaceColor', opt.NodeFaceColor, ...
+                    'MarkerSize', opt.NodeSize, ...
+                    'MarkerEdgeColor', opt.NodeEdgeColor };
                 if g.ndims == 3
                     plot3(g.vertexlist(1,i), g.vertexlist(2,i), g.vertexlist(3,i), args{:});
                 else
@@ -319,9 +419,11 @@ classdef PGraph < handle
                     v1 = g.vertexlist(:,e(1));
                     v2 = g.vertexlist(:,e(2));
                     if g.ndims == 3
-                        plot3([v1(1) v2(1)], [v1(2) v2(2)], [v1(3) v2(3)],'k');
+                        plot3([v1(1) v2(1)], [v1(2) v2(2)], [v1(3) v2(3)], ...
+                            'Color', opt.EdgeColor);
                     else
-                        plot([v1(1) v2(1)], [v1(2) v2(2)], 'k');
+                        plot([v1(1) v2(1)], [v1(2) v2(2)], ...
+                            'Color', opt.EdgeColor);
                     end
                 end
             end
@@ -337,8 +439,8 @@ classdef PGraph < handle
                         'HorizontalAlignment', 'left', ...
                         'VerticalAlignment', 'middle', ...
                         'FontUnits', 'pixels', ...
-                        'FontSize', 12, ...
-                        'Color', 'k');
+                        'FontSize', opt.EdgeLabelSize, ...
+                        'Color', opt.EdgeLabelColor);
                 end
             end
             % show the labels
@@ -349,8 +451,8 @@ classdef PGraph < handle
                         'HorizontalAlignment', 'left', ... 
                         'VerticalAlignment', 'middle', ... 
                         'FontUnits', 'pixels', ... 
-                        'FontSize', 16, ... 
-                        'Color', 'b');
+                        'FontSize', opt.NodeLabelSize, ... 
+                        'Color', opt.NodeLabelColor);
                 end
             end
             if ~holdon
@@ -359,10 +461,10 @@ classdef PGraph < handle
         end
 
         function v = pick(g)
-        %PGraph.pick Graphically select a node
+        %PGraph.pick Graphically select a vertex
         %
-        % V = G.pick() returns the id of the node closest to the point clicked
-        % by user on a plot of the graph.
+        % V = G.pick() is the id of the vertex closest to the point clicked
+        % by the user on a plot of the graph.
         %
         % See also PGraph.plot.
             [x,y] = ginput(1);
@@ -372,10 +474,14 @@ classdef PGraph < handle
         function goal(g, vg)
         %PGraph.goal Set goal node
         %
-        % G.goal(VG) for least-cost path through graph set the goal node.  The cost
-        % of reaching every node in the graph connected to VG is computed.
+        % G.goal(VG) computes the cost of reaching every vertex in the graph connected 
+        % to the goal vertex VG.
         %
-        % See also PGraph.path.
+        % Notes::
+        % - Combined with G.path performs a breadth-first search for paths to the goal.
+        %
+        % See also PGraph.path, PGraph.Astar.
+
             % cost is total distance from goal
             g.goaldist = Inf*ones(1, numcols(g.vertexlist));
 
@@ -387,11 +493,23 @@ classdef PGraph < handle
         function p = path(g, v)
         %PGraph.path Find path to goal node
         %
-        % P = G.path(VS) return a vector of node ids that form a path from
-        % the starting node VS to the previously specified goal.  The path
-        % includes the start and goal node id.
+        % P = G.path(VS) is a vector of vertex ids that form a path from
+        % the starting vertex VS to the previously specified goal.  The path
+        % includes the start and goal vertex id.
         %
-        % See also PGraph.goal.
+        % To compute path to goal vertex 5
+        %        g.goal(5);
+        % then the path, starting from vertex 1 is
+        %        p1 = g.path(1);
+        % and the path starting from vertex 2 is
+        %        p2 = g.path(2);
+        %
+        % Notes::
+        % - Pgraph.goal must have been invoked first.
+        % - Can be used repeatedly to find paths from different starting points
+        %   to the goal specified to Pgraph.goal().
+        %
+        % See also PGraph.goal, PGraph.Astar.
             p = [v];
 
             while g.goaldist(v) ~= 0
@@ -400,51 +518,42 @@ classdef PGraph < handle
             end
         end
 
-        function vn = next(g, v)
-        %PGraph.next Find next node toward goal
-        %
-        % V = G.next(VS) return the id of a node connected to node id VS
-        % that is closer to the goal.
-        %
-        % See also PGraph.goal, PGraph.path.
-            n = g.neighbours(v);
-            [mn,k] = min( g.goaldist(n) );
-            vn = n(k);
-        end
-        
         
         function d = distance(g, v1, v2)
-        %PGraph.distance Distance between nodes
+        %PGraph.distance Distance between vertices
         %
-        % D = G.distance(V1, V2) return the geometric distance between
-        % the nodes with id V1 and V2.
+        % D = G.distance(V1, V2) is the geometric distance between
+        % the vertices V1 and V2.
+        %
+        % See also PGraph.distances.
             
             d = g.distance_metric( g.vertexlist(:,v1), g.vertexlist(:,v2));
             
         end
 
         function [d,k] = distances(g, p)
-        %PGraph.distances  Distance to all nodes
+        %PGraph.distances Distances from point to vertices
         %
-        % D = G.distances(V) returns vector of geometric distance from node 
-        % id V to every other node (including V) sorted into increasing order
-        % by D.
+        % D = G.distances(X) is a vector (1xN) of geometric distance from the point
+        % X (Dx1) to every other vertex sorted into increasing order.
         %
-        % [D,W] = G.distances(V) returns vector of geometric distance from node 
-        % id V to every other node (including V) sorted into increasing order
-        % by D where elements of W are the corresponding node id.
+        % [D,W] = G.distances(P) as above but also returns W (1xN) with the 
+        % corresponding vertex id.
+        %
+        % See also PGraph.closest.
             
-            d = g.distance_metric(p, g.vertexlist);
+            d = g.distance_metric(p(:), g.vertexlist);
             [d,k] = sort(d, 'ascend');
         end
 
         function [c,dn] = closest(g, p)
-        %PGraph.closest Find closest node
+        %PGraph.closest Find closest vertex
         %
-        % V = G.closest(X) return id of node geometrically closest to coordinate X.
+        % V = G.closest(X) is the vertex geometrically closest to coordinate X.
         %
-        % [V,D] = G.CLOSEST(X) return id of node geometrically closest to coordinate X, and
-        % the distance D.
+        % [V,D] = G.closest(X) as above but also returns the distance D.
+        %
+        % See also PGraph.distances.
             d = g.distance_metric(p(:), g.vertexlist);
             [mn,c] = min(d);
 
@@ -454,7 +563,7 @@ classdef PGraph < handle
         end
 
         function display(g)
-        %PGraph.display Display state of the graph
+        %PGraph.display Display graph
         %
         % G.display() displays a compact human readable representation of the
         % state of the graph including the number of vertices, edges and components.
@@ -471,13 +580,83 @@ classdef PGraph < handle
         function s = char(g)
         %PGraph.char Convert graph to string
         %
-        % S = G.char() returns a compact human readable representation of the
+        % S = G.char() is a compact human readable representation of the
         % state of the graph including the number of vertices, edges and components.
+
             s = '';
             s = strvcat(s, sprintf('  %d dimensions', g.ndims));
             s = strvcat(s, sprintf('  %d vertices', g.n));
             s = strvcat(s, sprintf('  %d edges', numcols(g.edgelist)));
             s = strvcat(s, sprintf('  %d components', g.ncomponents));
+        end
+
+        %% convert graphs to matrix representations
+
+        function L = laplacian(g)
+        %Pgraph.laplacian Laplacian matrix of graph
+        %
+        % L = G.laplacian() is the Laplacian matrix (NxN) of the graph.
+        %
+        % Notes::
+        % - L is always positive-semidefinite.
+        % - L has at least one zero eigenvalue.
+        % - The number of zero eigenvalues is the number of connected components 
+        %   in the graph.
+        %
+        % See also PGraph.adjacency, PGraph.incidence, PGraph.degree.
+
+            L = g.degree() - (g.adjacency() > 0);
+        end
+
+        function D = degree(g)
+        %Pgraph.degree Degree matrix of graph
+        %
+        % D = G.degree() is a diagonal matrix (NxN) where element D(i,i) is the number
+        % of edges connected to vertex id i.
+        %
+        % See also PGraph.adjacency, PGraph.incidence, PGraph.laplacian.
+
+            D = diag( g.connectivity() );
+        end
+
+        function A = adjacency(g)
+        %Pgraph.adjacency Adjacency matrix of graph
+        %
+        % A = G.adjacency() is a matrix (NxN) where element A(i,j) is the cost
+        % of moving from vertex i to vertex j.
+        %
+        % Notes::
+        % - Matrix is symmetric.
+        % - Eigenvalues of A are real and are known as the spectrum of the graph.
+        % - The element A(I,J) can be considered the number of walks of one
+        %   edge from vertex I to vertex J (either zero or one).  The element (I,J)
+        %   of A^N are the number of walks of length N from vertex I to vertex J.
+        %
+        % See also PGraph.degree, PGraph.incidence, PGraph.laplacian.
+
+            A = zeros(g.n, g.n);
+            for i=1:g.n
+                [n,c] = g.neighbours(i);
+                for j=1:numel(n)
+                    A(i,n(j)) = c(j);
+                    A(n(j),i) = c(j);
+                end
+            end
+        end
+
+        function I = incidence(g)
+        %Pgraph.degree Incidence matrix of graph
+        %
+        % IN = G.incidence() is a matrix (NxNE) where element IN(i,j) is
+        % non-zero if vertex id i is connected to edge id j.
+        %
+        % See also PGraph.adjacency, PGraph.degree, PGraph.laplacian.
+            I = zeros(g.n, numcols(g.edgelist));
+            for i=1:g.n
+                for n=g.edges(i)
+                    I(i,n) = 1;
+                end
+            end
         end
 
         %% these are problematic, dont advertise them
@@ -502,23 +681,221 @@ classdef PGraph < handle
         end
 
         
-        function showVertex(g, v)
-            %PGraph.showVertex Highlight a vertex
-            %
-            % G.showVertex(V) highlights the vertex V with a yellow marker.
+        function highlight_node(g, verts, varargin)
+        %PGraph.highlight_node Highlight a node
+        %
+        % G.highlight_node(V, OPTIONS) highlights the vertex V with a yellow marker.
+        % If V is a list of vertices then all are highlighted.
+        %
+        % Options::
+        %  'NodeSize',S          Size of vertex circle (default 12)
+        %  'NodeFaceColor',C     Node circle color (default yellow)
+        %  'NodeEdgeColor',C     Node circle edge color (default blue)
+        %
+        % See also PGraph.highlight_edge, PGraph.highlight_path, PGraph.highlight_component.
             
-            % TODO allow the line style to be set
-            plot(g.vertexlist(1,v), g.vertexlist(2,v), ...
-                'LineStyle', 'None', ...
+            hold on
+
+            % parse options
+            opt.NodeSize = 12;
+            opt.NodeFaceColor = 'y';
+            opt.NodeEdgeColor = 'b';
+
+            [opt,args] = tb_optparse(opt, varargin);
+            markerprops = {'LineStyle', 'None', ...
                 'Marker', 'o', ...
-                'MarkerSize', 12, ...
-                'MarkerFaceColor', 'y', ...
-                'MarkerEdgeColor', 'y');
+                'MarkerFaceColor', opt.NodeFaceColor, ...
+                'MarkerSize', opt.NodeSize, ...
+                'MarkerEdgeColor', opt.NodeEdgeColor };
+
+            for v=verts
+                if g.ndims == 3
+                    plot3(g.vertexlist(1,v), g.vertexlist(2,v), g.vertexlist(3,v), ...
+                        markerprops{:});
+                else
+                    plot(g.vertexlist(1,v), g.vertexlist(2,v), markerprops{:});
+                end
+            end
         end
+
+        function highlight_component(g, c, varargin)
+        %PGraph.highlight_component Highlight a graph component
+        %
+        % G.highlight_component(C, OPTIONS) highlights the vertices that belong to 
+        % graph component C.
+        %
+        % Options::
+        %  'NodeSize',S          Size of vertex circle (default 12)
+        %  'NodeFaceColor',C     Node circle color (default yellow)
+        %  'NodeEdgeColor',C     Node circle edge color (default blue)
+        %
+        % See also PGraph.highlight_node, PGraph.highlight_edge, PGraph.highlight_component.
+            nodes = find(g.labels == g.labelset(c));
+            for v=nodes
+                g.highlight_node(v, varargin{:});
+            end
+        end
+
+        function highlight_edge(g, e, varargin)
+        %PGraph.highlight_node Highlight a node
+        %
+        % G.highlight_edge(V1, V2) highlights the edge between vertices V1 and V2.
+        %
+        % G.highlight_edge(E) highlights the edge with id E.
+        %
+        % Options::
+        % 'EdgeColor',C         Edge edge color (default black)
+        % 'EdgeThickness',T     Edge thickness (default 1.5)
+        %
+        % See also PGraph.highlight_node, PGraph.highlight_path, PGraph.highlight_component.
+            
+            % parse options
+            opt.EdgeColor = 'k';
+            opt.EdgeThickness = 1.5;
+
+            [opt,args] = tb_optparse(opt, varargin);
+
+            hold on
+            if (length(args) > 0) && isnumeric(args{1})
+                % highlight_edge(V1, V2)
+                v1 = e;
+                v2 = args{1};
+
+                v1 = g.vertexlist(:,v1);
+                v2 = g.vertexlist(:,v2);
+             else
+                % highlight_edge(E)
+                e = g.edgelist(:,e);
+                v1 = g.vertexlist(:,e(1));
+                v2 = g.vertexlist(:,e(2));
+            end
+
+            % create the line properties for the edges
+            lineprops = {
+                'Color', opt.EdgeColor, ...
+                'LineWidth', opt.EdgeThickness };
+
+            if g.ndims == 3
+                plot3([v1(1) v2(1)], [v1(2) v2(2)], [v1(3) v2(3)], lineprops{:});
+            else
+                plot([v1(1) v2(1)], [v1(2) v2(2)], lineprops{:});
+            end
+        end
+
+        function highlight_path(g, path)
+        %PGraph.highlight_path Highlight path
+        %
+        % G.highlight_path(P, OPTIONS) highlights the path defined by vector P
+        % which is a list of vertices comprising the path.
+        %
+        % Options::
+        %  'NodeSize',S          Size of vertex circle (default 12)
+        %  'NodeFaceColor',C     Node circle color (default yellow)
+        %  'NodeEdgeColor',C     Node circle edge color (default blue)
+        %  'EdgeColor',C         Node circle edge color (default black)
+        %
+        % See also PGraph.highlight_node, PGraph.highlight_edge, PGraph.highlight_component.
+            g.highlight_node(path);
+
+            % highlight the edges
+            for i=1:numel(path)-1
+                v1 = path(i);
+                v2 = path(i+1);
+                g.highlight_edge(v1, v2);
+            end
+        end
+
+        function [path,cost] = Astar(g, vstart, vgoal)
+            %PGraph.Astar path finding
+            %
+            % PATH = G.Astar(V1, V2) is the lowest cost path from vertex V1 to
+            % vertex V2.  PATH is a list of vertices starting with V1 and ending
+            % V2.
+            %
+            % [PATH,C] = G.Astar(V1, V2) as above but also returns the total cost
+            % of traversing PATH.
+            %
+            % Notes::
+            % - Uses the efficient A* search algorithm.
+            %
+            % References::
+            % - Correction to "A Formal Basis for the Heuristic Determination of Minimum Cost Paths".
+            %   Hart, P. E.; Nilsson, N. J.; Raphael, B.
+            %   SIGART Newsletter 37: 28-29, 1972.
+            %
+            % See also PGraph.goal, PGraph.path.
+
+             % The set of vertices already evaluated.
+             closedset = [];  
+
+             % The set of tentative vertices to be evaluated, initially containing the start node
+             openset = [vstart];    
+             came_from = [];    % The map of navigated vertices.
+         
+             g_score(vstart) = 0;    % Cost from start along best known path.
+             h_score(vstart) = g.distance(vstart, vgoal);
+             % Estimated total cost from start to goal through y.
+             f_score(vstart) = g_score(vstart) + h_score(vstart);
+         
+             while ~isempty(openset)
+                 % current := the node in openset having the lowest f_score[] value
+                 [mn,k] = min(f_score(openset));
+                 vcurrent = openset(k);
+
+                 if vcurrent == vgoal
+                     path = [];
+                     p = vgoal;
+                     while true
+                        path = [p path];
+                        p = came_from(p);
+                        if p == 0
+                            break;
+                        end
+                     end
+                     if nargout > 1
+                        cost = f_score(vgoal);
+                     end
+                     return
+                 end
+
+                 %remove current from openset
+                 openset = setdiff(openset, vcurrent);
+                 %add current to closedset
+                 closedset = union(closedset, vcurrent);
+
+                 for neighbour = g.neighbours(vcurrent)
+                     if ismember(neighbour, closedset)
+                         continue;
+                     end
+                     tentative_g_score = g_score(vcurrent) + ...
+                        g.distance(vcurrent,neighbour);
+         
+                     if ~ismember(neighbour, openset)
+                         %add neighbor to openset
+                         openset = union(openset, neighbour);
+                         h_score(neighbour) = g.distance(neighbour, vgoal);
+                         tentative_is_better = true;
+                     elseif tentative_g_score < g_score(neighbour)
+                         tentative_is_better = true;
+                     else
+                         tentative_is_better = false;
+                     end
+                     if tentative_is_better
+                         came_from(neighbour) = vcurrent;
+                         g_score(neighbour) = tentative_g_score;
+                         f_score(neighbour) = g_score(neighbour) + h_score(neighbour);
+                     end
+                 end
+             end
+             path = [];
+         end
+         
         
     end % method
 
     methods (Access='protected')
+    % private methods
+
         % depth first
         function descend(g, vg)
 
@@ -567,12 +944,6 @@ classdef PGraph < handle
                 descend(g, vn);
             end
         end
-        function showVertices(g, v)
-            for vv=v
-                showVertex(g, vv);
-            end
-        end
-
 
         function l = newlabel(g)
             g.curLabel = g.curLabel + 1;
@@ -581,12 +952,18 @@ classdef PGraph < handle
             g.labelset = union(g.labelset, l);
         end
 
-        % merge label1 and label2, label2 dominates
+        % merge label1 and label2, lowest label dominates
         function merge(g, l1, l2)
+            % get the dominant and submissive labels
             ldom = min(l1, l2);
             lsub = max(l1, l2);
+
+            % change all instances of submissive label to dominant one
             g.labels(g.labels==lsub) = ldom;
+
+            % reduce the number of components
             g.ncomponents = g.ncomponents - 1;
+            % and remove the submissive label from the set of all labels
             g.labelset = setdiff(g.labelset, lsub);
         end
 
@@ -615,6 +992,15 @@ classdef PGraph < handle
                     error('unknown distance measure', g.measure);
             end
         end
+
+        function vn = next(g, v)
+
+            % V = G.next(VS) return the id of a node connected to node id VS
+            % that is closer to the goal.
+            n = g.neighbours(v);
+            [mn,k] = min( g.goaldist(n) );
+            vn = n(k);
+        end
         
-    end
+    end % private methods
 end % classdef
