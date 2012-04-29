@@ -23,20 +23,25 @@ function d = angdiff(th1, th2)
         d = th1 - th2;
     end
 
-    % for very negative angles keep adding 2pi
-    while true
-        k = find(d < -pi);
-        if isempty(k)
-            break;
-        end
-        d(k) = d(k) + 2*pi;
-    end
+    
+    d = mod(d+pi, 2*pi) - pi;
 
-    % for very positive angles keep subtracting 2pi
-    while true
-        k = find(d > pi);
-        if isempty(k)
-            break;
-        end
-        d(k) = d(k) - 2*pi;
-    end
+% Simplistic version of the code, easy to see what it does, but slow...
+%
+% for very negative angles keep adding 2pi
+%     while true
+%         k = find(d < -pi);
+%         if isempty(k)
+%             break;
+%         end
+%         d(k) = d(k) + 2*pi;
+%     end
+% 
+%     % for very positive angles keep subtracting 2pi
+%     while true
+%         k = find(d > pi);
+%         if isempty(k)
+%             break;
+%         end
+%         d(k) = d(k) - 2*pi;
+%     end

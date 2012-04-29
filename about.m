@@ -10,7 +10,7 @@ function about(var)
     
     if isstr(var)
         % invoked without parentheses
-        w = evalin('base', sprintf('whos(''%s'')', var));
+        w = evalin('caller', sprintf('whos(''%s'')', var));
         varname = var;
     else
         w = whos('var');

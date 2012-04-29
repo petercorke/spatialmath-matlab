@@ -15,7 +15,7 @@
 %  transformation then T is applied to each plane as defined by the first two 
 % dimensions, ie. if T = NxN and T=NxNxP then the result is NxNxP.
 %
-% See also e2h, h2e.
+% See also E2H, H2E.
 
 % Copyright (C) 1995-2009, by Peter I. Corke
 %

@@ -1,8 +1,10 @@
-function randinit(seed)
+%RANDINIT Reset random number generator
+%
+% RANDINIT reset the defaul random number stream.
+%
+% See also RandStream.
 
-    if nargin == 0
-        seed = 0;
-    end
+function randinit(seed)
 
     stream = RandStream.getDefaultStream;
     stream.reset()

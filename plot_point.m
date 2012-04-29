@@ -1,7 +1,7 @@
 %PLOT_POINT	Mark point features
 %
-% PLOT_POINT(P, OPTIONS) adds point markers to a plot, where P
-% is 2xN and each column is the point coordinate.
+% PLOT_POINT(P, OPTIONS) adds point markers to a plot, where P (2xN)
+% and each column is the point coordinate.
 %
 % Options::
 %  'textcolor', colspec     Specify color of text
@@ -12,6 +12,22 @@
 %  'sequence'               Label points sequentially
 %
 % Additional options are passed through to PLOT for creating the marker.
+%
+% Examples::
+%   Simple point plot
+%        P = rand(2,4);
+%        plot_point(P);
+%
+%   Plot points with markers
+%        plot_point(P, '*');
+%
+%   Plot points with square markers and labels
+%        plot_point(P, 'sequence', 's');
+%
+%   Plot points with circles and annotations
+%        data = [1 2 4 8];
+%        plot_point(P, 'printf', {' P%d', data}, 'o');
+%
 %
 % See also PLOT, TEXT.
 

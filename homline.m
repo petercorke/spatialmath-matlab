@@ -1,6 +1,6 @@
 %HOMLINE Homogeneous line from two points
 %
-% L = HOMLINE(X1, Y1, X2, Y2) returns a 3x1 vectors which describes a line in
+% L = HOMLINE(X1, Y1, X2, Y2) is a vector (3x1) which describes a line in
 % homogeneous form that contains the two Euclidean points (X1,Y1) and (X2,Y2).
 %
 % Homogeneous points X (3x1) on the line must satisfy L'*X = 0.

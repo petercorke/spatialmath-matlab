@@ -1,6 +1,6 @@
 %NUMCOLS Return number of columns in matrix
 %
-% NC = NUMCOLS(M) returns the number of columns in the matrix M.
+% NC = NUMCOLS(M) is the number of columns in the matrix M.
 %
 % See also NUMROWS.
 

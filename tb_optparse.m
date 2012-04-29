@@ -28,9 +28,11 @@
 % If neither of 'no' or 'yes' are specified then opt.select <- 1.
 %
 % Note:
-% - that the enumerator names must be distinct from the field names.
-% - that only one value can be assigned to a field, if multiple values
+% - That the enumerator names must be distinct from the field names.
+% - That only one value can be assigned to a field, if multiple values
 %    are required they must be converted to a cell array.
+% - To match an option that starts with a digit, prefix it with 'd_', so
+%   the field 'd_3d' matches the option '3d'.
 %
 % The allowable options are specified by the names of the fields in the
 % structure opt.  By default if an option is given that is not a field of 
@@ -45,20 +47,51 @@
 % The return structure is automatically populated with fields: verbose and
 % debug.  The following options are automatically parsed:
 %   'verbose'           sets opt.verbose <- true
+%   'verbose=2'         sets opt.verbose <- 2 (very verbose)
+%   'verbose=3'         sets opt.verbose <- 3 (extremeley verbose)
+%   'verbose=4'         sets opt.verbose <- 4 (ridiculously verbose)
 %   'debug', N          sets opt.debug <- N
 %   'setopt', S         sets opt <- S
 %   'showopt'           displays opt and arglist
 
+% Ryan Steindl based on Robotics Toolbox for MATLAB (v6 and v9)
+%
+% Copyright (C) 1993-2011, by Peter I. Corke
+%
+% This file is part of The Robotics Toolbox for MATLAB (RTB).
+% 
+% RTB is free software: you can redistribute it and/or modify
+% it under the terms of the GNU Lesser General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% RTB is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Leser General Public License
+% along with RTB.  If not, see <http://www.gnu.org/licenses/>.
+%
+% http://www.petercorke.com
+
 function [opt,others] = tb_optparse(in, argv)
+
+    if nargin == 1
+        argv = {};
+    end
+
+    if ~iscell(argv)
+        error('RTB:tboptparse:badargs', 'input must be a cell array');
+    end
 
     arglist = {};
 
     argc = 1;
     opt = in;
-    try
-        opt.verbose = false;
-        opt.debug = 0;
-    end
+    
+    opt.verbose = false;
+    opt.debug = 0;
 
     showopt = false;
 
@@ -73,6 +106,15 @@ function [opt,others] = tb_optparse(in, argv)
             case 'verbose'
                 opt.verbose = true;
                 assigned = true;
+            case 'verbose=2'
+                opt.verbose = 2;
+                assigned = true;
+            case 'verbose=3'
+                opt.verbose = 3;
+                assigned = true;
+            case 'verbose=4'
+                opt.verbose = 4;
+                assigned = true;
             case 'debug'
                 opt.debug = argv{argc+1};
                 argc = argc+1;
@@ -81,7 +123,6 @@ function [opt,others] = tb_optparse(in, argv)
                 new = argv{argc+1};
                 argc = argc+1;
                 assigned = true;
-
 
                 % copy matching field names from new opt struct to current one
                 for f=fieldnames(new)'
@@ -95,14 +136,26 @@ function [opt,others] = tb_optparse(in, argv)
 
             otherwise
                 % does the option match a field in the opt structure?
-                if isfield(opt, option)
+                if isfield(opt, option) || isfield(opt, ['d_' option])
+                    
+                    if ~isfield(opt, option)
+                        option = ['d_' option];
+                    end
                     val = getfield(opt, option);
                     if islogical(val)
                         % a logical variable can only be set by an option
                         opt = setfield(opt, option, true);
                     else
                         % otherwise grab its value from the next arg
-                        opt = setfield(opt, option, argv{argc+1});
+                        try
+                            opt = setfield(opt, option, argv{argc+1});
+                        catch me
+                            if strcmp(me.identifier, 'MATLAB:badsubscript')
+                                error('RTB:tboptparse:badargs', 'too few arguments provided');
+                            else
+                                rethrow(me);
+                            end
+                        end
                         argc = argc+1;
                     end
                     assigned = true;
@@ -157,15 +210,17 @@ function [opt,others] = tb_optparse(in, argv)
     end % while
 
     % if enumerator value not assigned, set the default value
-    for field=fieldnames(in)'
-        if iscell(getfield(in, field{1})) && iscell(getfield(opt, field{1}))
-            val = getfield(opt, field{1});
-            if isempty(val{1})
-                opt = setfield(opt, field{1}, val{1});
-            elseif val{1}(1) == '#'
-                opt = setfield(opt, field{1}, 1);
-            else
-                opt = setfield(opt, field{1}, val{1});
+    if ~isempty(in)
+        for field=fieldnames(in)'
+            if iscell(getfield(in, field{1})) && iscell(getfield(opt, field{1}))
+                val = getfield(opt, field{1});
+                if isempty(val{1})
+                    opt = setfield(opt, field{1}, val{1});
+                elseif val{1}(1) == '#'
+                    opt = setfield(opt, field{1}, 1);
+                else
+                    opt = setfield(opt, field{1}, val{1});
+                end
             end
         end
     end

@@ -6,6 +6,8 @@
 % PLOT_ELLIPSE(A, C, LS) as above but centred at C=[X,Y].
 % current plot.  If C=[X,Y,Z] the ellipse is parallel to the XY plane
 % but at height Z.
+%
+% See also PLOT_CIRCLE.
 
 function h = plot_ellipse(A, xc, varargin)
 

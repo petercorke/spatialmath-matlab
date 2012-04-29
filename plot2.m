@@ -8,7 +8,7 @@
 %
 % PLOT2(P, LS) as above but the line style arguments LS are passed to plot.
 %
-% See also plot.
+% See also PLOT.
 function h = plot2(p1, varargin)
 
     if ndims(p1) == 2
