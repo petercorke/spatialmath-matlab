@@ -24,5 +24,31 @@ function about(var)
     for i=2:length(w.size)
         ss = strcat(ss, sprintf('x%d', w.size(i)));
     end
-    fprintf('%s [%s] : %s (%d bytes)\n', ...
-        varname, w.class, ss, w.bytes);
+    
+    % build a string to show if complex or not
+    if w.complex
+        cmplx = '+complex';
+    else
+        cmplx = '';
+    end
+    
+    % build a string to show size in convenient format
+    suffix = {'bytes', 'kB', 'MB', 'GB', 'TB'};
+    sz = w.bytes;
+    for i=1:numel(suffix)
+        if sz/1000 < 1
+            break;
+        end
+        sz = sz/1000;
+    end
+    
+    if i==1
+        size = sprintf('%d %s', sz, suffix{i});
+    else
+        size = sprintf('%.1f %s', sz, suffix{i});
+    end
+    
+    % now display the info
+    fprintf('%s [%s%s] : %s (%s)\n', ...
+        varname, w.class, cmplx, ss, size);
+
