@@ -25,6 +25,10 @@
 % and can be given in any combination.
 %
 % If neither of 'this', 'that' or 'other' are specified then opt.choose <- 'this'.
+% Alternatively if:
+%        opt.choose = {[], 'this', 'that', 'other'};
+% then if neither of 'this', 'that' or 'other' are specified then opt.choose <- []
+%
 % If neither of 'no' or 'yes' are specified then opt.select <- 1.
 %
 % Note:
