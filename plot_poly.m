@@ -54,7 +54,7 @@ function h_ = plot_poly(p, varargin)
     if ~ish
         hold off
     end
-    figure(gcf)
+    %figure(gcf)
     
     if nargout > 0
         h_ = h;
