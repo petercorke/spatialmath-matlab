@@ -6,6 +6,6 @@
 
 function randinit(seed)
 
-    stream = RandStream.getDefaultStream;
+    stream = RandStream.getGlobalStream;
     stream.reset()
 
