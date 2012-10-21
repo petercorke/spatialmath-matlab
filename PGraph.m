@@ -4,7 +4,7 @@
 %   g = PGraph(n)       create an n-d, undirected graph
 %
 % Provides support for graphs that:
-%   - are undirected
+%   - are directed
 %   - are embedded in coordinate system
 %   - have symmetric cost edges (A to B is same cost as B to A)
 %   - have no loops (edges from A to A)
@@ -67,6 +67,7 @@
 % - Graph connectivity is maintained by a labeling algorithm and this
 %   is updated every time an edge is added.
 % - Nodes and edges cannot be deleted.
+% - Support for edge direction is rudimentary.
 
 % Peter Corke 8/2009.
 
@@ -180,8 +181,8 @@ classdef PGraph < handle
         % V = G.add_node(X) adds a node/vertex with coordinate X (Dx1) and
         % returns the integer node id V.
         %
-        % V = G.add_node(X, V2) as above but connected by an edge to vertex V2 with cost
-        % equal to the distance between the vertices.
+        % V = G.add_node(X, V2) as above but connected by a directed edge from vertex V
+        % to vertex V2 with cost equal to the distance between the vertices.
         %
         % V = G.add_node(X, V2, C) as above but the added edge has cost C.
         %
@@ -233,7 +234,7 @@ classdef PGraph < handle
         function add_edge(g, v1, v2, d)
         %PGraph.add_edge Add an edge
         %
-        % E = G.add_edge(V1, V2) adds an edge between vertices with id V1 and V2, and
+        % E = G.add_edge(V1, V2) adds a directed edge from vertex id V1 to vertex id V2, and
         % returns the edge id E.  The edge cost is the distance between the vertices.
         %
         % E = G.add_edge(V1, V2, C) as above but the edge cost is C.
@@ -243,7 +244,7 @@ classdef PGraph < handle
         % - Graph connectivity is maintained by a labeling algorithm and this
         %   is updated every time an edge is added.
         %
-        % See also PGraph.add_node.
+        % See also PGraph.add_node, PGraph.edgedir.
             if g.verbose
                 fprintf('add edge %d -> %d\n', v1, v2);
             end
@@ -275,8 +276,36 @@ classdef PGraph < handle
         function e = edges(g, v)
         %PGraph.edges Find edges given vertex
         %
-        % E = G.edges(V) return the id of all edges from vertex id V.
+        % E = G.edges(V) is a vector containing the id of all edges from vertex id V.
+        %
+        % See also PGraph.edgedir.
             e = [find(g.edgelist(1,:) == v) find(g.edgelist(2,:) == v)];
+        end
+        
+         
+        function dir = edgedir(g, v1, v2)
+        %PGraph.edgedir Find edge direction
+        %
+        % D = G.edgedir(V1, V2) is the direction of the edge from vertex id V1
+        % to vertex id V2.
+        %
+        % If we add an edge from vertex 3 to vertex 4 
+        %         g.add_edge(3, 4)
+        % then
+        %         g.edgedir(3, 4)
+        % is positive, and
+        %         g.edgedir(4, 3)
+        % is negative.
+        %
+        % See also PGraph.add_node, PGraph.add_edge.
+            n = g.edges(v1);
+            if any(ismember( g.edgelist(2, n), v2))
+                dir = 1;
+            elseif any(ismember( g.edgelist(1, n), v2))
+                dir = -1;
+            else
+                dir = 0;
+            end
         end
 
         function v = vertices(g, e)
@@ -299,6 +328,26 @@ classdef PGraph < handle
             n = g.edgelist(:,e);
             n = n(:)';
             n(n==v) = [];   % remove references to self
+            if nargout > 1
+                c = g.cost(e);
+            end
+        end
+        
+        
+
+        function [n,c] = neighbours_d(g, v)
+        %PGraph.neighbours_d Directed neighbours of a vertex
+        %
+        % N = G.neighbours_d(V) is a vector of ids for all vertices which are
+        % directly connected neighbours of vertex V.  Elements are positive
+        % if there is a link from V to the node, and negative if the link
+        % is from the node to V.
+        %
+        % [N,C] = G.neighbours_d(V) as above but also returns a vector C whose elements
+        % are the edge costs of the paths corresponding to the vertex ids in N.
+            e = g.edges(v);
+            n = [-g.edgelist(1,e) g.edgelist(2,e)];
+            n(abs(n)==v) = [];   % remove references to self
             if nargout > 1
                 c = g.cost(e);
             end
@@ -888,8 +937,8 @@ classdef PGraph < handle
                  end
              end
              path = [];
-         end
-         
+        end
+
         
     end % method
 
