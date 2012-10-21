@@ -11,6 +11,13 @@
 % H = PLOT_SPHERE(C, R, COLOR, ALPHA) as above but ALPHA specifies the opacity
 % of the sphere were 0 is transparant and 1 is opaque.  The default is 1.
 %
+% Example::
+% Create four spheres
+%         plot_sphere( mkgrid(2, 1), .2, 'b')
+% and now turn on a full lighting model
+%         lighting gouraud
+%         light
+%
 % NOTES::
 % - The sphere is always added, irrespective of figure hold state.
 % - The number of vertices to draw the sphere is hardwired.
@@ -18,8 +25,22 @@
 % TODO
 % inconsistant call format compared to other plot_xxx functions.
 
-function h = plot_sphere(c, r, color, alpha)
+function h = plot_sphere(c, r, varargin)
 
+    opt.color = 'b';
+    opt.alpha = 1;
+    opt.mesh = 'none';
+
+    [opt,args] = tb_optparse(opt, varargin);
+    
+    % backward compatibility with RVC
+    if length(args) > 0
+        opt.color = args{1};
+    end
+    if length(args) > 1
+        opt.alpha = args{2};
+    end
+    
     daspect([1 1 1])
     hold_on = ishold
     hold on
@@ -43,7 +64,7 @@ function h = plot_sphere(c, r, color, alpha)
         z = r(i)*zs + c(3,i);
                 
         % the following displays a nice smooth sphere with glint!
-        h = surf(x,y,z, 'FaceColor', color, 'EdgeColor', 'none', 'FaceAlpha', alpha);
+        h = surf(x,y,z, 'FaceColor', opt.color, 'EdgeColor', opt.mesh, 'FaceAlpha', opt.alpha);
         % camera patches disappear when shading interp is on
         %h = surfl(x,y,z)
     end
