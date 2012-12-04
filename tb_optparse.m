@@ -140,9 +140,10 @@ function [opt,others] = tb_optparse(in, argv)
 
             otherwise
                 % does the option match a field in the opt structure?
-                if isfield(opt, option) || isfield(opt, ['d_' option])
+%                 if isfield(opt, option) || isfield(opt, ['d_' option])
+                if any(strcmp(fieldnames(opt),option)) || any(strcmp(fieldnames(opt),['d_' option])) 
                     
-                    if ~isfield(opt, option)
+                    if ~any(strcmp(fieldnames(opt),option))
                         option = ['d_' option];
                     end
                     val = getfield(opt, option);
