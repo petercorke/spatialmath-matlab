@@ -4,10 +4,20 @@
 % centre C=[X,Y] and radius R.  If C=[X,Y,Z] the circle is drawn in the
 % XY-plane at height Z.
 %
+% H = PLOT_CIRCLE(C, R, options) as above but return handles. For multiple
+% circles H is a vector of handles, one per circle.
+%
 % Options::
-%  'edgecolor'   the color of the circle's edge, Matlab color spec
-%  'fillcolor'   the color of the circle's interior, Matlab color spec
-%  'alpha'       transparency of the filled circle: 0=transparent, 1=solid.
+% 'edgecolor'   the color of the circle's edge, Matlab color spec
+% 'fillcolor'   the color of the circle's interior, Matlab color spec
+% 'alpha'       transparency of the filled circle: 0=transparent, 1=solid
+% 'alter',H     alter existing circles with handle H
+%
+% For an unfilled ellipse any MATLAB LineProperty options can be given, for
+% a filled ellipse any MATLAB PatchProperty options can be given.
+%
+% See also PLOT_ELLIPSE.
+
 
 % Copyright (C) 1995-2009, by Peter I. Corke
 %
@@ -25,13 +35,18 @@
 % 
 % You should have received a copy of the GNU Leser General Public License
 % along with MVTB.  If not, see <http://www.gnu.org/licenses/>.
-function plot_circle(centre, rad, varargin)
+function handles = plot_circle(centre, rad, varargin)
 
     opt.fillcolor = [];
     opt.alpha = 1;
     opt.edgecolor = 'k';
+    opt.alter = [];
 
     [opt,arglist] = tb_optparse(opt, varargin);
+    
+    if ~isempty(opt.alter) & ~ishandle(opt.alter)
+        error('RTB:plot_circle:badarg', 'argument to alter must be a valid graphic object handle');
+    end
 
     holdon = ishold;
     hold on
@@ -52,18 +67,35 @@ function plot_circle(centre, rad, varargin)
         if numrows(centre) > 2
             % plot 3D data
             z = ones(size(x))*centre(3,i);
-            plot3(x, y, z, varargin{:});
+            if isempty(opt.alter)
+                h(i) = plot3(x, y, z, varargin{:});
+            else
+                set(opt.alter(i), 'xdata', x, 'ydata', y, 'zdata', z, arglist{:});
+            end
         else
             % plot 2D data
             if isempty(opt.fillcolor)
-                plot(x, y, arglist{:});
+                if isempty(opt.alter)
+                    h(i) = plot(x, y, arglist{:});
+                else
+                    set(opt.alter(i), 'xdata', x, 'ydata', y, arglist{:});
+                end
             else
-                patch(x, y, 0*y, 'FaceColor', opt.fillcolor, ...
-                    'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:})
+                if isempty(opt.alter)
+                    h(i) = patch(x, y, 0*y, 'FaceColor', opt.fillcolor, ...
+                        'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:});
+                else
+                    set(opt.alter(i), 'xdata', x, 'ydata', y, arglist{:});
+                end
+                
             end
         end
     end
 
     if holdon == 0
         hold off
+    end
+    
+    if nargout > 0
+        handles = h;
     end
