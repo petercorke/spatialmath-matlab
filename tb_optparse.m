@@ -79,6 +79,8 @@
 %
 % http://www.petercorke.com
 
+% Modifications by Joern Malzahn to support classes in addition to structs
+
 function [opt,others] = tb_optparse(in, argv)
 
     if nargin == 1
