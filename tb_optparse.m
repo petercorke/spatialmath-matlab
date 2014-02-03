@@ -96,8 +96,12 @@ function [opt,others] = tb_optparse(in, argv)
     argc = 1;
     opt = in;
     
-    opt.verbose = false;
-    opt.debug = 0;
+    if ~isfield(opt, 'verbose')
+        opt.verbose = false;
+    end
+    if ~isfield(opt, 'debug')
+        opt.debug = 0;
+    end
 
     showopt = false;
 
