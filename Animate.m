@@ -16,17 +16,28 @@ classdef Animate < handle
     properties
         frame
         dir
+        resolution
     end
     
     methods
         %ANIMATE.ANIMATE Create an animation class
         %
-        % A = ANIMATE(NAME) initializes an animation, and creates a folder
+        % A = ANIMATE(NAME, OPTIONS) initializes an animation, and creates a folder
         % called NAME to hold the individual frames.
-        function a = Animate(name)
+        %
+        % Options::
+        % 'resolution',R    Set the resolution of the saved image in pixels per inch
+        %
+        
+        function a = Animate(name, res)
             a.frame = 0;
             a.dir = name;
             mkdir(name);
+            if nargin > 1
+                a.resolution = res;
+            else
+                a.resolution = [];
+            end
             delete( fullfile(name, '*.png') );
             
         end
@@ -44,7 +55,11 @@ classdef Animate < handle
                 fh = gcf;
             end
             
-            print(fh, '-dpng', fullfile(a.dir, sprintf('%04d.png', a.frame)));
+            if isempty(a.resolution)
+                print(fh, '-dpng', fullfile(a.dir, sprintf('%04d.png', a.frame)));
+            else
+                print(fh, '-dpng', sprintf('-r%d', a.resolution), fullfile(a.dir, sprintf('%04d.png', a.frame)));
+            end
             a.frame = a.frame + 1;
         end
         
