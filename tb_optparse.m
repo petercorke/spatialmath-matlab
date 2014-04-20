@@ -104,8 +104,10 @@ function [opt,others] = tb_optparse(in, argv)
     end
 
     showopt = false;
+    choices = [];
 
     while argc <= length(argv)
+        % index over every passed option
         option = argv{argc};
         assigned = false;
         
@@ -147,16 +149,22 @@ function [opt,others] = tb_optparse(in, argv)
             otherwise
                 % does the option match a field in the opt structure?
 %                 if isfield(opt, option) || isfield(opt, ['d_' option])
-                if any(strcmp(fieldnames(opt),option)) || any(strcmp(fieldnames(opt),['d_' option])) 
+%                if any(strcmp(fieldnames(opt),option)) || any(strcmp(fieldnames(opt),))
+                 if isfield(opt, option) || isfield(opt, ['d_' option])
                     
-                    if ~any(strcmp(fieldnames(opt),option))
+                    % handle special case if we we have opt.d_3d, this
+                    % means we are looking for an option '3d'
+                    if isfield(opt, ['d_' option])
                         option = ['d_' option];
                     end
+                    
+                    %** BOOLEAN OPTION
                     val = getfield(opt, option);
                     if islogical(val)
                         % a logical variable can only be set by an option
                         opt = setfield(opt, option, true);
                     else
+                        %** OPTION IS ASSIGNED VALUE FROM NEXT ARG
                         % otherwise grab its value from the next arg
                         try
                             opt = setfield(opt, option, argv{argc+1});
@@ -171,6 +179,7 @@ function [opt,others] = tb_optparse(in, argv)
                     end
                     assigned = true;
                 elseif length(option)>2 && strcmp(option(1:2), 'no') && isfield(opt, option(3:end))
+                    %* BOOLEAN OPTION PREFIXED BY 'no'
                     val = getfield(opt, option(3:end));
                     if islogical(val)
                         % a logical variable can only be set by an option
@@ -178,7 +187,12 @@ function [opt,others] = tb_optparse(in, argv)
                         assigned = true;
                     end
                 else
-                    % the option doesnt match a field name
+                    % the option doesn't match a field name
+                    % let's assume it's a choice type
+                    %     opt.choose = {'this', 'that', 'other'};
+                    %
+                    % we need to loop over all the passed options and look
+                    % for those with a cell array value
                     for field=fieldnames(opt)'
                         val = getfield(opt, field{1});
                         if iscell(val)
@@ -186,12 +200,22 @@ function [opt,others] = tb_optparse(in, argv)
                                 if isempty(val{i})
                                     continue;
                                 end
+                                % if we find a match, put the final value
+                                % in the temporary structure choices
+                                %
+                                % eg. choices.choose = 'that'
+                                %
+                                % so that we can process input of the form
+                                %
+                                %  'this', 'that', 'other'
+                                %
+                                % which should result in the value 'other'
                                 if strcmp(option, val{i})
-                                    opt = setfield(opt, field{1}, option);
+                                    choices = setfield(choices, field{1}, option);
                                     assigned = true;
                                     break;
                                 elseif val{i}(1) == '#' && strcmp(option, val{i}(2:end))
-                                    opt = setfield(opt, field{1}, i);
+                                    choices = setfield(choices, field{1}, i);
                                     assigned = true;
                                     break;
                                 end
@@ -201,8 +225,6 @@ function [opt,others] = tb_optparse(in, argv)
                             end
                         end
                     end
-
-
                 end
             end % switch
         end
@@ -219,6 +241,13 @@ function [opt,others] = tb_optparse(in, argv)
         
         argc = argc + 1;
     end % while
+    
+    % copy choices into the opt structure
+    if ~isempty(choices)
+        for field=fieldnames(choices)'
+            opt = setfield(opt, field{1}, getfield(choices, field{1}));
+        end
+    end
 
     % if enumerator value not assigned, set the default value
     if ~isempty(in)
