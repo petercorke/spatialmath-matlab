@@ -139,7 +139,7 @@ function [opt,others] = tb_optparse(in, argv)
                 % copy matching field names from new opt struct to current one
                 for f=fieldnames(new)'
                     if isfield(opt, f{1})
-                        opt = setfield(opt, f{1}, getfield(new, f{1}));
+                        opt.(f{1}) = new.(f{1});
                     end
                 end
             case 'showopt'
@@ -150,24 +150,24 @@ function [opt,others] = tb_optparse(in, argv)
                 % does the option match a field in the opt structure?
 %                 if isfield(opt, option) || isfield(opt, ['d_' option])
 %                if any(strcmp(fieldnames(opt),option)) || any(strcmp(fieldnames(opt),))
-                 if isfield(opt, option) || isfield(opt, ['d_' option])
+                 if isfield(opt, option) || isfield(opt, ['d_' option]) || isprop(opt, option)
                     
                     % handle special case if we we have opt.d_3d, this
                     % means we are looking for an option '3d'
-                    if isfield(opt, ['d_' option])
+                    if isfield(opt, ['d_' option]) || isprop(opt, ['d_' option])
                         option = ['d_' option];
                     end
                     
                     %** BOOLEAN OPTION
-                    val = getfield(opt, option);
+                    val = opt.(option);
                     if islogical(val)
                         % a logical variable can only be set by an option
-                        opt = setfield(opt, option, true);
+                        opt.(option) = true;
                     else
                         %** OPTION IS ASSIGNED VALUE FROM NEXT ARG
                         % otherwise grab its value from the next arg
                         try
-                            opt = setfield(opt, option, argv{argc+1});
+                            opt.(option) = argv{argc+1};
                         catch me
                             if strcmp(me.identifier, 'MATLAB:badsubscript')
                                 error('RTB:tboptparse:badargs', 'too few arguments provided');
@@ -180,10 +180,10 @@ function [opt,others] = tb_optparse(in, argv)
                     assigned = true;
                 elseif length(option)>2 && strcmp(option(1:2), 'no') && isfield(opt, option(3:end))
                     %* BOOLEAN OPTION PREFIXED BY 'no'
-                    val = getfield(opt, option(3:end));
+                    val = opt.(option)(3:end);
                     if islogical(val)
                         % a logical variable can only be set by an option
-                        opt = setfield(opt, option(3:end), false);
+                        opt.(option)(3:end) = false;
                         assigned = true;
                     end
                 else
@@ -194,7 +194,7 @@ function [opt,others] = tb_optparse(in, argv)
                     % we need to loop over all the passed options and look
                     % for those with a cell array value
                     for field=fieldnames(opt)'
-                        val = getfield(opt, field{1});
+                        val = opt.(field{1});
                         if iscell(val)
                             for i=1:length(val)
                                 if isempty(val{i})
@@ -211,11 +211,11 @@ function [opt,others] = tb_optparse(in, argv)
                                 %
                                 % which should result in the value 'other'
                                 if strcmp(option, val{i})
-                                    choices = setfield(choices, field{1}, option);
+                                    choices.(field{1}) = option;
                                     assigned = true;
                                     break;
                                 elseif val{i}(1) == '#' && strcmp(option, val{i}(2:end))
-                                    choices = setfield(choices, field{1}, i);
+                                    choices.(field{1}) = i;
                                     assigned = true;
                                     break;
                                 end
@@ -245,21 +245,21 @@ function [opt,others] = tb_optparse(in, argv)
     % copy choices into the opt structure
     if ~isempty(choices)
         for field=fieldnames(choices)'
-            opt = setfield(opt, field{1}, getfield(choices, field{1}));
+           opt.(field{1}) = choices.(field{1});
         end
     end
 
     % if enumerator value not assigned, set the default value
     if ~isempty(in)
         for field=fieldnames(in)'
-            if iscell(getfield(in, field{1})) && iscell(getfield(opt, field{1}))
-                val = getfield(opt, field{1});
+            if iscell(in.(field{1})) && iscell(opt.(field{1}))
+                val = opt.(field{1});
                 if isempty(val{1})
-                    opt = setfield(opt, field{1}, val{1});
+                    opt.(field{1}) = val{1};
                 elseif val{1}(1) == '#'
-                    opt = setfield(opt, field{1}, 1);
+                    opt.(field{1}) = 1;
                 else
-                    opt = setfield(opt, field{1}, val{1});
+                    opt.(field{1}) = val{1};
                 end
             end
         end
