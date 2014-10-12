@@ -60,7 +60,8 @@
 
 % Ryan Steindl based on Robotics Toolbox for MATLAB (v6 and v9)
 %
-% Copyright (C) 1993-2011, by Peter I. Corke
+
+% Copyright (C) 1993-2014, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 
@@ -180,10 +181,10 @@ function [opt,others] = tb_optparse(in, argv)
                     assigned = true;
                 elseif length(option)>2 && strcmp(option(1:2), 'no') && isfield(opt, option(3:end))
                     %* BOOLEAN OPTION PREFIXED BY 'no'
-                    val = opt.(option)(3:end);
+                    val = opt.(option(3:end));
                     if islogical(val)
                         % a logical variable can only be set by an option
-                        opt.(option)(3:end) = false;
+                        opt.(option(3:end)) = false;
                         assigned = true;
                     end
                 else
