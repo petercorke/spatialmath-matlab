@@ -48,6 +48,11 @@
 % which is a cell array of all unassigned arguments in the order given in
 % varargin.
 %
+% Sometimes it is useful to collect a LineSpec as used for a plot command
+% and this is achieved by a third output argument
+%           [opt,arglist,ls] = tb_optparse(opt, varargin);
+% If a argument like 'r:' it is returned as ls rather than in arglist.
+%
 % The return structure is automatically populated with fields: verbose and
 % debug.  The following options are automatically parsed:
 %   'verbose'           sets opt.verbose <- true
@@ -82,7 +87,7 @@
 
 % Modifications by Joern Malzahn to support classes in addition to structs
 
-function [opt,others] = tb_optparse(in, argv)
+function [opt,others,ls] = tb_optparse(in, argv)
 
     if nargin == 1
         argv = {};
@@ -231,7 +236,7 @@ function [opt,others] = tb_optparse(in, argv)
         end
         if ~assigned
             % non matching options are collected
-            if nargout == 2
+            if nargout >= 2
                 arglist = [arglist argv(argc)];
             else
                 if isstr(argv{argc})
@@ -272,6 +277,33 @@ function [opt,others] = tb_optparse(in, argv)
         arglist
     end
 
-    if nargout == 2
+    if nargout == 3
+        % check to see if there is a valid linespec floating about in the
+        % unused arguments
+        for i=1:length(arglist)
+            s = arglist{i};
+            % get color
+            [b,e] = regexp(s, '[rgbcmywk]');
+            s2 = s(b:e);
+            s(b:e) = [];
+            
+            % get line style
+            [b,e] = regexp(s, '(--)|(-.)|-|:');
+            s2 = [s2 s(b:e)];
+            s(b:e) = [];
+            
+            % get marker style
+            [b,e] = regexp(s, '[o\+\*\.xsd\^v><ph]');
+            s2 = [s2 s(b:e)];
+            s(b:e) = [];
+            
+            if isempty(s)
+                ls = arglist{i};
+                arglist(i) = [];
+                others = arglist;
+                break;
+            end
+        end
+    elseif nargout == 2
         others = arglist;
     end
