@@ -18,6 +18,25 @@
 %
 % See also PLOT_CIRCLE.
 
+% Copyright (C) 1993-2014, by Peter I. Corke
+%
+% This file is part of The Robotics Toolbox for MATLAB (RTB).
+% 
+% RTB is free software: you can redistribute it and/or modify
+% it under the terms of the GNU Lesser General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% RTB is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Leser General Public License
+% along with RTB.  If not, see <http://www.gnu.org/licenses/>.
+%
+% http://www.petercorke.com
+
 function handles = plot_ellipse(A, centre, varargin)
     
     if size(A,1) ~= size(A,2)
@@ -35,13 +54,17 @@ function handles = plot_ellipse(A, centre, varargin)
         varargin = {};
     end
     
-    
-    opt.fillcolor = [];
+    opt.fillcolor = 'none';
     opt.alpha = 1;
     opt.edgecolor = 'k';
     opt.alter = [];
     
     [opt,arglist] = tb_optparse(opt, varargin);
+    opt
+    if numel(arglist) == 1 && length(arglist{1}) == 1 && ~isempty(strfind('bgrcmykw',arglist{1}))
+        opt.edgecolor = arglist{1};
+        arglist = {};
+    end
     
     if ~isempty(opt.alter) & ~ishandle(opt.alter)
         error('RTB:plot_circle:badarg', 'argument to alter must be a valid graphic object handle');
@@ -72,9 +95,11 @@ function handles = plot_ellipse(A, centre, varargin)
         
         % plot it
         if isempty(opt.alter)
-            h = mesh(Xe, Ye, Ze, arglist{:});
+            h = mesh(Xe, Ye, Ze, 'FaceColor', opt.fillcolor, ...
+                        'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:});
         else
-            set(opt.alter, 'xdata', Xe, 'ydata', Ye, 'zdata', Ze, arglist{:});
+            set(opt.alter, 'xdata', Xe, 'ydata', Ye, 'zdata', Ze,  ...
+                        arglist{:});
             
         end
         
@@ -103,24 +128,27 @@ function handles = plot_ellipse(A, centre, varargin)
             % plot 3D data
             z = ones(size(x))*centre(3);
             if isempty(opt.alter)
-                h = plot3(x, y, z, varargin{:});
+                h = plot3(x', y', z', varargin{:});
             else
                 set(opt.alter, 'xdata', x, 'ydata', y, 'zdata', z, arglist{:});
             end
         else
             % plot 2D data
             if isempty(opt.fillcolor)
+                % outline only, draw a line
                 if isempty(opt.alter)
-                    h = plot(x, y, arglist{:});
+                    h = plot(x', y', 'Color', opt.edgecolor, arglist{:});
                 else
                     set(opt.alter, 'xdata', x, 'ydata', y, arglist{:});
                 end
             else
+                % filled, use a patch
                 if isempty(opt.alter)
-                    h = patch(x, y, 0*y, 'FaceColor', opt.fillcolor, ...
+                    h = patch(x', y', 0*y, 'FaceColor', opt.fillcolor, ...
                         'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:});
                 else
-                    set(opt.alter, 'xdata', x, 'ydata', y, arglist{:});
+                    set(opt.alter, 'xdata', x, 'ydata', y, 'FaceColor', opt.fillcolor, ...
+                        'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:});
                 end
                 
             end
