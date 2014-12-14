@@ -570,8 +570,8 @@ else
   set(ax,'nextplot','replace');
 end
 azel=get(ax,'view');
-if abs(azel(2))==90, renderer='ZBuffer'; else renderer='OpenGL'; c1=3; end
-set(fig,'Renderer',renderer);
+%if abs(azel(2))==90, renderer='ZBuffer'; else renderer='OpenGL'; c1=3; end
+%set(fig,'Renderer',renderer);
 set(ax,'LineStyleOrder',L,'ColorOrder',C,'DefaultLineTag',LT,...
   'DefaultSurfaceTag',ST,'DefaultSurfaceEdgeColor',EC,...
   'xlim',xr,'ylim',yr,'zlim',zr,'clim',get(ax,'CLim'));
