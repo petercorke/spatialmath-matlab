@@ -1,14 +1,12 @@
-%PLOT_ELLIPSE Draw an ellipse on the current plot
+%PLOT_ELLIPSE Draw an ellipse or ellipsoid
 %
-% PLOT_ELLIPSE(A, LS) draws an ellipse defined by X'AX = 0 on the
-% current plot, centred at the origin, with Matlab line style LS.
+% PLOT_ELLIPSE(A, OPTIONS) draws an ellipse defined by X'AX = 0 on the
+% current plot, centred at the origin.
 %
-% PLOT_ELLIPSE(A, C, LS) as above but centred at C=[X,Y].
-% current plot.  If C=[X,Y,Z] the ellipse is parallel to the XY plane
-% but at height Z.
+% PLOT_ELLIPSE(A, C, OPTIONS) as above but centred at C=[X,Y].  If
+% C=[X,Y,Z] the ellipse is parallel to the XY plane but at height Z.
 %
-% H = PLOT_CIRCLE(C, R, options) as above but return handles. For multiple
-% circles H is a vector of handles, one per circle.
+% H = PLOT_ELLIPSE(A, C, OPTIONS) as above but return graphic handle.
 %
 % Options::
 % 'edgecolor'   the color of the circle's edge, Matlab color spec
@@ -16,7 +14,11 @@
 % 'alpha'       transparency of the filled circle: 0=transparent, 1=solid
 % 'alter',H     alter existing circles with handle H
 %
-% See also PLOT_CIRCLE.
+% Notes::
+% - If A (2x2) draw an ellipse, else if A(3x3) draw an ellipsoid.
+% - The ellipse is added to the current plot.
+%
+% See also PLOT_ELLIPSE_INV, PLOT_CIRCLE, PLOT_BOX, PLOT_POLY.
 
 % Copyright (C) 1993-2014, by Peter I. Corke
 %
@@ -59,11 +61,10 @@ function handles = plot_ellipse(A, centre, varargin)
     opt.edgecolor = 'k';
     opt.alter = [];
     
-    [opt,arglist] = tb_optparse(opt, varargin);
-    opt
-    if numel(arglist) == 1 && length(arglist{1}) == 1 && ~isempty(strfind('bgrcmykw',arglist{1}))
-        opt.edgecolor = arglist{1};
-        arglist = {};
+    [opt,arglist,ls] = tb_optparse(opt, varargin);
+
+    if ~isempty(ls)
+        opt.edgecolor = ls;
     end
     
     if ~isempty(opt.alter) & ~ishandle(opt.alter)
