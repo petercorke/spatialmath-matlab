@@ -176,7 +176,7 @@ function [opt,others,ls] = tb_optparse(in, argv)
                             opt.(option) = argv{argc+1};
                         catch me
                             if strcmp(me.identifier, 'MATLAB:badsubscript')
-                                error('RTB:tboptparse:badargs', 'too few arguments provided');
+                                error('RTB:tboptparse:badargs', 'too few arguments provided for option: [%s]', option);
                             else
                                 rethrow(me);
                             end
