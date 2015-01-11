@@ -297,6 +297,7 @@ function [opt,others,ls] = tb_optparse(in, argv)
             s2 = [s2 s(b:e)];
             s(b:e) = [];
             
+            % found one
             if isempty(s)
                 ls = arglist{i};
                 arglist(i) = [];
@@ -304,6 +305,8 @@ function [opt,others,ls] = tb_optparse(in, argv)
                 break;
             end
         end
+        ls = [];
+        others = arglist;
     elseif nargout == 2
         others = arglist;
     end
