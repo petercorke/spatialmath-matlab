@@ -1,7 +1,8 @@
 %ANIMATE Create an animation
 %
-% Help to create an animation which is a folder full of individual PNG
-% format frames numbered 0000.png, 0001.png and so on.
+% Helper class for creating animations.  Saves snapshots of a figture as a
+% folder of individual PNG format frames numbered 0000.png, 0001.png and so
+% on.
 %
 % Example::
 %
@@ -50,7 +51,8 @@ classdef Animate < handle
             % called NAME to hold the individual frames.
             %
             % Options::
-            % 'resolution',R    Set the resolution of the saved image in pixels per inch
+            % 'resolution',R    Set the resolution of the saved image to R pixels per
+            % inch.
         
             a.frame = 0;
             a.dir = name;

@@ -1,7 +1,7 @@
 %COLNORM Column-wise norm of a matrix
 %
-% CN = COLNORM(A) is an Mx1 vector of the normals of each column of the
-% matrix A which is NxM.
+% CN = COLNORM(A) is  vector (1xM) of the normals of each column of the
+% matrix A (NxM).
 
 % Copyright (C) 1993-2014, by Peter I. Corke
 %

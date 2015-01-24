@@ -5,6 +5,15 @@
 %
 % ABOUT X  as above but this is the command rather than functional form
 %
+% Examples::
+%         >> a=1;
+%         >> about a
+%         a [double] : 1x1 (8 bytes)
+%
+%         >> a = rand(5,7);
+%         >> about a
+%         a [double] : 5x7 (280 bytes)
+%
 % See also WHOS.
 
 % Copyright (C) 1993-2014, by Peter I. Corke

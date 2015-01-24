@@ -1,4 +1,4 @@
-%ISROT2 Test if argument is an SO2 rotation matrix
+%ISROT2 Test if SO(2) rotation matrix
 %
 % ISROT2(R) is true (1) if the argument is of dimension 2x2 or 2x2xN, else false (0).
 %

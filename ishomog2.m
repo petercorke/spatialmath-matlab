@@ -1,14 +1,14 @@
-%ISHOMOG2 Test if argument is an SE2 homogeneous transformation
+%ISHOMOG2 Test if SE(2) homogeneous transformation
 %
 % ISHOMOG2(T) is true (1) if the argument T is of dimension 3x3 or 3x3xN, else 
 % false (0).
 %
 % ISHOMOG2(T, 'valid') as above, but also checks the validity of the rotation
-% matrix.
+% sub-matrix.
 %
 % Notes::
-% - The first form is a fast, but incomplete, test for a transform in SE(3)
-% - Does not work for the SE(2) case
+% - The first form is a fast, but incomplete, test for a transform in SE(3).
+% - Does not work for the SE(3) case.
 %
 % See also ISHOMOG, ISROT2, ISVEC.
 

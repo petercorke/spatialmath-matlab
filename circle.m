@@ -1,10 +1,11 @@
 %CIRCLE Compute points on a circle
 %
-% CIRCLE(C, R, OPT) plot a circle centred at C with radius R.
+% CIRCLE(C, R, OPT) plots a circle centred at C (1x2) with radius R on the current
+% axes.
 %
-% X = CIRCLE(C, R, OPT) return an Nx2 matrix whose rows define the 
+% X = CIRCLE(C, R, OPT) is a matrix (2xN) whose columns define the 
 % coordinates [x,y] of points around the circumferance of a circle 
-% centred at C and of radius R.
+% centred at C (1x2) and of radius R.
 %
 % C is normally 2x1 but if 3x1 then the circle is embedded in 3D, and X is Nx3,
 % but the circle is always in the xy-plane with a z-coordinate of C(3).

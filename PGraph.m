@@ -1,15 +1,15 @@
 %PGraph Graph class
 %
-%   g = PGraph()        create a 2D, planar, undirected graph
-%   g = PGraph(n)       create an n-d, undirected graph
+%   g = PGraph()        create a 2D, planar embedded, directed graph
+%   g = PGraph(n)       create an n-d, embedded, directed graph
 %
 % Provides support for graphs that:
 %   - are directed
-%   - are embedded in coordinate system
+%   - are embedded in a coordinate system
 %   - have symmetric cost edges (A to B is same cost as B to A)
 %   - have no loops (edges from A to A)
-%   - have vertices are represented by integers vid
-%   - have edges are represented by integers, eid
+%   - have vertices that are represented by integers VID
+%   - have edges that are represented by integers EID
 %
 % Methods::
 %
@@ -62,6 +62,16 @@
 %   g.n            number of vertices
 %   g.ne           number of edges
 %   g.nc           number of components
+%
+% Examples::
+%         g = PGraph();
+%         g.add_node([1 2]');  % add node 1
+%         g.add_node([3 4]');  % add node 1
+%         g.add_node([1 3]');  % add node 1
+%         g.add_edge(1, 2);    % add edge 1-2
+%         g.add_edge(2, 3);    % add edge 2-3
+%         g.add_edge(1, 3);    % add edge 1-3
+%         g.plot()
 %
 % Notes::
 % - Graph connectivity is maintained by a labeling algorithm and this
@@ -131,7 +141,7 @@ classdef PGraph < handle
         %                 'Euclidean' (default) or 'SE2'.
         %  'verbose'      Specify verbose operation
         %
-        % Note::
+        % Notes::
         % - Number of dimensions is not limited to 2 or 3.
         % - The distance metric 'SE2' is the sum of the squares of the difference 
         %   in position and angle modulo 2pi.
@@ -205,6 +215,10 @@ classdef PGraph < handle
         %
         % V = G.add_node(X, V2, C) as above but the added edge has cost C.
         %
+        % Notes::
+        % - Distance is computed according to the metric specified in the
+        %   constructor.
+        %
         % See also PGraph.add_edge, PGraph.data, PGraph.getdata.
 
             if length(coord) ~= g.ndims
@@ -232,7 +246,7 @@ classdef PGraph < handle
         %PGraph.setdata Set user data for node
         %
         % G.setdata(V, U) sets the user data of vertex V to U which can be of any 
-        % type such as number, struct, object or cell array.
+        % type such as a number, struct, object or cell array.
         %
         % See also PGraph.data.
 
@@ -243,7 +257,7 @@ classdef PGraph < handle
         %PGraph.data Get user data for node
         %
         % U = G.data(V) gets the user data of vertex V which can be of any 
-        % type such as number, struct, object or cell array.
+        % type such as a number, struct, object or cell array.
         %
         % See also PGraph.setdata.
             u = g.userdata{v};
@@ -257,9 +271,10 @@ classdef PGraph < handle
         % returns the edge id E.  The edge cost is the distance between the vertices.
         %
         % E = G.add_edge(V1, V2, C) as above but the edge cost is C.
-        % cost C.
         %
-        % Note::
+        % Notes::
+        % - Distance is computed according to the metric specified in the
+        %   constructor.
         % - Graph connectivity is maintained by a labeling algorithm and this
         %   is updated every time an edge is added.
         %
@@ -282,7 +297,8 @@ classdef PGraph < handle
         function c = component(g, v)
         %PGraph.component Graph component
         %
-        % C = G.component(V) is the id of the graph component 
+        % C = G.component(V) is the id of the graph component that contains vertex
+        % V.
             c = [];
             for vv=v
                 tf = ismember(g.labelset, g.labels(vv));
@@ -295,7 +311,7 @@ classdef PGraph < handle
         function e = edges(g, v)
         %PGraph.edges Find edges given vertex
         %
-        % E = G.edges(V) is a vector containing the id of all edges from vertex id V.
+        % E = G.edges(V) is a vector containing the id of all edges connected to vertex id V.
         %
         % See also PGraph.edgedir.
             e = [find(g.edgelist(1,:) == v) find(g.edgelist(2,:) == v)];
@@ -548,7 +564,7 @@ classdef PGraph < handle
         % Notes::
         % - Combined with G.path performs a breadth-first search for paths to the goal.
         %
-        % See also PGraph.path, PGraph.Astar.
+        % See also PGraph.path, PGraph.Astar, Astar.
 
             % cost is total distance from goal
             g.goaldist = Inf*ones(1, numcols(g.vertexlist));
@@ -607,6 +623,10 @@ classdef PGraph < handle
         %
         % [D,W] = G.distances(P) as above but also returns W (1xN) with the 
         % corresponding vertex id.
+        %
+        % Notes::
+        % - Distance is computed according to the metric specified in the
+        %   constructor.
         %
         % See also PGraph.closest.
             
@@ -854,7 +874,7 @@ classdef PGraph < handle
         %PGraph.highlight_path Highlight path
         %
         % G.highlight_path(P, OPTIONS) highlights the path defined by vector P
-        % which is a list of vertices comprising the path.
+        % which is a list of vertex ids comprising the path.
         %
         % Options::
         %  'NodeSize',S          Size of vertex circle (default 12)
@@ -1020,8 +1040,10 @@ classdef PGraph < handle
             g.labelset = union(g.labelset, l);
         end
 
-        % merge label1 and label2, lowest label dominates
         function merge(g, l1, l2)
+            
+            % merge label1 and label2, lowest label dominates
+
             % get the dominant and submissive labels
             ldom = min(l1, l2);
             lsub = max(l1, l2);

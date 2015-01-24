@@ -1,26 +1,22 @@
-%PLOT_BOX	Draw a box on the current plot
+%PLOT_BOX	Draw a box
 %
-% PLOT_BOX(B, LS) draws a box defined by B=[XL XR; YL YR] with optional Matlab
-% linestyle options LS.
+% PLOT_BOX(B, LS) draws a box defined by B=[XL XR; YL YR] on the current
+% plot with optional MATLAB linestyle options LS.
 %
 % PLOT_BOX(X1,Y1, X2,Y2, LS) draws a box with corners at (X1,Y1) and (X2,Y2),
-% and optional Matlab linestyle options LS.
+% and optional MATLAB linestyle options LS.
 %
 % PLOT_BOX('centre', P, 'size', W, LS) draws a box with center at P=[X,Y] and
 % with dimensions W=[WIDTH HEIGHT].
 %
 % PLOT_BOX('topleft', P, 'size', W, LS) draws a box with top-left at P=[X,Y] 
 % and with dimensions W=[WIDTH HEIGHT].
-
-% Options::
-% 'size',SZ     Specify size of box.  SZ=[WIDTH, HEIGHT] or if scalar then
-%               WIDTH=HEIGHT=SZ
-% 'topleft',P   Specify position of box by top left coordinate P
-% 'centre',P    Specify position of box by centre coordinate P
 %
-% Additional options LS are passed to PLOT.
+% Notes::
+% - The box is added to the current plot.
+% - Additional options LS are MATLAB LineSpec options and are passed to PLOT.
 %
-% See also plot.
+% See also PLOT_POLY, PLOT_CIRCLE, PLOT_ELLIPSE.
 
 
 % Copyright (C) 1993-2014, by Peter I. Corke

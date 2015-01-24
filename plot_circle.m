@@ -1,4 +1,4 @@
-%PLOT_CIRCLE Draw a circle on the current plot
+%PLOT_CIRCLE Draw a circle
 %
 % PLOT_CIRCLE(C, R, options) draws a circle on the current plot with 
 % centre C=[X,Y] and radius R.  If C=[X,Y,Z] the circle is drawn in the
@@ -6,6 +6,10 @@
 %
 % H = PLOT_CIRCLE(C, R, options) as above but return handles. For multiple
 % circles H is a vector of handles, one per circle.
+%
+% If C (2xN) then N circles are drawn and H is Nx1.  If R (1x1) then all
+% circles have the same radius or else R (1xN) to specify the radius of
+% each circle.
 %
 % Options::
 % 'edgecolor'   the color of the circle's edge, Matlab color spec
@@ -16,7 +20,10 @@
 % For an unfilled ellipse any MATLAB LineProperty options can be given, for
 % a filled ellipse any MATLAB PatchProperty options can be given.
 %
-% See also PLOT_ELLIPSE.
+% Notes::
+% - The circle(s) is added to the current plot.
+%
+% See also PLOT_ELLIPSE, PLOT_BOX, PLOT_POLY.
 
 
 

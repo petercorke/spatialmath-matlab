@@ -1,6 +1,6 @@
 %RANDINIT Reset random number generator
 %
-% RANDINIT reset the defaul random number stream.
+% RANDINIT resets the defaul random number stream.
 %
 % See also RandStream.
 

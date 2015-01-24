@@ -7,7 +7,6 @@
 %
 % D = ANGDIFF(TH) returns the equivalent angle to TH in the interval [-pi pi).
 %
-% Return the equivalent angle in the interval [-pi pi).
 
 % Copyright (C) 1993-2014, by Peter I. Corke
 %

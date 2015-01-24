@@ -1,6 +1,10 @@
-%PLOT_ARROW Plot arrow
+%PLOT_ARROW Draw an arrow
 %
 % PLOT_ARROW(P, OPTIONS) draws an arrow from P1 to P2 where P=[P1; P2].
+%
+% Options::
+% All options are passed through to arrow3.  Pass in a single character
+% MATLAB colorspec (eg. 'r') to set the color.
 %
 % See also ARROW3.
 

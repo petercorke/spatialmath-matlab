@@ -1,13 +1,16 @@
-%PLOT_POLY Plot a polygon
+%PLOT_POLY Draw a polygon
 %
-% PLOTPOLY(P, OPTIONS) plot a polygon defined by columns of P which
-% can be 2xN or 3xN.
+% PLOT_POLY(P, OPTIONS) draws a polygon defined by columns of P (2xN), in the current plot.
 %
 % OPTIONS::
-%  'fill'    the color of the circle's interior, Matlab color spec
-%  'alpha'   transparency of the filled circle: 0=transparent, 1=solid.
+%  'fill',F    the color of the circle's interior, MATLAB color spec
+%  'alpha',A   transparency of the filled circle: 0=transparent, 1=solid.
 %
-% See also PLOT, PATCH, Polygon.
+% Notes::
+% - If P (3xN) the polygon is drawn in 3D
+% - The line(s) is added to the current plot.
+%
+% See also PLOT_BOX, PATCH, Polygon.
 
 % Copyright (C) 1993-2014, by Peter I. Corke
 %

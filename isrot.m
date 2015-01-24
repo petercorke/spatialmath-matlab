@@ -1,4 +1,4 @@
-%ISROT Test if argument is an SO3 rotation matrix
+%ISROT Test if SO(3) rotation matrix
 %
 % ISROT(R) is true (1) if the argument is of dimension 3x3 or 3x3xN, else false (0).
 %

@@ -1,6 +1,6 @@
-%PLOT_POINT	Mark point features
+%PLOT_POINT	Draw a feature point
 %
-% PLOT_POINT(P, OPTIONS) adds point markers to a plot, where P (2xN)
+% PLOT_POINT(P, OPTIONS) adds point markers to the current plot, where P (2xN)
 % and each column is the point coordinate.
 %
 % Options::
@@ -21,13 +21,16 @@
 %   Plot points with markers
 %        plot_point(P, '*');
 %
-%   Plot points with square markers and labels
+%   Plot points with square markers and labels 1 to 4
 %        plot_point(P, 'sequence', 's');
 %
-%   Plot points with circles and annotations
+%   Plot points with circles and annotations P1 to P4
 %        data = [1 2 4 8];
 %        plot_point(P, 'printf', {' P%d', data}, 'o');
 %
+% Notes::
+% - The point(s) is added to the current plot.
+% - 2D points only.
 %
 % See also PLOT, TEXT.
 
