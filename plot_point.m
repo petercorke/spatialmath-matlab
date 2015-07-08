@@ -10,6 +10,7 @@
 %  'printf', {fmt, data}    Label points according to printf format
 %                           string and corresponding element of data
 %  'sequence'               Label points sequentially
+%  'label',L                Label for point
 %
 % Additional options are passed through to PLOT for creating the marker.
 %
@@ -20,6 +21,9 @@
 %
 %   Plot points with markers
 %        plot_point(P, '*');
+%
+%   Plot points with markers
+%        plot_point(P, 'o', 'MarkerFaceColor', 'b');
 %
 %   Plot points with square markers and labels 1 to 4
 %        plot_point(P, 'sequence', 's');
@@ -60,9 +64,13 @@ function plot_point(p, varargin)
     opt.printf = [];
     opt.sequence = false;
     opt.bold = false;
-
+    opt.label = [];
     [opt,arglist] = tb_optparse(opt, varargin);
 
+    if ~isempty(opt.label) && numcols(p) == 1
+        opt.label = {opt.label};
+    end
+    
     % default marker style
     if isempty(arglist)
         arglist = {'sb'};
@@ -82,7 +90,9 @@ function plot_point(p, varargin)
             show(p(:,i), '%d', i, opt);
         end
 
-        if ~isempty(opt.printf)
+        if ~isempty(opt.label)
+            show(p(:,i), opt.label{i}, [], opt);
+        elseif ~isempty(opt.printf)
             show(p(:,i), opt.printf{1}, opt.printf{2}(i), opt);
         end
 
