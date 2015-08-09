@@ -285,6 +285,7 @@ function [opt,others,ls] = tb_optparse(in, argv)
     if nargout == 3
         % check to see if there is a valid linespec floating about in the
         % unused arguments
+        ls = [];
         for i=1:length(arglist)
             s = arglist{i};
             % get color
@@ -303,14 +304,12 @@ function [opt,others,ls] = tb_optparse(in, argv)
             s(b:e) = [];
             
             % found one
-            if isempty(s)
+            if ~isempty(s2)
                 ls = arglist{i};
                 arglist(i) = [];
-                others = arglist;
                 break;
             end
         end
-        ls = [];
         others = arglist;
     elseif nargout == 2
         others = arglist;
