@@ -10,20 +10,23 @@
 % The software pattern is:
 %
 %       function(a, b, c, varargin)
-%       opt.foo = false;
-%       opt.bar = true;
-%       opt.blah = [];
-%       opt.choose = {'this', 'that', 'other'};
-%       opt.select = {'#no', '#yes'};
-%       opt = tb_optparse(opt, varargin);
+%          opt.foo = false;
+%          opt.bar = true;
+%          opt.blah = [];
+%          opt.stuff = {};
+%          opt.choose = {'this', 'that', 'other'};
+%          opt.select = {'#no', '#yes'};
+%          opt = tb_optparse(opt, varargin);
 %
 % Optional arguments to the function behave as follows:
-%   'foo'           sets opt.foo := true
-%   'nobar'         sets opt.foo := false
-%   'blah', 3       sets opt.blah := 3
-%   'blah',{x,y}    sets opt.blah := {x,y}
-%   'that'          sets opt.choose := 'that'
-%   'yes'           sets opt.select := (the second element)
+%   'foo'              sets opt.foo := true
+%   'nobar'            sets opt.foo := false
+%   'blah', 3          sets opt.blah := 3
+%   'blah',{x,y}       sets opt.blah := {x,y}
+%   'that'             sets opt.choose := 'that'
+%   'yes'              sets opt.select := (the second element)
+%   'stuff', 5         sets opt.stuff to {5}
+%   'stuff', {'k',3}   sets opt.stuff to {'k',3}
 %
 % and can be given in any combination.
 %
@@ -179,6 +182,13 @@ function [opt,others,ls] = tb_optparse(in, argv)
                         % otherwise grab its value from the next arg
                         try
                             opt.(option) = argv{argc+1};
+                            if iscell(in.(option)) && isempty(in.(option))
+                                % input was an empty cell array
+                                if ~iscell(opt.(option))
+                                    % make it a cell
+                                    opt.(option) = cell( opt.(option) );
+                                end
+                            end
                         catch me
                             if strcmp(me.identifier, 'MATLAB:badsubscript')
                                 error('RTB:tboptparse:badargs', 'too few arguments provided for option: [%s]', option);
@@ -263,7 +273,7 @@ function [opt,others,ls] = tb_optparse(in, argv)
     % if enumerator value not assigned, set the default value
     if ~isempty(in)
         for field=fieldnames(in)'
-            if iscell(in.(field{1})) && iscell(opt.(field{1}))
+            if iscell(in.(field{1})) && ~isempty(in.(field{1})) && iscell(opt.(field{1}))
                 val = opt.(field{1});
                 if isempty(val{1})
                     opt.(field{1}) = val{1};
