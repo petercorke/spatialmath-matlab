@@ -69,6 +69,8 @@
 % unmatched option looks like a MATLAB LineSpec (eg. 'r:') it is placed in LS rather
 % than in ARGS.
 %
+% [OBJOUT,ARGS,LS] = TB_OPTPARSE(OPT, ARGLIST, OBJ) as above but properties
+% of OBJ with matching names in OPT are set.
 
 
 % Ryan Steindl based on Robotics Toolbox for MATLAB (v6 and v9)
@@ -95,12 +97,16 @@
 
 % Modifications by Joern Malzahn to support classes in addition to structs
 
-function [opt,others,ls] = tb_optparse(in, argv)
+function [opt,others,ls] = tb_optparse(in, argv, cls)
 
     if nargin == 1
         argv = {};
     end
 
+    if nargin < 3
+        cls = [];
+    end
+    
     if ~iscell(argv)
         error('RTB:tboptparse:badargs', 'input must be a cell array');
     end
@@ -266,10 +272,10 @@ function [opt,others,ls] = tb_optparse(in, argv)
     % copy choices into the opt structure
     if ~isempty(choices)
         for field=fieldnames(choices)'
-           opt.(field{1}) = choices.(field{1});
+            opt.(field{1}) = choices.(field{1});
         end
     end
-
+ 
     % if enumerator value not assigned, set the default value
     if ~isempty(in)
         for field=fieldnames(in)'
@@ -285,6 +291,8 @@ function [opt,others,ls] = tb_optparse(in, argv)
             end
         end
     end
+    
+    % opt is now complete
                         
     if showopt
         fprintf('Options:\n');
@@ -292,12 +300,28 @@ function [opt,others,ls] = tb_optparse(in, argv)
         arglist
     end
 
+    % however if a class was passed as a second argument, set its properties
+    % according to the fields of opt
+    if ~isempty(cls)
+
+        for field=fieldnames(opt)'
+            if isprop(cls, field{1})
+                cls.(field{1}) = opt.(field{1});
+            end
+        end
+        
+        opt = cls;
+    end
+    
     if nargout == 3
         % check to see if there is a valid linespec floating about in the
         % unused arguments
         ls = [];
         for i=1:length(arglist)
             s = arglist{i};
+            if ~ischar(s)
+                continue;
+            end
             % get color
             [b,e] = regexp(s, '[rgbcmywk]');
             s2 = s(b:e);
@@ -314,7 +338,7 @@ function [opt,others,ls] = tb_optparse(in, argv)
             s(b:e) = [];
             
             % found one
-            if ~isempty(s2)
+            if length(s) == 0
                 ls = arglist{i};
                 arglist(i) = [];
                 break;
