@@ -34,8 +34,9 @@
 % along with RTB.  If not, see <http://www.gnu.org/licenses/>.
 %
 % http://www.petercorke.com
-function about(var)
-    
+function about(varargin)
+    for i=1:nargin
+        var = varargin{i};
     if isstr(var)
         % invoked without parentheses
         w = evalin('caller', sprintf('whos(''%s'')', var));
@@ -80,3 +81,4 @@ function about(var)
     fprintf('%s [%s%s] : %s (%s)\n', ...
         varname, w.class, cmplx, ss, size);
 
+    end
