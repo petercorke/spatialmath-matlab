@@ -32,42 +32,96 @@
 % http://www.petercorke.com
 
 % TODO: options for fill, not filled, line style, labels (cell array of strings)
+%  handle filled/unfilled better, 'none' is synonymous with []?
+%  is moveable used anywhere, seems broken
 
 function h_ = plot_poly(p, varargin)
 
+    if ishandle(p)
+        tr = varargin{1};
+        if isvec(tr)
+            m = SE2(tr); m = m.SE3; m = m.double;
+        elseif ishomog(tr)
+            m = tr;
+        else
+            error('unknown transform type');
+        end
+        set(p, 'Matrix', m);
+        return
+    end
+    
     if numcols(p) < 3,
         error('too few points for a polygon');
     end
-
-    opt.fill = [];
+    
+    % unpack the data and wrap it around to form a closed polygon
+    x = [p(1,:) p(1,1)];
+    y = [p(2,:) p(2,1)];
+    if numrows(p) == 3
+        z = [p(3,:) p(3,1)];
+    end
+     
+    opt.fill = 'none';
     opt.alpha = 1;
+    %opt.handle = [];  no longer supported
+    opt.moveable = false;
+    opt.edge = [];
+    opt.tag = [];
+    if isempty(opt.fill) && isempty(opt.edge)
+        opt.edge = 'k';
+    end
 
-    [opt,arglist] = tb_optparse(opt, varargin);
+    [opt,arglist,ls] = tb_optparse(opt, varargin);
+    
+    if opt.moveable
+        if ~isempty(opt.tag)
+            hg = hgtransform('Tag', opt.tag);
+        else
+            hg = hgtransform();
+        end
+        arglist = [arglist, 'Parent', {hg}];
+    end
+
+    if ~isempty(opt.edge)
+    arglist = [arglist, 'EdgeColor', opt.edge];
+    end
+    
+%     if ~isempty(opt.handle)
+%         if numrows(p) == 2
+%             set(opt.handle, 'Xdata', x, 'Ydata', y);
+%         elseif numrows(p) == 3
+%             set(opt.handle, 'Xdata', x, 'Ydata', y, 'Zdata', z);
+%         end
+%         return;
+%     end
+    
 
     % default marker style
-    if isempty(arglist)
-        arglist = {'r-'};
-    end
+% %     if isempty(arglist)
+% %         arglist = {'r-'};
+% %     end
 
     ish = ishold();
 	hold on
 
-    x = [p(1,:) p(1,1)];
-    y = [p(2,:) p(2,1)];
+
     if numrows(p) == 2
         % plot 2D data
-        h(1) = plot(x, y, arglist{:});
-        if ~isempty(opt.fill)
-            h(2) = patch(x', y', 0*y', 'FaceColor', opt.fill, ...
-                'FaceAlpha', opt.alpha);
+        if strcmp(opt.fill, 'none')
+            h = plot(x, y, ls{:}, arglist{:});
+        else
+            plot(x, y, ls{:}, arglist{:})
+            h = patch(x', y', 0*y', 'FaceColor', opt.fill, ...
+                'FaceAlpha', opt.alpha, arglist{:});
         end
     elseif numrows(p) == 3
         % plot 3D data
-        z = [p(3,:) p(3,1)];
-        h(1) = plot3(x, y, z, arglist{:});
-        if ~isempty(opt.fill)
-            h(2) = patch(x, y, z, 0*y, 'FaceColor', opt.fill, ...
-                'FaceAlpha', opt.alpha);
+        if isempty(opt.fill)
+                    h = plot3(x, y, z, arglist{:});
+
+        else
+            h = patch(x, y, z, 0*y, 'FaceColor', opt.fill, ...
+                'FaceAlpha', opt.alpha, arglist{:});
         end
     else
         error('point data must have 2 or 3 rows');
@@ -79,5 +133,9 @@ function h_ = plot_poly(p, varargin)
     %figure(gcf)
     
     if nargout > 0
-        h_ = h;
+        if opt.moveable
+            h_ = hg;
+        else
+            h_ = h;
+        end
     end
