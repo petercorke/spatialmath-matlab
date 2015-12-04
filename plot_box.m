@@ -12,6 +12,9 @@
 % PLOT_BOX('topleft', P, 'size', W, LS) draws a box with top-left at P=[X,Y] 
 % and with dimensions W=[WIDTH HEIGHT].
 %
+% PLOT_BOX('matlab', BOX, LS) draws box(es) as defined by rows of BOX which
+% are [x y width height].
+%
 % Notes::
 % - The box is added to the current plot.
 % - Additional options LS are MATLAB LineSpec options and are passed to PLOT.
@@ -41,9 +44,10 @@
 function plot_box(varargin)
     opt.centre = [];
     opt.topleft = [];
+    opt.matlab = [];
     opt.size = [];
 
-    [opt,varargin] = tb_optparse(opt, varargin);
+    [opt,args] = tb_optparse(opt, varargin);
 
     if ~isempty(opt.size)
         if size(opt.size) == 1
@@ -68,19 +72,31 @@ function plot_box(varargin)
             error('must specify top left or centre');
         end
     else
-        if all(size(varargin{1}) == [2 2])
+       if ~isempty(opt.matlab)
+            if numrows(opt.matlab) > 1
+                for i=1:numrows(opt.matlab)
+                    plot_box('matlab', opt.matlab(i,:), args{:});
+                end
+                return
+            else
+            x1 = opt.matlab(1);
+            y1 = opt.matlab(2);
+            x2 = opt.matlab(1) + opt.matlab(3);
+            y2 = opt.matlab(2) + opt.matlab(4);
+            end
+       elseif all(size(args{1}) == [2 2])
             % first arg is a box
-            b = varargin{1};
+            b = args{1};
             x1 = b(1); y1 = b(2);
             x2 = b(3); y2 = b(4);
-            varargin = varargin(2:end);
+            varargin = args(2:end);
         else
             % use first 4 args as x1 y1 x2 y2
-            x1 = varargin{1};
-            y1 = varargin{2};
-            x2 = varargin{3};
-            y2 = varargin{4};
-            varargin = varargin(5:end);
+            x1 = args{1};
+            y1 = args{2};
+            x2 = args{3};
+            y2 = args{4};
+            args = args(5:end);
         end
     end
     p = [	x1 y1
@@ -92,7 +108,7 @@ function plot_box(varargin)
     holdon = ishold;
     hold on
 
-    plot(p(:,1), p(:,2), varargin{:})
+    plot(p(:,1), p(:,2), args{:})
 
     if holdon == 0
         hold off
