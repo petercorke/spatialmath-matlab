@@ -11,7 +11,7 @@
 % Options::
 % 'edgecolor'   the color of the circle's edge, Matlab color spec
 % 'fillcolor'   the color of the circle's interior, Matlab color spec
-% 'alpha'       transparency of the filled circle: 0=transparent, 1=solid
+% 'alpha'       transparency of the fillcolored circle: 0=transparent, 1=solid
 % 'alter',H     alter existing circles with handle H
 %
 % Notes::
@@ -39,7 +39,7 @@
 %
 % http://www.petercorke.com
 
-function handles = plot_ellipse(A, centre, varargin)
+function handles = plot_ellipse(A, varargin)
     
     if size(A,1) ~= size(A,2)
         error('ellipse is defined by a square matrix');
@@ -49,23 +49,27 @@ function handles = plot_ellipse(A, centre, varargin)
         error('can only plot ellipsoid for 2 or 3 dimenions');
     end
     
-    if nargin < 2
-        centre = zeros(1, size(A,1));
-    end
-    if nargin < 3
-        varargin = {};
-    end
+
     
     opt.fillcolor = 'none';
     opt.alpha = 1;
     opt.edgecolor = 'k';
     opt.alter = [];
+    opt.npoints = 40;
+    opt.shadow = false;
     
     [opt,arglist,ls] = tb_optparse(opt, varargin);
-
-    if ~isempty(ls)
-        opt.edgecolor = ls;
+    
+    if length(arglist) > 0 && isnumeric(arglist{1})
+        % centre is provided
+        centre = arglist{1};
+        arglist = arglist(2:end);
+    else
+        centre = zeros(1, size(A,1));
     end
+
+    
+
     
     if ~isempty(opt.alter) & ~ishandle(opt.alter)
         error('RTB:plot_circle:badarg', 'argument to alter must be a valid graphic object handle');
@@ -96,6 +100,8 @@ function handles = plot_ellipse(A, centre, varargin)
         
         % plot it
         if isempty(opt.alter)
+%             Ce = ones(size(Xe));
+%             Ce = cat(3, Ce*0.8, Ce*0.4, Ce*0.4);
             h = mesh(Xe, Ye, Ze, 'FaceColor', opt.fillcolor, ...
                         'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:});
         else
@@ -104,14 +110,25 @@ function handles = plot_ellipse(A, centre, varargin)
             
         end
         
+        % draw the shadow
+        if opt.shadow
+            I = ones(size(Xe));
+            a = axis;
+            mesh(a(1)*I, Ye, Ze, 'FaceColor', 0.7*[1 1 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5);
+            mesh(Xe, a(3)*I, Ze, 'FaceColor', 0.7*[1 1 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5);
+            mesh(Xe, Ye, a(5)*I, 'FaceColor', 0.7*[1 1 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5);
+        end
+        
     else
         %% plot an ellipse
         
         
+
+    
         [V,D] = eig(A);
         
         % define points on a unit circle
-        th = linspace(0, 2*pi, 50);
+        th = linspace(0, 2*pi, opt.npoints);
         pc = [cos(th);sin(th)];
         
         % warp it into the ellipse
@@ -135,7 +152,9 @@ function handles = plot_ellipse(A, centre, varargin)
             end
         else
             % plot 2D data
-            if isempty(opt.fillcolor)
+
+        
+            if strcmpi(opt.fillcolor, 'none')
                 % outline only, draw a line
                 if isempty(opt.alter)
                     h = plot(x', y', 'Color', opt.edgecolor, arglist{:});
@@ -143,7 +162,7 @@ function handles = plot_ellipse(A, centre, varargin)
                     set(opt.alter, 'xdata', x, 'ydata', y, arglist{:});
                 end
             else
-                % filled, use a patch
+                % fillcolored, use a patch
                 if isempty(opt.alter)
                     h = patch(x', y', 0*y, 'FaceColor', opt.fillcolor, ...
                         'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:});
