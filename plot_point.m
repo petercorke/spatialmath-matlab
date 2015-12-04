@@ -57,23 +57,26 @@
 %
 % http://www.petercorke.com
 
-function plot_point(p, varargin)
+function ho = plot_point(p, varargin)
 
-    opt.textcolor = 'g';
+    opt.textcolor = 'k';
     opt.textsize = 12;
     opt.printf = [];
     opt.sequence = false;
     opt.bold = false;
     opt.label = [];
-    [opt,arglist] = tb_optparse(opt, varargin);
+    opt.solid = false;
+    [opt,arglist,ls] = tb_optparse(opt, varargin);
 
+    % label is a cell array, one per point (column)
     if ~isempty(opt.label) && numcols(p) == 1
+        % if single point, convert single label to a cell array
         opt.label = {opt.label};
     end
     
     % default marker style
-    if isempty(arglist)
-        arglist = {'sb'};
+    if isempty(ls)
+        ls = {'bs'};    % blue square
     end
 
     % add stuff to pull .u and .v out of a vector of objects
@@ -85,7 +88,10 @@ function plot_point(p, varargin)
     holdon = ishold();
 	hold on
 	for i=1:numcols(p)
-		plot(p(1,i), p(2,i), arglist{:});
+        if opt.solid 
+            arglist = [ 'MarkerFaceColor', ls(1), arglist];
+        end
+		h(i) = plot(p(1,i), p(2,i), ls{:}, arglist{:});
         if opt.sequence
             show(p(:,i), '%d', i, opt);
         end
@@ -101,6 +107,9 @@ function plot_point(p, varargin)
         hold off
     end
     figure(gcf)
+    if nargout > 0
+        ho = h;
+    end
 end
 
 function show(p, fmt, val, opt)
