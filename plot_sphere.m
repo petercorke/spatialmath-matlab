@@ -47,7 +47,7 @@
 % TODO
 % inconsistant call format compared to other plot_xxx functions.
 
-function h = plot_sphere(c, r, varargin)
+function out = plot_sphere(c, r, varargin)
 
     opt.color = 'b';
     opt.alpha = 1;
@@ -64,7 +64,7 @@ function h = plot_sphere(c, r, varargin)
     end
     
     daspect([1 1 1])
-    hold_on = ishold
+    hold_on = ishold;
     hold on
     [xs,ys,zs] = sphere(40);
 
@@ -76,7 +76,7 @@ function h = plot_sphere(c, r, varargin)
     end
 
     if nargin < 4
-        alpha = 1
+        alpha = 1;
     end
 
     % transform the sphere
@@ -94,4 +94,7 @@ function h = plot_sphere(c, r, varargin)
     %light
     if ~hold_on
         hold off
+    end
+    if nargout > 0
+        out = h;
     end
