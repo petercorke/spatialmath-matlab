@@ -345,6 +345,11 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
             end
         end
         others = arglist;
+        if isempty(ls)
+            ls = {};
+        else
+            ls = {ls};
+        end
     elseif nargout == 2
         others = arglist;
     end
