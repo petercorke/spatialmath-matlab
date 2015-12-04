@@ -54,15 +54,21 @@ classdef Animate < handle
             % 'resolution',R    Set the resolution of the saved image to R pixels per
             % inch.
         
-            a.frame = 0;
-            a.dir = name;
-            mkdir(name);
-            if nargin > 1
-                a.resolution = res;
+            if isempty(name)
+                % we're not animating
+                a.dir = [];
             else
-                a.resolution = [];
+                % prepare to animate
+                a.frame = 0;
+                a.dir = name;
+                mkdir(name);
+                if nargin > 1
+                    a.resolution = res;
+                else
+                    a.resolution = [];
+                end
+                delete( fullfile(name, '*.png') );
             end
-            delete( fullfile(name, '*.png') );
             
         end
         
@@ -76,6 +82,10 @@ classdef Animate < handle
             %
             % See also print.
 
+            if isempty(a.dir)
+                return;
+            end
+            
             if nargin < 2
                 fh = gcf;
             end
