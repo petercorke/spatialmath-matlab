@@ -89,7 +89,7 @@ function plot_box(varargin)
             b = args{1};
             x1 = b(1); y1 = b(2);
             x2 = b(3); y2 = b(4);
-            varargin = args(2:end);
+            args = args(2:end);
         else
             % use first 4 args as x1 y1 x2 y2
             x1 = args{1};
