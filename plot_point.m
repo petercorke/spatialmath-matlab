@@ -89,7 +89,7 @@ function ho = plot_point(p, varargin)
 	hold on
 	for i=1:numcols(p)
         if opt.solid 
-            arglist = [ 'MarkerFaceColor', ls(1), arglist];
+            arglist = [ 'MarkerFaceColor', ls{1}(1), arglist];
         end
 		h(i) = plot(p(1,i), p(2,i), ls{:}, arglist{:});
         if opt.sequence
