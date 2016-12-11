@@ -1,18 +1,22 @@
 %PLOT_ELLIPSE Draw an ellipse or ellipsoid
 %
-% PLOT_ELLIPSE(A, OPTIONS) draws an ellipse defined by X'AX = 0 on the
+% PLOT_ELLIPSE(E, OPTIONS) draws an ellipse defined by X'EX = 0 on the
 % current plot, centred at the origin.
 %
-% PLOT_ELLIPSE(A, C, OPTIONS) as above but centred at C=[X,Y].  If
+% PLOT_ELLIPSE(E, C, OPTIONS) as above but centred at C=[X,Y].  If
 % C=[X,Y,Z] the ellipse is parallel to the XY plane but at height Z.
 %
-% H = PLOT_ELLIPSE(A, C, OPTIONS) as above but return graphic handle.
+% H = PLOT_ELLIPSE(E, C, OPTIONS) as above but return graphic handle.
 %
 % Options::
-% 'edgecolor'   the color of the circle's edge, Matlab color spec
-% 'fillcolor'   the color of the circle's interior, Matlab color spec
-% 'alpha'       transparency of the fillcolored circle: 0=transparent, 1=solid
-% 'alter',H     alter existing circles with handle H
+% 'conf',C       confidence interval (default 95%)
+% 'alter',H      alter existing ellipses with handle H
+% 'npoints',N    use N points to define the ellipse (default 40)
+% 'edgecolor'    the color of the circle's edge, Matlab color spec
+% 'fillcolor'    the color of the circle's interior, Matlab color spec
+% 'alpha'        transparency of the fillcolored circle: 0=transparent, 1=solid
+% 'shadow'       show shadows on the 3 walls of the plot box
+
 %
 % Notes::
 % - If A (2x2) draw an ellipse, else if A(3x3) draw an ellipsoid.
@@ -41,44 +45,38 @@
 
 function handles = plot_ellipse(E, varargin)
     
-    if size(E,1) ~= size(E,2)
-        error('ellipse is defined by a square matrix');
-    end
+    assert(size(E,1) == size(E,2), 'ellipse is defined by a square matrix');
+    assert( size(E,1) == 2 || size(E,1) == 3, 'can only plot ellipsoid for 2 or 3 dimenions');
     
-    if size(E,1) > 3
-        error('can only plot ellipsoid for 2 or 3 dimenions');
-    end
-    
-
     opt.fillcolor = 'none';
     opt.alpha = 1;
     opt.edgecolor = 'k';
     opt.alter = [];
     opt.npoints = 40;
     opt.shadow = false;
-    opt.conf = [];    % ~1sigma by default
+    opt.conf = 0.95;
     
     [opt,arglist,ls] = tb_optparse(opt, varargin);
+
+    % process some arguments
     
     if ~isempty(ls)
         opt.edgecolor = ls;
     end
     
-    if isempty(opt.conf)
-        s = 1;
-    else
-        s = sqrt(chi2inv(opt.conf, 2))
-    end
+    % process the probability
+    s = sqrt(chi2inv_rtb(opt.conf, 2))
     
     if length(arglist) > 0 && isnumeric(arglist{1})
-        % centre is provided
+        % ellipse centre is provided
         centre = arglist{1};
         arglist = arglist(2:end);
     else
+        % default to origin
         centre = zeros(1, size(E,1));
     end
 
-    
+    % check the ellipse to be altered
     if ~isempty(opt.alter) & ~ishandle(opt.alter)
         error('RTB:plot_circle:badarg', 'argument to alter must be a valid graphic object handle');
     end
@@ -106,16 +104,17 @@ function handles = plot_ellipse(E, varargin)
         Ye = reshape(pe(2,:), size(Ys));
         Ze = reshape(pe(3,:), size(Zs));
         
-        % plot it
+
         if isempty(opt.alter)
+              % plot it
 %             Ce = ones(size(Xe));
 %             Ce = cat(3, Ce*0.8, Ce*0.4, Ce*0.4);
             h = mesh(Xe, Ye, Ze, 'FaceColor', opt.fillcolor, ...
                         'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:});
         else
+            % update an existing plot
             set(opt.alter, 'xdata', Xe, 'ydata', Ye, 'zdata', Ze,  ...
                         arglist{:});
-            
         end
         
         % draw the shadow
