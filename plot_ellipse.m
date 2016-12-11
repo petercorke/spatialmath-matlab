@@ -39,36 +39,44 @@
 %
 % http://www.petercorke.com
 
-function handles = plot_ellipse(A, varargin)
+function handles = plot_ellipse(E, varargin)
     
-    if size(A,1) ~= size(A,2)
+    if size(E,1) ~= size(E,2)
         error('ellipse is defined by a square matrix');
     end
     
-    if size(A,1) > 3
+    if size(E,1) > 3
         error('can only plot ellipsoid for 2 or 3 dimenions');
     end
     
 
-    
     opt.fillcolor = 'none';
     opt.alpha = 1;
     opt.edgecolor = 'k';
     opt.alter = [];
     opt.npoints = 40;
     opt.shadow = false;
+    opt.conf = [];    % ~1sigma by default
     
     [opt,arglist,ls] = tb_optparse(opt, varargin);
+    
+    if ~isempty(ls)
+        opt.edgecolor = ls;
+    end
+    
+    if isempty(opt.conf)
+        s = 1;
+    else
+        s = sqrt(chi2inv(opt.conf, 2))
+    end
     
     if length(arglist) > 0 && isnumeric(arglist{1})
         % centre is provided
         centre = arglist{1};
         arglist = arglist(2:end);
     else
-        centre = zeros(1, size(A,1));
+        centre = zeros(1, size(E,1));
     end
-
-    
 
     
     if ~isempty(opt.alter) & ~ishandle(opt.alter)
@@ -78,7 +86,7 @@ function handles = plot_ellipse(A, varargin)
     holdon = ishold();
     hold on
     
-    if size(A,1) == 3
+    if size(E,1) == 3
         %% plot an ellipsoid
         
         % define mesh points on the surface of a unit sphere
@@ -86,7 +94,7 @@ function handles = plot_ellipse(A, varargin)
         ps = [Xs(:) Ys(:) Zs(:)]';
         
         % warp it into the ellipsoid
-        pe = sqrtm(A) * ps;
+        pe = sqrtm(E) * ps;
         
         % offset it to optional non-zero centre point
         if nargin > 1
@@ -113,7 +121,7 @@ function handles = plot_ellipse(A, varargin)
         % draw the shadow
         if opt.shadow
             I = ones(size(Xe));
-            a = axis;
+            a = [xlim ylim zlim];
             mesh(a(1)*I, Ye, Ze, 'FaceColor', 0.7*[1 1 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5);
             mesh(Xe, a(3)*I, Ze, 'FaceColor', 0.7*[1 1 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5);
             mesh(Xe, Ye, a(5)*I, 'FaceColor', 0.7*[1 1 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5);
@@ -122,17 +130,15 @@ function handles = plot_ellipse(A, varargin)
     else
         %% plot an ellipse
         
-        
-
-    
-        [V,D] = eig(A);
+                
+        [V,D] = eig(E);
         
         % define points on a unit circle
         th = linspace(0, 2*pi, opt.npoints);
         pc = [cos(th);sin(th)];
         
         % warp it into the ellipse
-        pe = sqrtm(A)*pc;
+        pe = sqrtm(E)*pc * s;
         
         % offset it to optional non-zero centre point
         centre = centre(:);
@@ -140,42 +146,64 @@ function handles = plot_ellipse(A, varargin)
             pe = bsxfun(@plus, centre(1:2), pe);
         end
         x = pe(1,:); y = pe(2,:);
-        
 
-        if length(centre) > 2
-            % plot 3D data
-            z = ones(size(x))*centre(3);
-            if isempty(opt.alter)
-                h = plot3(x', y', z', varargin{:});
-            else
-                set(opt.alter, 'xdata', x, 'ydata', y, 'zdata', z, arglist{:});
-            end
-        else
+%         if length(centre) > 2
+%             % plot 3D data
+%             z = ones(size(x))*centre(3);
+%             if isempty(opt.alter)
+%                 h = plot3(x', y', z', varargin{:});
+%             else
+%                 set(opt.alter, 'xdata', x, 'ydata', y, 'zdata', z, arglist{:});
+%             end
+
             % plot 2D data
 
-        
+            if length(centre) > 2
+                % plot 3D data
+                z = ones(size(x))*centre(3);
+            else
+                z = zeros(size(x));
+            end
+            
+            
             if strcmpi(opt.fillcolor, 'none')
                 % outline only, draw a line
-                if isempty(opt.alter)
-                    h = plot(x', y', 'Color', opt.edgecolor, arglist{:});
+                
+                if isempty(ls)
+                    if ~isempty(opt.edgecolor)
+                        arglist = ['Color', opt.edgecolor, arglist];
+                    end
                 else
-                    set(opt.alter, 'xdata', x, 'ydata', y, arglist{:});
+                    arglist = [ls arglist];
+                end
+
+                if isempty(opt.alter)
+                    h = plot3(x', y', z', arglist{:});
+                else
+                    set(opt.alter, 'xdata', x, 'ydata', y);
                 end
             else
                 % fillcolored, use a patch
+                
+                if ~isempty(opt.edgecolor)
+                    arglist = ['EdgeColor', opt.edgecolor, arglist];
+                end
+                
+                arglist = [ls, 'FaceAlpha', opt.alpha, arglist];
+                
+                                
                 if isempty(opt.alter)
-                    h = patch(x', y', 0*y, 'FaceColor', opt.fillcolor, ...
-                        'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:});
+                    h = patch(x', y', z', opt.fillcolor, arglist{:});
                 else
-                    set(opt.alter, 'xdata', x, 'ydata', y, 'FaceColor', opt.fillcolor, ...
-                        'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, arglist{:});
+                    set(opt.alter, 'xdata', x, 'ydata', y);
                 end
                 
             end
         end
-    end
-    holdon = ishold;
-    hold on
+    
+  if ~holdon
+      hold off
+  end
     
     if nargout > 0
         handles = h;
