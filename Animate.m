@@ -1,20 +1,32 @@
 %ANIMATE Create an animation
 %
-% Helper class for creating animations.  Saves snapshots of a figture as a
-% folder of individual PNG format frames numbered 0000.png, 0001.png and so
+% Helper class for creating animations.  Creates a movie file or saves snapshots 
+% of a figure as individual PNG format frames numbered 0000.png, 0001.png and so
 % on.
 %
 % Example::
 %
-%          anim = Animate('movie');
-%
+%         anim = Animate('movie.mp4');
 %          for i=1:100
 %              plot(...);
 %              anim.add();
 %          end
+%          anim.close();
+%
+% will save the frames in an MP4 movie file using VideoWriter.
+%
+% Alternatively::
+%
+%          anim = Animate('movie');
+%          for i=1:100
+%              plot(...);
+%              anim.add();
+%          end
+%          anim.close();
 %
 % To convert the image files to a movie you could use a tool like ffmpeg
-%           % ffmpeg -r 10 -i movie/*.png out.mp4
+%           % ffmpeg -r 10 -i movie/%04d.png out.mp4
+%
 
 % Copyright (C) 1993-2014, by Peter I. Corke
 %
@@ -41,33 +53,66 @@ classdef Animate < handle
         frame
         dir
         resolution
+        video
     end
     
     methods
-        function a = Animate(name, res)
+        function a = Animate(name, varargin)
             %ANIMATE.ANIMATE Create an animation class
             %
-            % A = ANIMATE(NAME, OPTIONS) initializes an animation, and creates a folder
-            % called NAME to hold the individual frames.
+            % A = ANIMATE(NAME, OPTIONS) initializes an animation, and creates
+            % a movie file or a folder holding individual frames.
             %
             % Options::
-            % 'resolution',R    Set the resolution of the saved image to R pixels per
-            % inch.
+            % 'resolution',R        Set the resolution of the saved image to R pixels per inch.
+            % 'profile',P           Create an MP4 file directly, see VideoWriter
+            %
+            % Notes::
+            % - if a profile is given a movie is created, see VideoWriter for allowable
+            %   profiles.
+            % - if the file has an extension a movie is created.
+            % - otherwise a folder full of frames is created.
+            %
+            % See also VideoWriter.
         
             if isempty(name)
                 % we're not animating
                 a.dir = [];
             else
-                % prepare to animate
+                opt.resolution = [];
+                opt.profile = [];
+
+                opt = tb_optparse(opt, varargin);
+                a.resolution = opt.resolution;
                 a.frame = 0;
-                a.dir = name;
-                mkdir(name);
-                if nargin > 1
-                    a.resolution = res;
+
+                [p,f,e] = fileparts(name);
+                
+                if ~isempty(opt.profile)
+                    % create a video with this profile
+                    a.video = VideoWriter(name, a.profile);
+                    fprintf('saving video --> %s with profile ''%s''\n', name, a.profile);
+
+                elseif ~isempty(e)
+                    % an extension was given
+                    switch (e)
+                        case {'.mp4', '.m4v'},  profile = 'MPEG-4';
+                        case '.mj2',  profile = 'Motion JPEG 2000';
+                        case '.avi', profile = 'Motion JPEG AVI';
+                    end
+                    fprintf('saving video --> %s with profile ''%s''\n', name, profile);
+                    a.video = VideoWriter(name, profile);
+                    open(a.video);
                 else
-                    a.resolution = [];
+                    % create a folder to hold the frames
+                    a.dir = name;
+                    mkdir(name);
+                    
+                    % clear out old frames
+                    delete( fullfile(name, '*.png') );
+                    fprintf('saving frames --> %s\n', name);
+
                 end
-                delete( fullfile(name, '*.png') );
             end
             
         end
@@ -82,7 +127,7 @@ classdef Animate < handle
             %
             % See also print.
 
-            if isempty(a.dir)
+            if isempty(a.dir) && isempty(a.video)
                 return;
             end
             
@@ -90,15 +135,29 @@ classdef Animate < handle
                 fh = gcf;
             end
             
-            if isempty(a.resolution)
-                print(fh, '-dpng', fullfile(a.dir, sprintf('%04d.png', a.frame)));
+            if isempty(a.video)
+                if isempty(a.resolution)
+                    print(fh, '-dpng', fullfile(a.dir, sprintf('%04d.png', a.frame)));
+                else
+                    print(fh, '-dpng', sprintf('-r%d', a.resolution), fullfile(a.dir, sprintf('%04d.png', a.frame)));
+                end
             else
-                print(fh, '-dpng', sprintf('-r%d', a.resolution), fullfile(a.dir, sprintf('%04d.png', a.frame)));
+                im = frame2im( getframe(fh) );
+                writeVideo(a.video, im)
             end
             a.frame = a.frame + 1;
         end
         
         function close(a)
+            %ANIMATE.CLOSE  Closes the animation
+            %
+            % A.CLOSE() closes the video file.
+            %
+            % 
+            if ~isempty(a.video)
+                a.video
+                close(a.video);
+            end
         end
     end
 end
