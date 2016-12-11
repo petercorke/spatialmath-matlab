@@ -146,14 +146,13 @@ classdef PGraph < matlab.mixin.Copyable
             % - To use a different distance metric create a subclass of PGraph and
             %   override the method distance_metric().
             
-            if isa(ndims, 'PGraph')
+
+            if nargin < 1
+                ndims = 2;  % planar by default
+            elseif isa(ndims, 'PGraph')
                 % do a deep copy
                 g = ndims.copy();
                 return
-            end
-            
-            if nargin < 1
-                ndims = 2;  % planar by default
             end
             g.ndims = ndims;
             opt.distance = 'Euclidean';
@@ -800,6 +799,7 @@ classdef PGraph < matlab.mixin.Copyable
             %  'EdgeLabelSize',S     Edge label text size (default black)
             %  'EdgeLabelColor',C    Edge label text color (default black)
             %  'componentcolor'      Node color is a function of graph component
+            %  'only',N              Only show these nodes
             
             
             % show vertices
@@ -821,6 +821,7 @@ classdef PGraph < matlab.mixin.Copyable
             opt.EdgeLabelColor = 'k';
             opt.EdgeWidth = 0.5;
             opt.dims = g.ndims;
+            opt.only = [1:g.n];
             
             [opt,args] = tb_optparse(opt, varargin);
             
@@ -858,10 +859,12 @@ classdef PGraph < matlab.mixin.Copyable
                                 coords = [coords; p0'; pn'; NaN*ones(1,g.ndims)];
                             end
                         end
-                        if opt.dims == 3
-                            plot3(coords(1,:), coords(2,:), coords(3,:), 'Color', color, 'LineWidth', opt.EdgeWidth);
-                        else
-                            plot(coords(:,1), coords(:,2), 'Color', color, 'LineWidth', opt.EdgeWidth);
+                        if ~isempty(coords)
+                            if opt.dims == 3
+                                plot3(coords(1,:), coords(2,:), coords(3,:), 'Color', color, 'LineWidth', opt.EdgeWidth);
+                            else
+                                plot(coords(:,1), coords(:,2), 'Color', color, 'LineWidth', opt.EdgeWidth);
+                            end
                         end
                     end
                     
@@ -873,6 +876,9 @@ classdef PGraph < matlab.mixin.Copyable
                         'MarkerEdgeColor', color };
                     
                     for v = vertices
+                        if ~ismember(v, opt.only)
+                            continue;
+                        end
                         p = g.coord(v);
                         if opt.dims == 3
                             plot3(p(1), p(2), p(3), args{:});
@@ -913,7 +919,9 @@ classdef PGraph < matlab.mixin.Copyable
                 % show the vertices as filled circles
                 for i=1:g.n
                     % for each node
-
+                        if ~ismember(i, opt.only)
+                            continue;
+                        end
                     args = {'LineStyle', 'None', ...
                         'Marker', 'o', ...
                         'MarkerFaceColor', opt.NodeFaceColor, ...
@@ -971,7 +979,9 @@ classdef PGraph < matlab.mixin.Copyable
             %
             % See also PGraph.plot.
             [x,y] = ginput(1);
-            v = g.closest([x; y]);
+            d = colnorm( bsxfun(@minus,[x; y], g.vertexlist(1:2,:)) );
+                                   
+            [~,v] = min(d);
         end
         
         function highlight_node(g, verts, varargin)
