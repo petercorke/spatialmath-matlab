@@ -1,14 +1,31 @@
 %PLOT_POLY Draw a polygon
 %
-% PLOT_POLY(P, OPTIONS) draws a polygon defined by columns of P (2xN), in the current plot.
+% PLOT_POLY(P) adds a polygon defined by columns of P (2xN), in the current
+% plot with default line style.
+%
+% PLOT_POLY(P, LS) as above but the line style is specified by a MATLAB
+% linespec.
+%
+% H = PLOT_POLY(P, OPTIONS) as above but processes additional options and
+% returns a graphics handle.
+%
+% PLOT_POLY(H, T) sets the pose of the polygon with handle H to the pose
+% given by T (3x3 or 4x4).
 %
 % OPTIONS::
-%  'fill',F    the color of the circle's interior, MATLAB color spec
-%  'alpha',A   transparency of the filled circle: 0=transparent, 1=solid.
+%  'fill',F      the color of the circle's interior, MATLAB color spec
+%  'alpha',A     transparency of the filled circle: 0=transparent, 1=solid.
+%  'edge',E      edge color
+%  'animate'     the polygon can be animated
+%  'tag',T       the polygon is created with a handle graphics tag
 %
 % Notes::
 % - If P (3xN) the polygon is drawn in 3D
-% - The line(s) is added to the current plot.
+% - If not filled the polygon is a line segment, otherwise it is a patch
+%   object.
+% - The 'animate' option creates an hgtransform object as a parent of the
+% polygon, which can be animated by the last call signature above.
+% - The graphics are added to the current plot.
 %
 % See also PLOT_BOX, PATCH, Polygon.
 
@@ -37,56 +54,112 @@
 
 function h_ = plot_poly(p, varargin)
 
+    
     if ishandle(p)
+        % PLOT_POLY(H, T)
+        %  - animate existing polygon
         tr = varargin{1};
         if isvec(tr)
+            m = SE2(tr); m = m.SE3; m = m.double;
+        elseif ishomog2(tr)
             m = SE2(tr); m = m.SE3; m = m.double;
         elseif ishomog(tr)
             m = tr;
         else
             error('unknown transform type');
         end
+        % set the transformation for the handle
         set(p, 'Matrix', m);
         return
     end
     
-    if numcols(p) < 3,
-        error('too few points for a polygon');
-    end
+    % create a new polygon
     
-    % unpack the data and wrap it around to form a closed polygon
-    x = [p(1,:) p(1,1)];
-    y = [p(2,:) p(2,1)];
-    if numrows(p) == 3
-        z = [p(3,:) p(3,1)];
-    end
-     
-    opt.fill = 'none';
+
+    % process options
+    opt.fill = [];
     opt.alpha = 1;
-    %opt.handle = [];  no longer supported
-    opt.moveable = false;
+    opt.animate = false;
     opt.edge = [];
     opt.tag = [];
     if isempty(opt.fill) && isempty(opt.edge)
         opt.edge = 'k';
     end
 
-    [opt,arglist,ls] = tb_optparse(opt, varargin);
+    [opt,args,ls] = tb_optparse(opt, varargin);
+
+    % unpack the data and wrap it around to form a closed polygon
+    assert( numcols(p) > 2, 'too few points for a polygon');
+    assert( numrows(p) == 2 || numrows(p) == 3, 'data must have 2 or 3 rows');
     
-    if opt.moveable
+    x = p(1,:); y = p(2,:);
+    if numrows(p) == 3
+        z = p(3,:);
+    end
+    
+    if isempty(opt.fill)
+        % wrap it around to form a closed polygon
+        x = [x x(1)];
+        y = [y y(1)];
+        if numrows(p) == 3
+            z = [p(3,:) p(3,1)];
+        end
+    end
+     
+    if opt.animate
         if ~isempty(opt.tag)
             hg = hgtransform('Tag', opt.tag);
         else
             hg = hgtransform();
         end
-        arglist = [arglist, 'Parent', {hg}];
+        args = [args, 'Parent', {hg}];
     end
 
-    if ~isempty(opt.edge)
-    arglist = [arglist, 'EdgeColor', opt.edge];
+    if ~isempty(opt.fill) && ~isempty(opt.edge)
+        % in fill mode, optionally set edge color
+        args = [args, 'EdgeColor', opt.edge];
     end
     
-%     if ~isempty(opt.handle)
+
+    ish = ishold();
+	hold on
+
+
+    switch numrows(p)
+        case 2
+            % plot 2D data
+            if isempty(opt.fill)
+                h = plot(x, y, ls{:}, args{:});
+            else
+                h = patch(x', y', opt.fill, ...
+                    'FaceAlpha', opt.alpha, args{:});
+            end
+            
+        case 3
+            % plot 3D data
+            if isempty(opt.fill)
+                h = plot3(x, y, z, args{:});
+            else
+                h = patch(x, y, z, opt.fill, ...
+                    'FaceAlpha', opt.alpha, args{:});
+            end
+    end
+
+    if ~ish
+        hold off
+    end
+    %figure(gcf)
+    
+    if nargout > 0
+        if opt.animate
+            h_ = hg;
+        else
+            h_ = h;
+        end
+    end
+    
+    
+    %     if ~isempty(opt.handle)
 %         if numrows(p) == 2
 %             set(opt.handle, 'Xdata', x, 'Ydata', y);
 %         elseif numrows(p) == 3
@@ -100,42 +173,3 @@ function h_ = plot_poly(p, varargin)
 % %     if isempty(arglist)
 % %         arglist = {'r-'};
 % %     end
-
-    ish = ishold();
-	hold on
-
-
-    if numrows(p) == 2
-        % plot 2D data
-        if strcmp(opt.fill, 'none')
-            h = plot(x, y, ls{:}, arglist{:});
-        else
-            plot(x, y, ls{:}, arglist{:})
-            h = patch(x', y', 0*y', 'FaceColor', opt.fill, ...
-                'FaceAlpha', opt.alpha, arglist{:});
-        end
-    elseif numrows(p) == 3
-        % plot 3D data
-        if isempty(opt.fill)
-                    h = plot3(x, y, z, arglist{:});
-
-        else
-            h = patch(x, y, z, 0*y, 'FaceColor', opt.fill, ...
-                'FaceAlpha', opt.alpha, arglist{:});
-        end
-    else
-        error('point data must have 2 or 3 rows');
-    end
-
-    if ~ish
-        hold off
-    end
-    %figure(gcf)
-    
-    if nargout > 0
-        if opt.moveable
-            h_ = hg;
-        else
-            h_ = h;
-        end
-    end
