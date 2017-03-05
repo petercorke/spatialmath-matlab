@@ -22,7 +22,8 @@
 %
 % See also PLOT_ELLIPSE, PLOT_CIRCLE, PLOT_BOX, PLOT_POLY.
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 
@@ -40,7 +41,6 @@
 % along with RTB.  If not, see <http://www.gnu.org/licenses/>.
 %
 % http://www.petercorke.com
-% See also PLOT_ELLIPSE, PLOT_CIRCLE, PLOT_BOX, PLOT_POLY.
 
 
 % Copyright (C) 1993-2014, by Peter I. Corke

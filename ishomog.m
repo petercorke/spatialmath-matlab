@@ -1,4 +1,4 @@
-%ISHOMOG Test if SE(3) homogeneous transformation
+%ISHOMOG Test if SE(3) homogeneous transformation matrix
 %
 % ISHOMOG(T) is true (1) if the argument T is of dimension 4x4 or 4x4xN, else 
 % false (0).
@@ -8,13 +8,13 @@
 %
 % Notes::
 % - The first form is a fast, but incomplete, test for a transform is SE(3).
-% - Does not work for the SE(2) case.
 %
-% See also ISROT, ISVEC.
+% See also ISROT, ISHOMOG2, ISVEC.
 
 
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 

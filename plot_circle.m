@@ -1,15 +1,22 @@
 %PLOT_CIRCLE Draw a circle
 %
-% PLOT_CIRCLE(C, R, options) draws a circle on the current plot with 
+% PLOT_CIRCLE(C, R, OPTIONS) draws a circle on the current plot with 
 % centre C=[X,Y] and radius R.  If C=[X,Y,Z] the circle is drawn in the
 % XY-plane at height Z.
-%
-% H = PLOT_CIRCLE(C, R, options) as above but return handles. For multiple
-% circles H is a vector of handles, one per circle.
 %
 % If C (2xN) then N circles are drawn and H is Nx1.  If R (1x1) then all
 % circles have the same radius or else R (1xN) to specify the radius of
 % each circle.
+%
+% H = PLOT_CIRCLE(C, R, OPTIONS) as above but return handles. For multiple
+% circles H is a vector of handles, one per circle.
+%
+% Animation::
+%
+% First draw the circle and keep its graphic handle, then alter it, eg.
+%
+%          H = PLOT_CIRCLE(C, R)
+%          PLOT_ELLIPSE(C, R, 'alter', H);
 %
 % Options::
 % 'edgecolor'   the color of the circle's edge, Matlab color spec
@@ -17,17 +24,19 @@
 % 'alpha'       transparency of the filled circle: 0=transparent, 1=solid
 % 'alter',H     alter existing circles with handle H
 %
-% For an unfilled ellipse any MATLAB LineProperty options can be given, for
-% a filled ellipse any MATLAB PatchProperty options can be given.
+% - For an unfilled circle any standard MATLAB LineStyle such as 'r' or 'b---'.
+% - For an unfilled circle any MATLAB LineProperty options can be given such as 'LineWidth', 2.
+% - For a filled circle any MATLAB PatchProperty options can be given.
 %
 % Notes::
-% - The circle(s) is added to the current plot.
+% - The circle(s) is added to the current plot irrespective of hold status.
 %
 % See also PLOT_ELLIPSE, PLOT_BOX, PLOT_POLY.
 
 
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 

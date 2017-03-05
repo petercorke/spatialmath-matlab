@@ -1,9 +1,9 @@
 %CIRCLE Compute points on a circle
 %
-% CIRCLE(C, R, OPT) plots a circle centred at C (1x2) with radius R on the current
+% CIRCLE(C, R, OPTIONS) plots a circle centred at C (1x2) with radius R on the current
 % axes.
 %
-% X = CIRCLE(C, R, OPT) is a matrix (2xN) whose columns define the 
+% X = CIRCLE(C, R, OPTIONS) is a matrix (2xN) whose columns define the 
 % coordinates [x,y] of points around the circumferance of a circle 
 % centred at C (1x2) and of radius R.
 %
@@ -13,7 +13,8 @@
 % Options::
 %  'n',N   Specify the number of points (default 50)
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 

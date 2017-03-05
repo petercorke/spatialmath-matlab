@@ -2,13 +2,13 @@
 %
 % PLOT_SPHERE(C, R, LS) draws spheres in the current plot.  C is the 
 % centre of the sphere (3x1), R is the radius and LS is an optional MATLAB 
-% color spec, either a letter or a 3-vector.  
+% ColorSpec, either a letter or a 3-vector.  
 %
 % H = PLOT_SPHERE(C, R, COLOR) as above but returns the handle(s) for the
 % spheres.
 %
 % H = PLOT_SPHERE(C, R, COLOR, ALPHA) as above but ALPHA specifies the opacity
-% of the sphere were 0 is transparant and 1 is opaque.  The default is 1.
+% of the sphere where 0 is transparant and 1 is opaque.  The default is 1.
 %
 % If C (3xN) then N sphhere are drawn and H is Nx1.  If R (1x1) then all
 % spheres have the same radius or else R (1xN) to specify the radius of
@@ -25,7 +25,8 @@
 % - The sphere is always added, irrespective of figure hold state.
 % - The number of vertices to draw the sphere is hardwired.
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 

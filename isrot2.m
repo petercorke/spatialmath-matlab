@@ -8,11 +8,12 @@
 % Notes::
 % - A valid rotation matrix has determinant of 1.
 %
-% See also ISHOMOG2, ISVEC.
+% See also ISROT, ISHOMOG2, ISVEC.
 
 
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 

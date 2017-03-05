@@ -1,6 +1,6 @@
 %HOMTRANS Apply a homogeneous transformation
 %
-% P2 = HOMTRANS(T, P) applies homogeneous transformation T to the points 
+% P2 = HOMTRANS(T, P) applies the homogeneous transformation T to the points 
 % stored columnwise in P.
 %
 % - If T is in SE(2) (3x3) and
@@ -13,12 +13,18 @@
 % TP = HOMTRANS(T, T1) applies homogeneous transformation T to the 
 % homogeneous transformation T1, that is TP=T*T1.  If T1 is a 3-dimensional 
 % transformation then T is applied to each plane as defined by the first two 
-% dimensions, ie. if T = NxN and T=NxNxP then the result is NxNxP.
+% dimensions, ie. if T = NxN and T1=NxNxM then the result is NxNxM.
 %
-% See also E2H, H2E.
+% Notes::
+% - T is a homogeneous transformation defining the pose of {B} with respect to {A}.
+% - The points are defined with respect to frame {B} and are transformed to be
+%   with respect to frame {A}.
+%
+% See also E2H, H2E, RTBPose.mtimes.
 
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 

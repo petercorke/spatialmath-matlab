@@ -25,10 +25,11 @@
 %          anim.close();
 %
 % To convert the image files to a movie you could use a tool like ffmpeg
-%           % ffmpeg -r 10 -i movie/%04d.png out.mp4
+%           ffmpeg -r 10 -i movie/%04d.png out.mp4
 %
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 

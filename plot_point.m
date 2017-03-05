@@ -1,4 +1,4 @@
-%PLOT_POINT	Draw a feature point
+%PLOT_POINT Draw a point
 %
 % PLOT_POINT(P, OPTIONS) adds point markers to the current plot, where P (2xN)
 % and each column is the point coordinate.
@@ -12,7 +12,9 @@
 %  'sequence'               Label points sequentially
 %  'label',L                Label for point
 %
-% Additional options are passed through to PLOT for creating the marker.
+% Additional options to PLOT can be used: 
+% - standard MATLAB LineStyle such as 'r' or 'b---'
+% - any MATLAB LineProperty options can be given such as 'LineWidth', 2.
 %
 % Examples::
 %   Simple point plot
@@ -33,12 +35,14 @@
 %        plot_point(P, 'printf', {' P%d', data}, 'o');
 %
 % Notes::
-% - The point(s) is added to the current plot.
-% - 2D points only.
+% - The point(s) and annotations are added to the current plot.
+% - Points can be drawn in 3D axes but will always lie in the
+%   xy-plane.
 %
 % See also PLOT, TEXT.
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 

@@ -1,9 +1,12 @@
 %COLNORM Column-wise norm of a matrix
 %
-% CN = COLNORM(A) is  vector (1xM) of the normals of each column of the
+% CN = COLNORM(A) is a vector (1xM) comprising the Euclidean norm of each column of the
 % matrix A (NxM).
+%
+% See also norm.
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 
