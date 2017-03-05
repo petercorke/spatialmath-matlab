@@ -1,6 +1,6 @@
-%PLOT_HOMLINE Draw a homogeneous
+%PLOT_HOMLINE Draw a line in homogeneous form
 %
-% PLOT_HOMLINE(L, LS) draws a line in the current plot L.X = 0 where L
+% PLOT_HOMLINE(L, LS) draws a line in the current plot defined by L.X = 0 where L
 % (3x1).  The current axis limits are used to determine the endpoints of
 % the line.  MATLAB line specification LS can be set.  If L (3xN) then N
 % lines are drawn, one per column.
@@ -9,6 +9,8 @@
 %
 % Notes::
 % - The line(s) is added to the current plot.
+% - The line(s) can be drawn in 3D axes but will always lie in the
+%   xy-plane.
 %
 % See also PLOT_BOX, PLOT_POLY, HOMLINE.
 
@@ -42,6 +44,12 @@ function handles = plot_homline(lines, varargin)
 
     ish = ishold;
     hold on;
+    
+    if min(size(lines)) == 1
+        lines = lines(:);
+    end
+    
+    assert(numrows(lines) == 3, 'RTB:plot_homline:badarg', 'Input must be a 3-vector or 3xN matrix');
 
 	h = [];
 	% for all input lines (columns
