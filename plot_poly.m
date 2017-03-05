@@ -1,33 +1,41 @@
 %PLOT_POLY Draw a polygon
 %
-% PLOT_POLY(P) adds a polygon defined by columns of P (2xN), in the current
+% PLOT_POLY(P, OPTIONS) adds a polygon defined by columns of P (2xN), in the current
 % plot with default line style.
-%
-% PLOT_POLY(P, LS) as above but the line style is specified by a MATLAB
-% linespec.
 %
 % H = PLOT_POLY(P, OPTIONS) as above but processes additional options and
 % returns a graphics handle.
 %
+% Animation::
+%
 % PLOT_POLY(H, T) sets the pose of the polygon with handle H to the pose
 % given by T (3x3 or 4x4).
 %
+% Create a polygon that can be animated, then alter it, eg.
+%
+%          H = PLOT_POLY(P, 'animate', 'r')
+%          PLOT_POLY(H, transl(2,1,0) );
+%
 % OPTIONS::
-%  'fill',F      the color of the circle's interior, MATLAB color spec
-%  'alpha',A     transparency of the filled circle: 0=transparent, 1=solid.
-%  'edge',E      edge color
-%  'animate'     the polygon can be animated
-%  'tag',T       the polygon is created with a handle graphics tag
+%  'fillcolor',F  the color of the circle's interior, MATLAB color spec
+%  'alpha',A      transparency of the filled circle: 0=transparent, 1=solid.
+%  'edgecolor',E  edge color
+%  'animate'      the polygon can be animated
+%  'tag',T        the polygon is created with a handle graphics tag
+%
+% - For an unfilled polygon any standard MATLAB LineStyle such as 'r' or 'b---'.
+% - For an unfilled polygon any MATLAB LineProperty options can be given such as 'LineWidth', 2.
+% - For a filled polygon any MATLAB PatchProperty options can be given.
 %
 % Notes::
 % - If P (3xN) the polygon is drawn in 3D
 % - If not filled the polygon is a line segment, otherwise it is a patch
 %   object.
 % - The 'animate' option creates an hgtransform object as a parent of the
-% polygon, which can be animated by the last call signature above.
+%   polygon, which can be animated by the last call signature above.
 % - The graphics are added to the current plot.
 %
-% See also PLOT_BOX, PATCH, Polygon.
+% See also PLOT_BOX, PLOT_CIRCLE, PATCH, Polygon.
 
 % Copyright (C) 1993-2014, by Peter I. Corke
 %
@@ -51,10 +59,11 @@
 % TODO: options for fill, not filled, line style, labels (cell array of strings)
 %  handle filled/unfilled better, 'none' is synonymous with []?
 %  is moveable used anywhere, seems broken
+% TODO: move this animate logic to circle + ellipse
+
 
 function h_ = plot_poly(p, varargin)
 
-    
     if ishandle(p)
         % PLOT_POLY(H, T)
         %  - animate existing polygon
@@ -77,16 +86,23 @@ function h_ = plot_poly(p, varargin)
     
 
     % process options
+    opt.fillcolor = [];
     opt.fill = [];
     opt.alpha = 1;
     opt.animate = false;
-    opt.edge = [];
+    opt.edgecolor = 'None';
     opt.tag = [];
-    if isempty(opt.fill) && isempty(opt.edge)
-        opt.edge = 'k';
-    end
-
+    
     [opt,args,ls] = tb_optparse(opt, varargin);
+
+        
+    if ~isempty(opt.fill)
+        opt.fillcolor = opt.fill;
+    end
+    if ~isempty(opt.fillcolor) && strcmp(opt.edgecolor, 'None')
+        opt.edgecolor = 'k';
+    end
+    
 
     % unpack the data and wrap it around to form a closed polygon
     assert( numcols(p) > 2, 'too few points for a polygon');
@@ -97,7 +113,7 @@ function h_ = plot_poly(p, varargin)
         z = p(3,:);
     end
     
-    if isempty(opt.fill)
+    if isempty(opt.fillcolor)
         % wrap it around to form a closed polygon
         x = [x x(1)];
         y = [y y(1)];
@@ -115,32 +131,31 @@ function h_ = plot_poly(p, varargin)
         args = [args, 'Parent', {hg}];
     end
 
-    if ~isempty(opt.fill) && ~isempty(opt.edge)
+    if ~isempty(opt.fillcolor) && ~isempty(opt.edgecolor)
         % in fill mode, optionally set edge color
-        args = [args, 'EdgeColor', opt.edge];
+        args = [args, 'EdgeColor', opt.edgecolor];
     end
-    
 
     ish = ishold();
 	hold on
 
-
     switch numrows(p)
         case 2
             % plot 2D data
-            if isempty(opt.fill)
+            if isempty(opt.fillcolor)
                 h = plot(x, y, ls{:}, args{:});
             else
-                h = patch(x', y', opt.fill, ...
+                h = patch(x', y', opt.fillcolor, ...
+                    'EdgeColor', opt.edgecolor, ...
                     'FaceAlpha', opt.alpha, args{:});
             end
             
         case 3
             % plot 3D data
-            if isempty(opt.fill)
+            if isempty(opt.fillcolor)
                 h = plot3(x, y, z, args{:});
             else
-                h = patch(x, y, z, opt.fill, ...
+                h = patch(x, y, z, opt.fillcolor, ...
                     'FaceAlpha', opt.alpha, args{:});
             end
     end
