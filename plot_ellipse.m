@@ -1,26 +1,40 @@
 %PLOT_ELLIPSE Draw an ellipse or ellipsoid
 %
-% PLOT_ELLIPSE(E, OPTIONS) draws an ellipse defined by X'EX = 0 on the
-% current plot, centred at the origin.
+% PLOT_ELLIPSE(E, OPTIONS) draws an ellipse or ellipsoid defined by X'EX =
+% 0 on the current plot, centred at the origin.  E (2x2) for an ellipse and
+% E (2x3) for an ellipsoid.
 %
 % PLOT_ELLIPSE(E, C, OPTIONS) as above but centred at C=[X,Y].  If
 % C=[X,Y,Z] the ellipse is parallel to the XY plane but at height Z.
 %
 % H = PLOT_ELLIPSE(E, C, OPTIONS) as above but return graphic handle.
 %
+% Animation::
+%
+% First draw the ellipse and keep its graphic handle, then alter it, eg.
+%
+%          H = PLOT_ELLIPSE(E, C, 'r')
+%          PLOT_ELLIPSE(C, R, 'alter', H);
+%
 % Options::
-% 'conf',C       confidence interval (default 95%)
-% 'alter',H      alter existing ellipses with handle H
-% 'npoints',N    use N points to define the ellipse (default 40)
-% 'edgecolor'    the color of the circle's edge, Matlab color spec
-% 'fillcolor'    the color of the circle's interior, Matlab color spec
-% 'alpha'        transparency of the fillcolored circle: 0=transparent, 1=solid
-% 'shadow'       show shadows on the 3 walls of the plot box
-
+% 'confidence',C   confidence interval, range 0 to 1
+% 'alter',H        alter existing ellipses with handle H
+% 'npoints',N      use N points to define the ellipse (default 40)
+% 'edgecolor'      color of the ellipse boundary edge, MATLAB color spec
+% 'fillcolor'      the color of the circle's interior, MATLAB color spec
+% 'alpha'          transparency of the fillcolored circle: 0=transparent, 1=solid
+% 'shadow'         show shadows on the 3 walls of the plot box
+%
+% - For an unfilled ellipse any standard MATLAB LineStyle such as 'r' or 'b---'.
+% - For an unfilled ellipse any MATLAB LineProperty options can be given such as 'LineWidth', 2.
+% - For a filled ellipse any MATLAB PatchProperty options can be given.
 %
 % Notes::
 % - If A (2x2) draw an ellipse, else if A(3x3) draw an ellipsoid.
-% - The ellipse is added to the current plot.
+% - The ellipse is added to the current plot irrespective of hold status.
+% - Shadow option only valid for ellipsoids.
+% - If a confidence interval is given the scaling factor is com;uted using
+%   an approximate inverse chi-squared function.
 %
 % See also PLOT_ELLIPSE_INV, PLOT_CIRCLE, PLOT_BOX, PLOT_POLY.
 
@@ -54,18 +68,22 @@ function handles = plot_ellipse(E, varargin)
     opt.alter = [];
     opt.npoints = 40;
     opt.shadow = false;
-    opt.conf = 0.95;
+    opt.confidence = [];
     
     [opt,arglist,ls] = tb_optparse(opt, varargin);
 
     % process some arguments
     
     if ~isempty(ls)
-        opt.edgecolor = ls;
+        opt.edgecolor = ls{1};
     end
     
     % process the probability
-    s = sqrt(chi2inv_rtb(opt.conf, 2))
+    if isempty(opt.confidence)
+        s = 1;
+    else 
+        s = sqrt(chi2inv_rtb(opt.confidence, 2));
+    end
     
     if length(arglist) > 0 && isnumeric(arglist{1})
         % ellipse centre is provided
