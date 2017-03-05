@@ -1315,6 +1315,11 @@ classdef PGraph < matlab.mixin.Copyable
                         d = bsxfun(@minus, x1, x2) * g.dweight;
                         d(3,:) = angdiff(x1(3), x2(3,:));
                         d = colnorm( d );
+                        
+                    case 'Lattice'
+                        d = bsxfun(@minus, x1, x2) * g.dweight;
+                        d(3,:) = angdiff(x1(3)*pi/2, x2(3,:)*pi/2);
+                        d = colnorm( d );
                     otherwise
                         error('unknown distance measure', g.measure);
                 end
