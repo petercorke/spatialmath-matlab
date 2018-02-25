@@ -82,6 +82,7 @@ classdef Animate < handle
             else
                 opt.resolution = [];
                 opt.profile = [];
+                opt.fps = 30;
 
                 opt = tb_optparse(opt, varargin);
                 a.resolution = opt.resolution;
@@ -103,6 +104,7 @@ classdef Animate < handle
                     end
                     fprintf('saving video --> %s with profile ''%s''\n', name, profile);
                     a.video = VideoWriter(name, profile);
+                    a.video.FrameRate = opt.fps;
                     open(a.video);
                 else
                     % create a folder to hold the frames
@@ -143,20 +145,30 @@ classdef Animate < handle
                     print(fh, '-dpng', sprintf('-r%d', a.resolution), fullfile(a.dir, sprintf('%04d.png', a.frame)));
                 end
             else
-                im = frame2im( getframe(fh) );
+                im = frame2im( getframe(fh) );  % get the frame
+                
+                % crop so that height/width are multiples of two, by default MATLAB pads
+                % with black which gives lines at the edge
+                w = numcols(im); h = numrows(im);
+                w = floor(w/2)*2; h = floor(h/2)*2;
+                im = im(1:h,1:w,:);
+                
+                % add the frame to the movie
                 writeVideo(a.video, im)
             end
             a.frame = a.frame + 1;
         end
         
-        function close(a)
+        function out = close(a)
             %ANIMATE.CLOSE  Closes the animation
             %
             % A.CLOSE() closes the video file.
             %
             % 
             if ~isempty(a.video)
-                a.video
+                if nargout > 0
+                    out = char(a.video);
+                end
                 close(a.video);
             end
         end
