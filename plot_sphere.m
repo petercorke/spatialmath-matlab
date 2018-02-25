@@ -53,6 +53,7 @@ function out = plot_sphere(c, r, varargin)
     opt.color = 'b';
     opt.alpha = 1;
     opt.mesh = 'none';
+    opt.n = 40;
 
     [opt,args] = tb_optparse(opt, varargin);
     
@@ -67,7 +68,7 @@ function out = plot_sphere(c, r, varargin)
     daspect([1 1 1])
     hold_on = ishold;
     hold on
-    [xs,ys,zs] = sphere(40);
+    [xs,ys,zs] = sphere(opt.n);
 
     if isvec(c,3)
         c = c(:);
@@ -87,7 +88,7 @@ function out = plot_sphere(c, r, varargin)
         z = r(i)*zs + c(3,i);
                 
         % the following displays a nice smooth sphere with glint!
-        h = surf(x,y,z, 'FaceColor', opt.color, 'EdgeColor', opt.mesh, 'FaceAlpha', opt.alpha);
+        h = surf(x,y,z, ones(size(z)), 'FaceColor', opt.color, 'EdgeColor', opt.mesh, 'FaceAlpha', opt.alpha);
         % camera patches disappear when shading interp is on
         %h = surfl(x,y,z)
     end
