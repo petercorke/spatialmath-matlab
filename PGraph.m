@@ -101,6 +101,9 @@
 % TODO:
 %       be able to delete nodes, must update connectivity
 
+
+% update to use map.container class
+
 classdef PGraph < matlab.mixin.Copyable
     
     properties (SetAccess=private, GetAccess=public)
@@ -120,6 +123,7 @@ classdef PGraph < matlab.mixin.Copyable
         measure         % distance measure: 'Euclidean', 'SE2'
         dweight         % distance weighting for SE2 measure
         ncvalid
+        names
     end
     
     properties (Dependent)
@@ -167,6 +171,7 @@ classdef PGraph < matlab.mixin.Copyable
             g.vertexdata = {};
             g.edgedata = {};
             g.ncvalid = false;  % mark connectivity as suspect
+            g.names = strings(0,0);
         end
 
         
@@ -175,7 +180,7 @@ classdef PGraph < matlab.mixin.Copyable
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         
-        function v = add_node(g, coord, vfrom, varargin)
+        function v = add_node(g, coord, varargin)
             %PGraph.add_node Add a node
             %
             % V = G.add_node(X) adds a node/vertex with coordinate X (Dx1) and
@@ -195,6 +200,11 @@ classdef PGraph < matlab.mixin.Copyable
                 error('coordinate length different to graph coordinate dimensions');
             end
             
+            opt.from = [];
+            opt.name = [];
+            
+            opt = tb_optparse(opt, varargin);
+            
             % append the coordinate as a column in the vertex matrix
             g.vertexlist = [g.vertexlist coord(:)];
             v = g.n;
@@ -206,8 +216,12 @@ classdef PGraph < matlab.mixin.Copyable
             end
             
             % optionally add an edge
-            if nargin > 2
-                g.add_edge(vfrom, v, varargin{:});
+            if ~isempty(opt.from)
+                g.add_edge(vfrom, v, opt.from);
+            end
+            
+            if ~isempty(opt.name)
+                g.names(v) = opt.name;
             end
             g.ncvalid = false;  % mark connectivity as suspect
         end
@@ -498,6 +512,22 @@ classdef PGraph < matlab.mixin.Copyable
             else
                 p = g.vertexlist(:,v);
             end
+        end
+        
+        function p = name(g, v)
+            %PGraph.coord Name of node
+            %
+            % X = G.name(V) is the name (string) of vertex id V.
+            
+            if nargin < 2
+                p = [g.names];
+            else
+                p = g.names(v);
+            end
+        end
+        
+        function p = lookup(g, name)
+            p  = find( [g.names] == name );
         end
         
         function p = setcoord(g, v, c)
@@ -1107,6 +1137,57 @@ classdef PGraph < matlab.mixin.Copyable
                 v1 = path(i);
                 v2 = path(i+1);
                 g.highlight_edge(v1, v2, varargin{:});
+            end
+        end
+        
+        function dotfile(g, varargin)
+            %Pgraph.dotfile Create a GraphViz dot file
+            %
+            % G.dotfile(filename, OPTIONS) creates the specified file which contains the
+            % GraphViz code to represent the embedded graph.
+            %
+            % G.dotfile(OPTIONS) as above but outputs the code to the console.
+            %
+            % Options::
+            %  'directed'    create a directed graph
+            %
+            % Notes::
+            % - An undirected graph is default
+            % - Use neato rather than dot to get the embedded layout
+            
+            opt.directed = false;
+            
+            [opt,args] = tb_optparse(opt, varargin);
+            
+            if length(args) == 0
+                fp = 1;
+            else
+                fp = fopen(args{1}, 'w');
+            end
+            
+            if opt.directed
+                fprintf(fp, 'digraph {\n');
+            else
+                fprintf(fp, 'graph {\n');
+            end
+            
+            % add the nodes including name and position
+            for i=1:g.n
+                fprintf(fp, '"%s" [pos="%d,%d"]\n', g.names{i}, g.vertexlist(:,i));
+            end
+            
+            % add the edges
+            for i=1:g.ne
+                edge = g.edgelist(:,i);
+                if opt.directed
+                    fprintf(fp, '"%s" -> "%s"\n', g.names{edge(1)}, g.names{edge(2)});
+                else
+                    fprintf(fp, '"%s" -- "%s"\n', g.names{edge(1)}, g.names{edge(2)});
+                end
+            end
+            fprintf(fp, '}\n');
+            if length(args) > 1
+                fclose(fp);
             end
         end
         
