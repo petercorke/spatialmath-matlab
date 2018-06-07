@@ -64,9 +64,14 @@ classdef Animate < handle
             % A = ANIMATE(NAME, OPTIONS) initializes an animation, and creates
             % a movie file or a folder holding individual frames.
             %
+            % A = ANIMATE({NAME, OPTIONS}) as above but arguments are passed as a cell array,
+            % which allows a single argument to a higher-level option like 'movie',M to express
+            % options as well as filename.
+            %
             % Options::
-            % 'resolution',R        Set the resolution of the saved image to R pixels per inch.
-            % 'profile',P           Create an MP4 file directly, see VideoWriter
+            % 'resolution',R     Set the resolution of the saved image to R pixels per inch.
+            % 'profile',P        Create an MP4 file directly, see VideoWriter
+            % 'fps',F            Frame rate (default 30)
             %
             % Notes::
             % - if a profile is given a movie is created, see VideoWriter for allowable
@@ -84,7 +89,11 @@ classdef Animate < handle
                 opt.profile = [];
                 opt.fps = 30;
 
-                opt = tb_optparse(opt, varargin);
+                if iscell(name) && length(varargin) == 0
+                    varargin = name(2:end);
+                    name = name{1};
+                end
+                [opt,args] = tb_optparse(opt, varargin);
                 a.resolution = opt.resolution;
                 a.frame = 0;
 
@@ -92,7 +101,7 @@ classdef Animate < handle
                 
                 if ~isempty(opt.profile)
                     % create a video with this profile
-                    a.video = VideoWriter(name, a.profile);
+                    a.video = VideoWriter(name, a.profile, args{:});
                     fprintf('saving video --> %s with profile ''%s''\n', name, a.profile);
 
                 elseif ~isempty(e)
@@ -103,8 +112,9 @@ classdef Animate < handle
                         case '.avi', profile = 'Motion JPEG AVI';
                     end
                     fprintf('saving video --> %s with profile ''%s''\n', name, profile);
-                    a.video = VideoWriter(name, profile);
+                    a.video = VideoWriter(name, profile, args{:});
                     a.video.FrameRate = opt.fps;
+                    a.video.Quality = 95;
                     open(a.video);
                 else
                     % create a folder to hold the frames
