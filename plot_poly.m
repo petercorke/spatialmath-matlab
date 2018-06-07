@@ -22,6 +22,7 @@
 %  'edgecolor',E  edge color
 %  'animate'      the polygon can be animated
 %  'tag',T        the polygon is created with a handle graphics tag
+%  'axis',h        handle of axis or UIAxis to draw into (default is current axis)
 %
 % - For an unfilled polygon any standard MATLAB LineStyle such as 'r' or 'b---'.
 % - For an unfilled polygon any MATLAB LineProperty options can be given such as 'LineWidth', 2.
@@ -61,6 +62,7 @@
 %  handle filled/unfilled better, 'none' is synonymous with []?
 %  is moveable used anywhere, seems broken
 % TODO: move this animate logic to circle + ellipse
+% TODO: move this 'axis' logic to circle + ellipse
 
 
 function h_ = plot_poly(p, varargin)
@@ -93,6 +95,7 @@ function h_ = plot_poly(p, varargin)
     opt.animate = false;
     opt.edgecolor = 'None';
     opt.tag = [];
+    opt.axis = [];
     
     [opt,args,ls] = tb_optparse(opt, varargin);
 
@@ -125,9 +128,9 @@ function h_ = plot_poly(p, varargin)
      
     if opt.animate
         if ~isempty(opt.tag)
-            hg = hgtransform('Tag', opt.tag);
+            hg = hgtransform(opt.axis, 'Tag', opt.tag);
         else
-            hg = hgtransform();
+            hg = hgtransform(opt.axis);
         end
         args = [args, 'Parent', {hg}];
     end
