@@ -39,7 +39,7 @@
 % - Points can be drawn in 3D axes but will always lie in the
 %   xy-plane.
 %
-% See also PLOT, TEXT.
+% See also PLOT_SPHERE, PLOT, TEXT.
 
 
 % Copyright (C) 1993-2017, by Peter I. Corke
@@ -89,8 +89,13 @@ function ho = plot_point(p, varargin)
         p = [[p.u_]; [p.v_]];
     end
 
+    if numrows(p) == 3
+        error('p must have 2 rows, only supports 2D plotting')
+    end
     holdon = ishold();
 	hold on
+    h = zeros(1,numcols(p));
+    
 	for i=1:numcols(p)
         if opt.solid 
             arglist = [ 'MarkerFaceColor', ls{1}(1), arglist];
