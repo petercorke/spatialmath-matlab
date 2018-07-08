@@ -106,6 +106,9 @@ function h_ = plot_poly(p, varargin)
     if ~isempty(opt.fillcolor) && strcmp(opt.edgecolor, 'None')
         opt.edgecolor = 'k';
     end
+    if isempty(opt.axis)
+        opt.axis = gca;
+    end
     
 
     % unpack the data and wrap it around to form a closed polygon
