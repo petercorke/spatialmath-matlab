@@ -1310,7 +1310,7 @@ classdef PGraph < matlab.mixin.Copyable
             
             while ~isempty(openSet)
                 % current := the node in openSet having the lowest f_score[] value
-                [mn,k] = min(f_score(openSet));
+                [~,k] = min(f_score(openSet));
                 vcurrent = openSet(k);
                 
                 if vcurrent == vgoal
@@ -1377,6 +1377,7 @@ classdef PGraph < matlab.mixin.Copyable
                 end
             end
             path = [];
+            cost = Inf;
         end
         
       
