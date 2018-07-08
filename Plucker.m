@@ -3,32 +3,48 @@
 % Concrete class to represent a line in Plucker coordinates.
 %
 % Methods::
-% line    Return Plucker line coordinates (1x6)
-% side    Side operator
-% origin_closest
-% origin_distance
-% distance
-% mindist
-% point
-% pp
-% L
-% intersect
+% Plucker   Contructor
+% -
+% pp           Principal point
+% ppd          Principal point distance from origin
+% point        Generate points on line
+% - 
+% closest      Closest point on line
+% contains     Test if point is on line
+% -
+% distance     Minimum distance between two lines
+% intersects   Intersection point for two lines
+% commonperp   Common perpendicular for two lines
+% -
+% intersect_plane   Intersection points with a plane
+% intersect_volume  Intersection points with a volume
+% -
+% double       Convert to 6-vector
+% skew         Convert to 4x4 skew symmetric matrix
+% -
+% plot         Plot line
+% char         Convert to human readable string
+% display      Display a human readable string
+%
 % Operators::
 % *       Multiply Plucker matrix by a general matrix
-% |       Side operator
-%
+% |       Test if lines are parallel
+% ^       Test if lines intersect
+% ==      Test if two lines are equivalent
+% ~=      Test if lines are not equivalent
 %
 % Notes::
-% - This is reference class object
+% - This is reference (handle) class object
 % - Link objects can be used in vectors and arrays
 %
 % References::
 % - Ken Shoemake, "Ray Tracing News", Volume 11, Number 1
 %   http://www.realtimerendering.com/resources/RTNews/html/rtnv11n1.html#art3
-
-% Implementation notes:
-% lots of different notation about
-%  Shoemaker U:V is (w,v)
+% - Matt Mason lecture notes http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture9.pdf
+%
+% Implementation notes::
+% - There is a huge variety of notation used across the literature, as well as the ordering
+%   of the direction and moment components in the 6-vector
 
 
 % Copyright (C) 1993-2017, by Peter I. Corke
@@ -60,30 +76,54 @@ classdef Plucker < handle
     
     properties
         w  % direction vector
-        v  % moment vector
+        v  % moment vector (normal of plane containing line and origin)
     end
     
+    properties (Dependent)
+        uw  % unit direction vector
+    end
     
     methods
         
         
         function pl = Plucker(varargin)
-            %Plucker.Plucker Create Plucker object
+            %Plucker.Plucker Create Plucker line object
+            %
+            % P = Plucker(L) creates a copy of the Plucker object L
+            %
+            % P = Plucker(V) creates a Plucker object from V (6x1)
             %
             % P = Plucker(P1, P2) create a Plucker object that represents
             % the line joining the 3D points P1 (3x1) and P2 (3x1).
             %
             % P = Plucker('points', P1, P2) as above.
             %
-            % P = Plucker('planes', PL1, PL2) create a Plucker object that represents
-            % the line formed by the intersection of two planes PL1, PL2 (4x1).
-            %
-            % P = Plucker('wv', W, V) create a Plucker object from its direction W (3x1) and
-            % moment vectors V (3x1).
+            % P = Plucker('planes', PI1, PP2) create a Plucker object that represents
+            % the line formed by the intersection of two planes PI1, PI2 (4x1).
             %
             % P = Plucker('Pw', P, W) create a Plucker object from a point P (3x1) and
             % direction vector W (3x1).
+            %
+            % Notes::
+            % - Planes are given by the 4-vector [a b c d] to represent ax+by+cz+d=0.
 
+            % simple constructor
+            if nargin == 1
+                if isvec(varargin{1}, 6)
+                    L = varargin{1}; L = L(:);
+                    pl.v = L(1:3);
+                    pl.w = L(4:6);
+                elseif isa(varargin{1}, 'Plucker')
+                    L = varargin{1};
+                    pl.v = L.v;
+                    pl.w = L.w;
+                else
+                    error('bad arguments to constructor');
+                end
+                
+                return
+            end
+            
             opt.type = {'points', 'planes', 'Pw', 'wv', 'UQ'};
             [opt,args] = tb_optparse(opt, varargin);
             
@@ -93,6 +133,7 @@ classdef Plucker < handle
             A = args{1}; A = A(:);
             B = args{2}; B = B(:);
             
+
             
             % handle various options
             switch opt.type
@@ -100,7 +141,7 @@ classdef Plucker < handle
                     assert( isvec(A,3) && isvec(B,3), 'RTB:Plucker:badarg', 'expecting 3-vectors');
                     % compute direction and moment
                     pl.w = A - B;
-                    pl.v = cross(pl.w, A);
+                    pl.v = cross(A-B, A);
                 case 'planes'
                     assert( isvec(A,4) && isvec(B,4), 'RTB:Plucker:badarg', 'expecting 4-vectors');
                     pl.w = cross(A(1:3), B(1:3));
@@ -114,95 +155,74 @@ classdef Plucker < handle
                     %                     pl.P = B;
                     %                     pl.Q = A+B;
                     pl.w = B;
-                    pl.v = cross(B, A);
+                    pl.v = cross(pl.w, A);
                 otherwise
                     error('RTB:Plucker:badarg', 'unknown argument type');
             end
         end
         
-        function p = origin_closest(pl)
-            %Plucker.origin_closest  Point on line closest to the origin
+        function z = mtimes(a1, a2)
+            %Plucker.mtimes Plucker multiplication
             %
-            % P = PL.origin_closest() is the coordinate of a point on the line that is
-            % closest to the origin.
+            % PL1 * PL2 is the scalar reciprocal product.
             %
-            % See also Plucker.origin_distance.
+            % PL * M is the product of the Plucker skew matrix and M (4xN).
+            % M * PL is the product of M (Nx4) and the Plucker skew matrix.
+            %
+            % Notes::
+            % - The * operator is overloaded for convenience.
+            % - Multiplication or composition of Plucker lines is not defined.
+            %
+            % See also Plucker.skew.
             
-            p = cross(pl.v, pl.w) / dot(pl.w, pl.w);
-        end
-        
-        function d = origin_distance(pl)
-            %Plucker.origin_distance  Smallest distance from line to the origin
-            %
-            % P = PL.origin_distance() is the smallest distance of a point on the line
-            % to the origin.
-            %
-            % See also Plucker.origin_closest.
-            d = sqrt( dot(pl.v, pl.v) / dot(pl.w, pl.w) );
-        end
-        
-        function [p,dist] = closest(pl, x)
-            %Plucker.closest  Point on line closest to given point
-            %
-            % P = PL.closest(X) is the coordinate of a point on the line that is
-            % closest to the point X (3x1).
-            %
-            % [P,D] = PL.closest(X) as above but also returns the closest distance.
-            %
-            % See also Plucker.origin_closest.            
-            
-            % http://www.ahinson.com/algorithms_general/Sections/Geometry/PluckerLine.pdf
-            % has different equation for moment, the negative
-            w = unit(pl.w);
-            pp = pl.pp;
-            
-            d = dot(x.w, w);
-            p = pp + d*w;
-            
-            if nargout == 2
-                dist = norm(p - x.w);
+            if isa(a1, 'Plucker') && isa(a2, 'Plucker')
+                % reciprocal product
+                z = dot(a1.uw, a2.v) + dot(a2.uw, a1.v);
+            elseif isa(a1, 'Plucker') && isfloat(a2)
+                assert(numrows(a2) == 4, 'RTB:Plucker:badarg', 'must postmultiply by 4xN matrix');
+                z = a1.skew * a2;  % postmultiply by 4xN
+            elseif isfloat(a1) && isa(a2, 'Plucker')
+                if numcols(a1) == 4
+                    z = a1 * a2.skew;  % premultiply by Nx4
+                elseif all(size(a1) == [6 6])
+                    z = Plucker( a1 * double(a2) ); % premultiply by 6x6 adjoint
+                else
+                    error('RTB:Plucker:badarg', 'must premultiply by Nx4 matrix');
+                end
             end
-        end
-        
-        function d = mindist(pl1, pl2)
-            %Plucker.mindist  Minimum distance between two lines
-            %
-            % D = PL1.mindist(PL2) is the minimum distance between two Plucker lines
-            % PL1 and PL2.
-            
-            d = dot(pl1.w, pl2.v) + dot(pl2.w, pl1.v);
-        end
-        
-        function P = point(L, lambda)
-            %Plucker.point Point on line
-            %
-            % P = PL.point(L) is a point on the line, where L is the parametric
-            % distance along the line from the principal point of the line.
-            %
-            % See also Plucker.pp.
-            
-            P = cross(L.w, L.v) / dot(L.w, L.w) + L.w*lambda(:)';
-            %P = bsxfun(@plus, L.P, L.U*lambda(:)');
         end
         
         function x = pp(pl)
             %Plucker.pp Principal point of the line
             %
-            % P = PL.pp() is a point on the line.
+            % P = PL.pp() is the point on the line that is closest to the origin.
             %
             % Notes::
             % - Same as Plucker.point(0)
             %
-            % See also Plucker.point.
+            % See also Plucker.ppd, Plucker.point.
             
-            % principal point, for lambda = 0
-            x = cross( pl.v, unit(pl.w) );
+            x = cross(pl.v, pl.w) / dot(pl.w, pl.w);
         end
         
-        function z = L(pl)
-            %Plucker.L Skew matrix form of the line
+        function x = double(pl)
+            %Plucker.double  Convert Plucker coordinates to real vector
             %
-            % L = PL.L() is the Plucker matrix, a 4x4 skew-symmetric matrix
+            % PL.double() is a 6x1 vector comprising the moment and direction vectors.
+            x = [pl.v; pl.w];
+        end
+        
+        function z = get.uw(pl)
+            %Plucker.uw Get the line's direction as a unit vector
+            %
+            % PL.UW is a unit-vector parallel to the line
+            z = unit(pl.w);
+        end
+        
+        function z = skew(pl)
+            %Plucker.skew Skew matrix form of the line
+            %
+            % L = PL.skew() is the Plucker matrix, a 4x4 skew-symmetric matrix
             % representation of the line.
             %
             % Notes::
@@ -220,101 +240,208 @@ classdef Plucker < handle
                     -w(1) -w(2) -w(3) 0    ];
         end
         
-        function v = line(pl)
-            %Plucker.double Plucker line coordinates
+        function z = L(pl)
+            warning('RTB:Plucker', 'deprecated: please use skew() method instead');
+            z = pl.skew();
+        end
+
+        function d = ppd(pl)
+            %Plucker.ppd  Distance from principal point to the origin
             %
-            % P.line() is a 6-vector representation of the Plucker
-            % coordinates of the line.
+            % P = PL.ppd() is the distance from the principal point to the origin.
+            % This is the smallest distance of any point on the line
+            % to the origin.
             %
-            % See also Plucker.v, Plucker.w.
+            % See also Plucker.pp.
+            d = sqrt( dot(pl.v, pl.v) / dot(pl.w, pl.w) );
+        end
+           
+        function P = point(L, lambda)
+            %Plucker.point Generate point on line
+            %
+            % P = PL.point(LAMBDA) is a point on the line, where LAMBDA is the parametric
+            % distance along the line from the principal point of the line.
+            %
+            % See also Plucker.pp, Plucker.closest.
             
-            %             L = pl.L;
-            %             v = [L(2,1) L(3,1) L(4,1) L(4,3) L(2,4) L(3,2)];
-            v = [pl.w; pl.v]';
+            P = L.pp + L.uw*lambda(:)';
+            %P = bsxfun(@plus, L.P, L.U*lambda(:)');
         end
         
-        
-        
-        function z = mtimes(a1, a2)
-            %Plucker.mtimes Plucker composition
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %  TESTS ON PLUCKER OBJECTS
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        function t = contains(pl, x)
+            %Plucker.contains  Test if point is on the line
             %
-            % PL * M is the product of the Plucker matrix and M (4xN).
-            %
-            % M * PL is the product of M (Nx4) and the Plucker matrix.
-            
-            if isa(a1, 'Plucker')
-                assert(numrows(a2) == 4, 'RTB:Plucker:badarg', 'must postmultiply by 4xN matrix');
-                z = a1.L * a2;
-            elseif isa(a2, 'Plucker')
-                assert(numrows(a2) == 4, 'RTB:Plucker:badarg', 'must premultiply by Nx4 matrix');
-                z = a1 * a2.L;
-            end
+            % PL.contains(X) is true if the point X (3x1) lies on the line defined by
+            % the Plucker object PL.
+            t = norm( cross(x(:) - pl.pp, pl.w) ) < 10*eps;
         end
         
-        function z = or(pl1, pl2)
-            %Plucker.or Operator form of side operator
+        function t = eq(pl1, pl2) 
+            %Plucker.eq Test if two lines are equivalent
             %
-            % P1 | P2 is the side operator which is zero whenever
-            % the lines P1 and P2 intersect or are parallel.
-            %
-            % See also Plucker.side.
+            % PL1 == PL2 is true if the Plucker objects describe the same line in
+            % space.  Note that because of the over parameterization, lines can be
+            % equivalent even if they have different dfifferent parameters.
             
-            z = side(pl1, pl2);
+            t = abs( 1 - dot(unit(double(pl1)), unit(double(pl2))) ) < 10*eps;
         end
         
-        function z = side(pl1, pl2)
-            %Plucker.side Plucker side operator
+        function t = ne(pl1, pl2) 
+            %Plucker.ne Test if two lines are not equivalent
             %
-            % X = SIDE(P1, P2) is the side operator which is zero whenever
-            % the lines P1 and P2 intersect or are parallel.
+            % PL1 ~= PL2 is true if the Plucker objects describe different lines in
+            % space.  Note that because of the over parameterization, lines can be
+            % equivalent even if they have different dfifferent parameters.
+            
+            t = abs( 1 - dot(unit(double(pl1)), unit(double(pl2))) ) >= 10*eps;
+        end
+        
+        function v = isparallel(p1, p2)
+            %Plucker.isparallel Test if lines are parallel
+            %
+            % P1.isparallel(P2) is true if the lines represented by Plucker objects P1
+            % and P2 are parallel.
             %
             % See also Plucker.or.
             
-            if ~isa(pl2, 'Plucker')
-                error('RTB:Plucker:badarg', 'both arguments to | must be Plucker objects');
+            v = norm( cross(p1.w, p2.w) ) < 10*eps;
+        end
+        
+        function v = or(p1, p2)
+            %Plucker.or Test if lines are parallel
+            %
+            % P1|P2 is true if the lines represented by Plucker objects P1
+            % and P2 are parallel.
+            %
+            % See also Plucker.isparallel.
+            v = isparallel(p1, p2);
+        end
+        
+        function v = mpower(p1, p2)
+            %Plucker.mpower Test if lines intersect
+            %
+            % P1^P2 is true if lines represented by Plucker objects P1
+            % and P2 intersect at a point.
+            %
+            % Notes::
+            % - Is false if the lines are equivalent since they would intersect at
+            %   an infinite number of points.
+            %
+            % See also Plucker.parallel.
+            v = ~isparallel(p1, p2) && ( abs(p1 * p2) < 10*eps );
+        end
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %  PLUCKER LINE DISTANCE AND INTERSECTION
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+       
+                
+        function p = intersects(p1, p2)
+            %Plucker.intersects Find intersection of two lines
+            %
+            % P = P1.intersects(P2) is the point of intersection (3x1) of the lines
+            % represented by Plucker objects P1 and P2.  Is empty matrix if the lines
+            % do not intersect, or P1 == P2.
+            %
+            % Notes::
+            % - Is false if the lines are equivalent since they would intersect at
+            %   an infinite number of points.
+            %
+            % See also Plucker.commonperp.
+
+            if p1^p2
+                p = -( dot(p1.v,p2.w)*eye(3,3) + p1.w*p2.v' - p2.w*p1.v' ) * unit(cross(p1.w, p2.w));
+            else
+                p = [];
             end
-            L1 = pl1.line(); L2 = pl2.line();
-            
-            z = L1([1 5 2 6 3 4]) * L2([5 1 6 2 4 3])';
         end
         
-        function z = intersect(pl1, pl2)
-            %Plucker.intersect  Line intersection
+        function l = distance(p1, p2)
+            %Plucker.distanve Distance between lines
             %
-            % PL1.intersect(PL2) is zero if the lines intersect.  It is positive if PL2
-            % passes counterclockwise and negative if PL2 passes clockwise.  Defined as
-            % looking in direction of PL1
+            % d = P1.distance(P2) is the minimum distance between two lines represented
+            % by Plucker objects P1 and P2.
             %
-            %                            ---------->
-            %                o                o
-            %           ---------->
-            %          counterclockwise    clockwise
+            % Notes::
+            % - Works for parallel, skew and intersecting lines.
+            if isparallel(p1, p2)
+                % lines are parallel
+                l = cross(p1.w, p1.v - p2.v * dot(p1.w, p2.w)/ dot(p2.w, p2.w)) / norm(p1.w);
+            else
+                % lines are not parallel
+                if abs(p1 * p2) < 10*eps
+                    % lines intersect at a point
+                    l = 0;
+                else
+                    % lines don't intersect, find closest distance
+                    l = abs(p1*p2) / norm(cross(p1.w, p2.w))^2;
+                end
+            end
+        end
+        
+                function [p,dist,lambda] = closest(pl, x)
+            %Plucker.closest  Point on line closest to given point
+            %
+            % P = PL.closest(X) is the coordinate of a point on the line that is
+            % closest to the point X (3x1).
+            %
+            % [P,d] = PL.closest(X) as above but also returns the minimum distance
+            % between the point and the line.
+            %
+            % [P,dist,lambda] = PL.closest(X) as above but also returns the line parameter
+            % lambda corresponding to the point on the line.
+            %
+            % See also Plucker.point.            
             
-            z = dot(pl1.w, pl1.v) + dot(pl2.w, pl2.v);
+            % http://www.ahinson.com/algorithms_general/Sections/Geometry/PluckerLine.pdf
+            % has different equation for moment, the negative
+            
+            x = x(:);
+
+            lam = dot(x - pl.pp, pl.uw);
+            p = pl.point(lam);  % is the closest point on the line
+              
+            if nargout > 1
+                dist = norm( x - p);
+            end
+            if nargout > 2
+                lambda = lam;
+            end
         end
         
-        % operator tests for
-        % identical ==
-        % parallel ||
-        % skewed - find closest point
-        % intersecting - find
-        % distance from origin  d^2 = (V.V)/U.U
-        % closest pnt to origin (VxU:U.U)
         
-        % planes E.P + e = 0, F.P +f = 0
-        % L = ExF : fE - eF
-        
-        % line plane intersection
-        %(VxN-nU:U.N)
-        
-        % common plane
-        % (UxN
-        
-        function p = plane_intersect(pl, P)
-            P = P(:);
-            p = (cross(pl.v, P(1:3)) - P(4)*pl.w) / dot(pl.w, P(1:3));
+        function p = commonperp(p1, p2)
+            %Plucker.commonperp Common perpendicular to two lines
+            %
+            % P = P1.commonperp(P2) is a Plucker object representing the common
+            % perpendicular line between the lines represented by the Plucker objects
+            % P1 and P2.
+            %
+            % See also Plucker.intersect.
+            
+            if isparallel(p1, p2)
+                % no common perpendicular if lines are parallel
+                p = [];
+            else
+                w = cross(p1.w, p2.w);
+                
+                v = cross(p1.v, p2.w) - cross(p2.v, p1.w) + ...
+                    (p1*p2) * dot(p1.w, p2.w) * unit(cross(p1.w, p2.w));
+                
+                p = Plucker('wv', w, v);
+            end
         end
-        
+            
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %  PLUCKER LINE DISTANCE AND INTERSECTION
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+       
         
         function [p,t] = intersect_plane(L, plane)
             %Plucker.intersect_plane  Line intersection with plane
@@ -342,85 +469,85 @@ classdef Plucker < handle
                 N = plane(1:3);
                 n = plane(4);
             end
-            N= N(:);
+            N = N(:);
             
             den = dot(L.w, N);
             
             if abs(den) > (100*eps)
                 %p = -(cross(L.v, N) + n*L.w) / den;
-                p = (-cross(L.v, N) - n*L.w) / den;
+                p = (cross(L.v, N) - n*L.w) / den;
                 
-                P = L.point(0);
-                t = dot( p-P, N);
+                P = L.pp;
+                t = dot( P-p, N);
             else
                 p = [];
                 t = [];
             end
-            
-            
-            %             if abs(dvn) > (100*eps)
-            %                 t = dot( p-L.P, n) / dot(L.v, n);
-            %                 p = L.P + t*L.v;
-            %             else
-            %                 p = [];
-            %                 t = [];
-            %             end
         end
 
-       function [P,t] = intersect_volume(line, bounds)
+       function [P,lambda] = intersect_volume(line, bounds)
             %PLUCKER.intersect_volume Line intersects plot volume
             %
-            % P = PL.intersect_volume(bounds, line) returns a matrix (3xN) with columns that
-            % indicate where the line intersects the faces of the plot volume specified
-            % in terms of [xmin xmax ymin ymax zmin zmax].  The number of columns N is
-            % either 0 (the line is outside the plot volume) or 2.  LINE is a structure
-            % with elements .p (3x1) a point on the line and .v a vector parallel to
-            % the line.
+            % P = PL.intersect_volume(bounds, line) returns a matrix (3xN) with columns
+            % that indicate where the line intersects the faces of the plot volume
+            % specified in terms of [xmin xmax ymin ymax zmin zmax].  The number of
+            % columns N is either 0 (the line is outside the plot volume) or 2 (where
+            % the line pierces the bounding volume).  LINE is a structure with elements
+            % .p (3x1) a point on the line and .v a vector parallel to the line.
             %
             % [P,T] = PL.intersect_volume(bounds, line) as above but also returns the
             % line parameters (1xN) at the intersection points.
             %
             % See also Plucker.point.
             
-            tt = [];
+            ll = [];
             
             % reshape, top row is minimum, bottom row is maximum
             bounds = reshape(bounds, [2 3]);
             
             for face=1:6
                 % for each face of the bounding volume
+                %  x=xmin, x=xmax, y=ymin, y=ymax, z=zmin, z=zmax
                 
                 i = ceil(face/2);  % 1,2,3
                 I = eye(3,3);
                 plane.n = I(:,i);
                 plane.p = [0 0 0]';
                 plane.p(i) = bounds(face);
-                [p,t] = line.intersect_plane(plane);
+                
+                % find where line pierces the plane
+                [p,lambda] = line.intersect_plane(plane);
+                [plane.n' plane.p']
+                [p' lambda]
                 
                 if isempty(p)
-                    continue;  % no intersection
+                    continue;  % no intersection with this plane
                 end
                 
+                % find if intersection point is within the cube face
+                %  test x,y,z simultaneously
                 k = (p' > bounds(1,:)) & (p' < bounds(2,:));
-                k(i) = [];
+                k(i) = [];  % remove the boolean corresponding to current face
                 if all(k)
-                    tt = [tt t];
+                    % if within bounds, add
+                    ll = [ll lambda];
                 end
             end
             % put them in ascending order
-            tt = sort(tt);
+            ll = sort(ll);
             
             % determine the intersection points from the parameter values
-            P = bsxfun(@plus, line.point(0), line.w*tt);
-            
-                end
+            if isempty(ll)
+                P = [];
+            else
+                P = bsxfun(@plus, line.point(0), line.w*ll);
+            end
+       end
+
         
-        function x = double(pl)
-            %Plucker.double  Convert Plucker coordinates to real vector
-            %
-            % PL.double() is a 6x1 vector comprising the moment and direction vectors.
-            x = [pl.v; pl.w];
-        end
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %  PLOT AND DISPLAY
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
         
         function plot(pl, varargin)
             %Plucker.plot Plot a line
@@ -452,29 +579,14 @@ classdef Plucker < handle
             %line.p = pl.P; line.v = unit(U);
             P = pl.intersect_volume(bounds);
             
-            plot3(P(1,:), P(2,:), P(3,:), varargin{:})
+            if isempty(P)
+                error('RTB:Plucker', 'line does not intersect the plot volume');
+            else
+                plot3(P(1,:), P(2,:), P(3,:), varargin{:})
+            end
             
-            %             plot3(P(1,1), P(2,1), P(3,1), 'bx')
-            %             plot3(P(1,2), P(2,2), P(3,2), 'bx')
-            %             %U = U/2; V = V/2;
-            %             L = [cross(V,U); dot(U,U)]
-            %             LL = L / L(4);
-            %             plot3(LL(1), LL(2), LL(3), 'o');
-            %             plot3([0 LL(1)], [0 LL(2)], [0 LL(3)], 'r');
         end
         
-        %         @ L = {U:V}, with 3-tuples U and V, with U.V = 0, and with U non-null.
-        %   @ L = {P-Q:PxQ}, for P and Q distinct points on L, and line is directed Q->P.
-        %   @ L = {U:UxQ}, for U the direction of L and Q a point on L.
-        %   @ L = {qP-pQ:PxQ}, for (P:p) and (Q:q) distinct homogeneous points on L.
-        %   @ L = {ExF:fE-eF}, for [E:e] and [F:f] distinct planes containing L.
-        %   @ {U1:V1} =? s{U2:V2} tests if L1 = {U1:V1} equals L2 = {U2:V2}.
-        %   @ s > 0 if L1 and L2 have same orientation.
-        %   @ (V.V)/(U.U) is the minimum squared distance of L from the origin.
-        %   @ (VxU:U.U) is the point of L closest to the origin.
-        %
-        %    @ (VxN-Un:U.N) is the point where L intersects plane [N:n] not parallel to L.
-        %   @ [UxP-Vw:V.P] is the plane containing L and point (P:w) not on L.
         
         function display(pl)
             %Plucker.display Display parameters
@@ -495,6 +607,10 @@ classdef Plucker < handle
             disp( char(pl) );
         end % display()
         
+        function disp(pl)
+            disp( char(pl) );
+        end
+        
         function s = char(pl)
             %Plucker.char Convert to string
             %
@@ -506,9 +622,9 @@ classdef Plucker < handle
             for i=1:length(pl)
                 
                 ps = '{ ';
-                ps = [ ps, sprintf('%0.5g  ', pl.v) ];
+                ps = [ ps, sprintf('%0.5g  ', pl(i).v) ];
                 ps = [ ps(1:end-2), '; '];
-                ps = [ ps, sprintf('%0.5g  ', pl.w) ];
+                ps = [ ps, sprintf('%0.5g  ', pl(i).w) ];
                 ps = [ ps(1:end-2), ' }'];
                 if isempty(s)
                     s = ps;
@@ -518,7 +634,38 @@ classdef Plucker < handle
             end
         end
         
+        
+%         function z = side(pl1, pl2)
+%             %Plucker.side Plucker side operator
+%             %
+%             % X = SIDE(P1, P2) is the side operator which is zero whenever
+%             % the lines P1 and P2 intersect or are parallel.
+%             %
+%             % See also Plucker.or.
+%             
+%             if ~isa(pl2, 'Plucker')
+%                 error('RTB:Plucker:badarg', 'both arguments to | must be Plucker objects');
+%             end
+%             L1 = pl1.line(); L2 = pl2.line();
+%             
+%             z = L1([1 5 2 6 3 4]) * L2([5 1 6 2 4 3])';
+%         end
 
+%         
+%         function z = intersect(pl1, pl2)
+%             Plucker.intersect  Line intersection
+%             
+%             PL1.intersect(PL2) is zero if the lines intersect.  It is positive if PL2
+%             passes counterclockwise and negative if PL2 passes clockwise.  Defined as
+%             looking in direction of PL1
+%             
+%                                        ---------->
+%                            o                o
+%                       ---------->
+%                      counterclockwise    clockwise
+%             
+%             z = dot(pl1.w, pl1.v) + dot(pl2.w, pl2.v);
+%         end
         
     end % methods
 end % class
