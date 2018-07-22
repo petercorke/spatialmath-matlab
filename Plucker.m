@@ -278,7 +278,10 @@ classdef Plucker < handle
             %
             % PL.contains(X) is true if the point X (3x1) lies on the line defined by
             % the Plucker object PL.
-            t = norm( cross(x(:) - pl.pp, pl.w) ) < 10*eps;
+            t = zeros(1, size(x,2), 'logical');
+            for i=1:size(x,2)
+                t(i) = norm( cross(x(:,i) - pl.pp, pl.w) ) < 10*eps;
+            end
         end
         
         function t = eq(pl1, pl2) 
