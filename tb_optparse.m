@@ -16,6 +16,7 @@
 %          opt.stuff = {};
 %          opt.choose = {'this', 'that', 'other'};
 %          opt.select = {'#no', '#yes'};
+%          opt.old = '@foo';
 %          opt = tb_optparse(opt, varargin);
 %
 % Optional arguments to the function behave as follows:
@@ -27,6 +28,7 @@
 %   'yes'              sets opt.select := (the second element)
 %   'stuff', 5         sets opt.stuff to {5}
 %   'stuff', {'k',3}   sets opt.stuff to {'k',3}
+%   'old'              is the same as foo
 %
 % and can be given in any combination.
 %
@@ -71,11 +73,10 @@
 %
 % [OBJOUT,ARGS,LS] = TB_OPTPARSE(OPT, ARGLIST, OBJ) as above but properties
 % of OBJ with matching names in OPT are set.
-
-
-% Ryan Steindl based on Robotics Toolbox for MATLAB (v6 and v9)
 %
-
+% Note::
+% - Any input argument or element of the opt struct can be a string instead
+%   of a char array.
 
 % Copyright (C) 1993-2017, by Peter I. Corke
 %
@@ -108,9 +109,33 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
         cls = [];
     end
     
-    if ~iscell(argv)
-        error('RTB:tboptparse:badargs', 'input must be a cell array');
+    assert(iscell(argv), 'RTB:tboptparse:badargs', 'input must be a cell array');
+    
+    %% handle new style string inputs
+    % quick and dirty solution is to convert any string to a char array and
+    % then carry on as before
+    
+    % convert any passed strings to character arrays
+    for i=1:length(argv)
+        if isstring(argv{i})
+            argv{i} = char(argv{i});
+        end
     end
+    % convert strings in opt struct to character arrays
+    fields = fieldnames(in);
+    for i=1:length(fields)
+        field = fields{i};
+        % simple string elements
+        if isstring(in.(field))
+            in.(field) = char(in.(field));
+        end
+        % strings in cell array elements
+        if iscell(in.(field))
+            in.(field) = cellfun(@(x) char(x), in.(field), 'UniformOutput', false);
+        end
+    end
+
+    %% parse the arguments
 
     arglist = {};
 
@@ -132,7 +157,7 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
         option = argv{argc};
         assigned = false;
         
-        if isstr(option)
+        if ischar(option)
 
             switch option
             % look for hardwired options
@@ -171,6 +196,13 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
                 % does the option match a field in the opt structure?
 %                 if isfield(opt, option) || isfield(opt, ['d_' option])
 %                if any(strcmp(fieldnames(opt),option)) || any(strcmp(fieldnames(opt),))
+
+                 % look for a synonym, only 1 level of indirection is supported
+                 if isfield(opt, option) && ischar(opt.(option)) && opt.(option)(1) == '@'
+                     option = opt.(option)(2:end);
+                 end
+                 
+                 % now deal with the option
                  if isfield(opt, option) || isfield(opt, ['d_' option]) || isprop(opt, option)
                     
                     % handle special case if we we have opt.d_3d, this
@@ -193,7 +225,7 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
                                 % input was an empty cell array
                                 if ~iscell(opt.(option))
                                     % make it a cell
-                                    opt.(option) = cell( opt.(option) );
+                                    opt.(option) = { opt.(option) };
                                 end
                             end
                         catch me
