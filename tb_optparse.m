@@ -111,27 +111,33 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
     
     assert(iscell(argv), 'RTB:tboptparse:badargs', 'input must be a cell array');
     
-    %% handle new style string inputs
-    % quick and dirty solution is to convert any string to a char array and
-    % then carry on as before
-    
-    % convert any passed strings to character arrays
-    for i=1:length(argv)
-        if isstring(argv{i})
-            argv{i} = char(argv{i});
+    if ~verLessThan('matlab', '9.1')
+        % strings only appeared in 2016b
+        
+        % handle new style string inputs
+        % quick and dirty solution is to convert any string to a char array and
+        % then carry on as before
+        
+        % convert any passed strings to character arrays
+        for i=1:length(argv)
+            if isstring(argv{i})
+                argv{i} = char(argv{i});
+            end
         end
-    end
-    % convert strings in opt struct to character arrays
-    fields = fieldnames(in);
-    for i=1:length(fields)
-        field = fields{i};
-        % simple string elements
-        if isstring(in.(field))
-            in.(field) = char(in.(field));
-        end
-        % strings in cell array elements
-        if iscell(in.(field))
-            in.(field) = cellfun(@(x) char(x), in.(field), 'UniformOutput', false);
+        % convert strings in opt struct to character arrays
+        if ~isempty(in)
+            fields = fieldnames(in);
+            for i=1:length(fields)
+                field = fields{i};
+                % simple string elements
+                if isstring(in.(field))
+                    in.(field) = char(in.(field));
+                end
+                % strings in cell array elements
+                if iscell(in.(field))
+                    in.(field) = cellfun(@(x) char(x), in.(field), 'UniformOutput', false);
+                end
+            end
         end
     end
 
@@ -198,7 +204,7 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
 %                if any(strcmp(fieldnames(opt),option)) || any(strcmp(fieldnames(opt),))
 
                  % look for a synonym, only 1 level of indirection is supported
-                 if isfield(opt, option) && ischar(opt.(option)) && opt.(option)(1) == '@'
+                 if isfield(opt, option) && ischar(opt.(option)) && length(opt.(option)) > 1 && opt.(option)(1) == '@'
                      option = opt.(option)(2:end);
                  end
                  
