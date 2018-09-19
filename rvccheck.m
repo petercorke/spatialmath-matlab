@@ -11,15 +11,28 @@ fprintf('     ** this is at least %d years old, you may have issues\n', age);
 end
     
 % display versions of toolboxes (use unique RTB and MVTB functions)
-a = ver( getpath('tr2rpy') );
+p = getpath('tr2rpy');
+a = ver( p );
 rtb = ~isempty(a);
 if rtb
-    fprintf(' - %s %s %s\n', a.Name, a.Version, a.Date);
+    if findstr(p, 'Add-Ons')
+        where = 'mltbx install to Add-Ons';
+    else
+        where = 'local install';
+    end
+    fprintf(' - %s %s %s [%s]\n', a.Name, a.Version, a.Date, where);
+
 end
-a = ver( getpath('idisp') );
+p = getpath('idisp');
+a = ver( p );
 mvtb = ~isempty(a);
 if mvtb
-    fprintf(' - %s %s %s\n', a.Name, a.Version, a.Date);
+        if findstr(p, 'Add-Ons')
+        where = 'mltbx install to Add-Ons';
+    else
+        where = 'local install';
+    end
+    fprintf(' - %s %s %s [%s]\n', a.Name, a.Version, a.Date, where);
 end
 
 % check for shadowed files
@@ -28,6 +41,7 @@ if rtb
     k = k + checkpath('rotx');
     k = k + checkpath('roty');
     k = k + checkpath('rotz');
+    k = k + checkpath('angdiff');
 end
 if mvtb
     k = k + checkpath('im2col');
@@ -36,7 +50,8 @@ if mvtb
 end
 
 if k > 0
-    fprintf('Some Toolbox files are shadowed.  Use path tool to move the toolbox to the top of the path\n')
+    fprintf('Some Toolbox files are "shadowed" and will cause problems with the use of this toolbox\n');
+    fprintf('Use path tool to move this Toolbox to the top of the path\n')
 end
 
 function k = checkpath(funcname)
@@ -54,7 +69,7 @@ function k = checkpath(funcname)
 end
 
 function p = getpath(funcname)
-        funcpath = which(funcname);
-        k = strfind( funcpath, [filesep funcname]);
-        p = funcpath(1:k-1);
+    funcpath = which(funcname);
+    k = strfind( funcpath, [filesep funcname]);
+    p = funcpath(1:k-1);
 end
