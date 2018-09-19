@@ -90,7 +90,7 @@ function h_ = plot_poly(p, varargin)
 
     % process options
     opt.fillcolor = [];
-    opt.fill = [];
+    opt.fill = '@fillcolor';
     opt.alpha = 1;
     opt.animate = false;
     opt.edgecolor = 'None';
@@ -99,10 +99,7 @@ function h_ = plot_poly(p, varargin)
     
     [opt,args,ls] = tb_optparse(opt, varargin);
 
-        
-    if ~isempty(opt.fill)
-        opt.fillcolor = opt.fill;
-    end
+
     if ~isempty(opt.fillcolor) && strcmp(opt.edgecolor, 'None')
         opt.edgecolor = 'k';
     end
