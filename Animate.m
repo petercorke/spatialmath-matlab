@@ -111,7 +111,7 @@ classdef Animate < handle
                         case '.mj2',  profile = 'Motion JPEG 2000';
                         case '.avi', profile = 'Motion JPEG AVI';
                     end
-                    fprintf('saving video --> %s with profile ''%s''\n', name, profile);
+                    fprintf('Animate: saving video --> %s with profile ''%s''\n', name, profile);
                     a.video = VideoWriter(name, profile, args{:});
                     a.video.FrameRate = opt.fps;
                     a.video.Quality = 95;
