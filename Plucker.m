@@ -278,6 +278,7 @@ classdef Plucker < handle
             %
             % PL.contains(X) is true if the point X (3x1) lies on the line defined by
             % the Plucker object PL.
+            assert( size(x,1) == 3, 'RTB:Plucker: points must have 3 rows');
             t = zeros(1, size(x,2), 'logical');
             for i=1:size(x,2)
                 t(i) = norm( cross(x(:,i) - pl.pp, pl.w) ) < 10*eps;
@@ -520,20 +521,25 @@ classdef Plucker < handle
                 
                 % find where line pierces the plane
                 [p,lambda] = line.intersect_plane(plane);
-                [plane.n' plane.p']
-                [p' lambda]
+
                 
                 if isempty(p)
                     continue;  % no intersection with this plane
                 end
                 
+%                 fprintf('face %d: n=(%f, %f, %f), p=(%f, %f, %f)\n', face, plane.n, plane.p);
+%                 fprintf('      : p=(%f, %f, %f)  ', p)
+                
                 % find if intersection point is within the cube face
                 %  test x,y,z simultaneously
-                k = (p' > bounds(1,:)) & (p' < bounds(2,:));
+                k = (p' >= bounds(1,:)) & (p' <= bounds(2,:));
                 k(i) = [];  % remove the boolean corresponding to current face
                 if all(k)
                     % if within bounds, add
                     ll = [ll lambda];
+%                     fprintf('  HIT\n');
+%                 else
+%                     fprintf('\n');
                 end
             end
             % put them in ascending order
@@ -585,7 +591,7 @@ classdef Plucker < handle
             if isempty(P)
                 error('RTB:Plucker', 'line does not intersect the plot volume');
             else
-                plot3(P(1,:), P(2,:), P(3,:), varargin{:})
+                plot3(P(1,:), P(2,:), P(3,:), varargin{:});
             end
             
         end
