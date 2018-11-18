@@ -558,7 +558,7 @@ classdef Plucker < handle
         %  PLOT AND DISPLAY
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
         
-        function plot(pl, varargin)
+        function plot(lines, varargin)
             %Plucker.plot Plot a line
             %
             % PL.plot(OPTIONS) plots the Plucker line within the current plot volume.
@@ -586,14 +586,21 @@ classdef Plucker < handle
             
             %U = pl.Q - pl.P;
             %line.p = pl.P; line.v = unit(U);
-            P = pl.intersect_volume(bounds);
             
-            if isempty(P)
-                error('RTB:Plucker', 'line does not intersect the plot volume');
-            else
-                plot3(P(1,:), P(2,:), P(3,:), varargin{:});
+            ish = ishold();
+            hold on
+            for pl=lines
+                P = pl.intersect_volume(bounds);
+
+                if isempty(P)
+                    warning('RTB:Plucker', 'line does not intersect the plot volume');
+                else
+                    plot3(P(1,:), P(2,:), P(3,:), varargin{:});
+                end
             end
-            
+            if ~ish
+                hold off
+            end
         end
         
         
