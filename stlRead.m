@@ -5,8 +5,8 @@
 % of the STL object (NOT the name of the STL file).
 %
 % Authors::
-% - from MATLAB File Exchange by Pau Micó, https://au.mathworks.com/matlabcentral/fileexchange/51200-stltools
-% - Copyright (c) 2015, Pau Micó
+% - from MATLAB File Exchange by Pau Mico, https://au.mathworks.com/matlabcentral/fileexchange/51200-stltools
+% - Copyright (c) 2015, Pau Mico
 % - Copyright (c) 2013, Adam H. Aitkenhead
 % - Copyright (c) 2011, Francis Esmonde-White
     
