@@ -18,7 +18,7 @@ if rtb
     if findstr(p, 'Add-Ons')
         where = 'mltbx install to Add-Ons';
     else
-        where = 'local install';
+        where = 'local (zip,git) install';
     end
     fprintf(' - %s %s %s [%s]\n', a.Name, a.Version, a.Date, where);
 
@@ -27,10 +27,10 @@ p = getpath('idisp');
 a = ver( p );
 mvtb = ~isempty(a);
 if mvtb
-        if findstr(p, 'Add-Ons')
+    if findstr(p, 'Add-Ons')
         where = 'mltbx install to Add-Ons';
     else
-        where = 'local install';
+        where = 'local (zip,git) install';
     end
     fprintf(' - %s %s %s [%s]\n', a.Name, a.Version, a.Date, where);
 end
