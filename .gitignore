@@ -1,0 +1,8 @@
+# ignore png, gimp and pdf files
+*.png
+*.pdf
+*.xcf
+*.log
+*.aux
+*.idx
+*.asv

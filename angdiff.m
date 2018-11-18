@@ -1,14 +1,26 @@
 %ANGDIFF Difference of two angles
 %
-% D = ANGDIFF(TH1, TH2) returns the difference between angles TH1 and TH2 on
-% the circle.  The result is in the interval [-pi pi).  If TH1 is a column 
-% vector, and TH2 a scalar then return a column vector where TH2 is modulo 
-% subtracted from the corresponding elements of TH1.
+% ANGDIFF(TH1, TH2) is the difference between angles TH1 and TH2
+% on the circle.  The result is in the interval [-pi pi).  Either or both
+% arguments can be a vector:
+% - If TH1 is a vector, and TH2 a scalar then return a vector where TH2 is modulo 
+%   subtracted from the corresponding elements of TH1.
+% - If TH1 is a scalar, and TH2 a vector then return a vector where the
+%   corresponding elements of TH2 are modulo subtracted from TH1.
+% - If TH1 and TH2 are vectors then return a vector whose elements are the modulo 
+%   difference of the corresponding elements of TH1 and TH2.
 %
-% D = ANGDIFF(TH) returns the equivalent angle to TH in the interval [-pi pi).
+% ANGDIFF(TH) as above but TH=[TH1 TH2].
+%
+% ANGDIFF(TH) is the equivalent angle to TH in the interval [-pi pi).
+%
+% Notes::
+% - If TH1 and TH2 are both vectors they should have the same
+%   orientation, which the output will assume.
 %
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 
@@ -28,21 +40,26 @@
 % http://www.petercorke.com
 
 function d = angdiff(th1, th2)
-
-    if nargin < 2
-% THIS IS A BAD IDEA, WHERE IS IT USED?
-%         if length(th1) > 1
-%             d = th1(1) - th1(2);
-%         else
-%             d = th1;
-%         end
-        d = th1;
-    else
-        d = th1 - th2;
+  
+    switch nargin
+        case 1
+            if length(th1) == 2
+                d = th1(1) - th1(2);
+            else
+                d = th1;
+            end
+        case 2
+            if length(th1) > 1 && length(th2) > 1
+                % if both arguments are vectors, they must be the same
+                assert(all(size(th1) == size(th2)), 'RTB:angdiff:badarg', 'vectors must be same shape');
+            end
+            % th1 or th2 could be scalar
+            d = th1 - th2;
     end
-
     
+    % wrap the result into the interval [-pi pi)
     d = mod(d+pi, 2*pi) - pi;
+end
 
 % Simplistic version of the code, easy to see what it does, but slow...
 %

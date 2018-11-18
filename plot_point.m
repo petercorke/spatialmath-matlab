@@ -1,4 +1,4 @@
-%PLOT_POINT	Draw a feature point
+%PLOT_POINT Draw a point
 %
 % PLOT_POINT(P, OPTIONS) adds point markers to the current plot, where P (2xN)
 % and each column is the point coordinate.
@@ -12,7 +12,9 @@
 %  'sequence'               Label points sequentially
 %  'label',L                Label for point
 %
-% Additional options are passed through to PLOT for creating the marker.
+% Additional options to PLOT can be used: 
+% - standard MATLAB LineStyle such as 'r' or 'b---'
+% - any MATLAB LineProperty options can be given such as 'LineWidth', 2.
 %
 % Examples::
 %   Simple point plot
@@ -33,12 +35,14 @@
 %        plot_point(P, 'printf', {' P%d', data}, 'o');
 %
 % Notes::
-% - The point(s) is added to the current plot.
-% - 2D points only.
+% - The point(s) and annotations are added to the current plot.
+% - Points can be drawn in 3D axes but will always lie in the
+%   xy-plane.
 %
-% See also PLOT, TEXT.
+% See also PLOT_SPHERE, PLOT, TEXT.
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 
@@ -57,23 +61,26 @@
 %
 % http://www.petercorke.com
 
-function plot_point(p, varargin)
+function ho = plot_point(p, varargin)
 
-    opt.textcolor = 'g';
+    opt.textcolor = 'k';
     opt.textsize = 12;
     opt.printf = [];
     opt.sequence = false;
     opt.bold = false;
     opt.label = [];
-    [opt,arglist] = tb_optparse(opt, varargin);
+    opt.solid = false;
+    [opt,arglist,ls] = tb_optparse(opt, varargin);
 
+    % label is a cell array, one per point (column)
     if ~isempty(opt.label) && numcols(p) == 1
+        % if single point, convert single label to a cell array
         opt.label = {opt.label};
     end
     
     % default marker style
-    if isempty(arglist)
-        arglist = {'sb'};
+    if isempty(ls)
+        ls = {'bs'};    % blue square
     end
 
     % add stuff to pull .u and .v out of a vector of objects
@@ -82,10 +89,18 @@ function plot_point(p, varargin)
         p = [[p.u_]; [p.v_]];
     end
 
+    if numrows(p) == 3
+        error('p must have 2 rows, only supports 2D plotting')
+    end
     holdon = ishold();
 	hold on
+    h = zeros(1,numcols(p));
+    
 	for i=1:numcols(p)
-		plot(p(1,i), p(2,i), arglist{:});
+        if opt.solid 
+            arglist = [ 'MarkerFaceColor', ls{1}(1), arglist];
+        end
+		h(i) = plot(p(1,i), p(2,i), ls{:}, arglist{:});
         if opt.sequence
             show(p(:,i), '%d', i, opt);
         end
@@ -101,6 +116,9 @@ function plot_point(p, varargin)
         hold off
     end
     figure(gcf)
+    if nargout > 0
+        ho = h;
+    end
 end
 
 function show(p, fmt, val, opt)

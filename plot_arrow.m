@@ -1,14 +1,17 @@
-%PLOT_ARROW Draw an arrow
+%PLOT_ARROW Draw an arrow in 2D or 3D
 %
-% PLOT_ARROW(P, OPTIONS) draws an arrow from P1 to P2 where P=[P1; P2].
+% PLOT_ARROW(P1, P2, OPTIONS) draws an arrow from P1 to P2 (2x1 or 3x1).
+%
+% PLOT_ARROW(P, OPTIONS) as above where the columns of P (2x2 or 3x2) define where P=[P1 P2].
 %
 % Options::
-% All options are passed through to arrow3.  Pass in a single character
-% MATLAB colorspec (eg. 'r') to set the color.
+% - All options are passed through to arrow3.  
+% - MATLAB colorspec such as 'r' or 'b--'
 %
 % See also ARROW3.
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 
@@ -26,10 +29,22 @@
 % along with RTB.  If not, see <http://www.gnu.org/licenses/>.
 %
 % http://www.petercorke.com
-function plot_arrow(p, varargin)
-    mstart = p(1:end-1,:);
-    mend = p(2:end,:);
-    %mstart = p;
-    %mend = [p(2:end,:); p(1,:)];
+function plot_arrow(p1, varargin)
+    
+    if min(size(p1)) == 1
+        % p1 is a vector
+        p1 = p1(:);
+        p2 = varargin{1};
+        p2 = p2(:);
+        assert(numrows(p1) == numrows(p2), 'RTB:plot_arrow', 'P1 and P2 must be the same length');
+        varargin = varargin{2:end};
+    else
+        % p1 is a 2-column matrix
+        assert(numcols(p1) == 2, 'RTB:plot_arrow', 'P1 must have 2 columns');
+        p2 = p1(:,2);
+        p1 = p1(:,1);
+    end
+    
+    assert(any(numrows(p1) == [2 3]), 'RTB:plot_arrow', '2D or 3D points only');
 
-    arrow3(mstart, mend, varargin{:});
+    arrow3(p1', p2', varargin{:});

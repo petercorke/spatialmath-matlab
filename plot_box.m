@@ -1,25 +1,39 @@
-%PLOT_BOX	Draw a box
+%PLOT_BOX Draw a box
 %
-% PLOT_BOX(B, LS) draws a box defined by B=[XL XR; YL YR] on the current
+% PLOT_BOX(B, OPTIONS) draws a box defined by B=[XL XR; YL YR] on the current
 % plot with optional MATLAB linestyle options LS.
 %
-% PLOT_BOX(X1,Y1, X2,Y2, LS) draws a box with corners at (X1,Y1) and (X2,Y2),
+% PLOT_BOX(X1,Y1, X2,Y2, OPTIONS) draws a box with corners at (X1,Y1) and (X2,Y2),
 % and optional MATLAB linestyle options LS.
 %
-% PLOT_BOX('centre', P, 'size', W, LS) draws a box with center at P=[X,Y] and
+% PLOT_BOX('centre', P, 'size', W, OPTIONS) draws a box with center at P=[X,Y] and
 % with dimensions W=[WIDTH HEIGHT].
 %
-% PLOT_BOX('topleft', P, 'size', W, LS) draws a box with top-left at P=[X,Y] 
+% PLOT_BOX('topleft', P, 'size', W, OPTIONS) draws a box with top-left at P=[X,Y] 
 % and with dimensions W=[WIDTH HEIGHT].
 %
+% PLOT_BOX('matlab', BOX, LS) draws box(es) as defined using the MATLAB convention of
+% specifying a region in terms of top-left coordinate, width and height.  One box is
+% drawn for each row of BOX which is [xleft ytop width height].
+%
+% Options::
+% 'edgecolor'   the color of the circle's edge, Matlab color spec
+% 'fillcolor'   the color of the circle's interior, Matlab color spec
+% 'alpha'       transparency of the filled circle: 0=transparent, 1=solid
+%
+% - For an unfilled box any standard MATLAB LineStyle such as 'r' or 'b---'.
+% - For an unfilled box any MATLAB LineProperty options can be given such as 'LineWidth', 2.
+% - For a filled box any MATLAB PatchProperty options can be given.
+%
 % Notes::
-% - The box is added to the current plot.
+% - The box is added to the current plot irrespective of hold status.
 % - Additional options LS are MATLAB LineSpec options and are passed to PLOT.
 %
 % See also PLOT_POLY, PLOT_CIRCLE, PLOT_ELLIPSE.
 
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 
@@ -41,9 +55,13 @@
 function plot_box(varargin)
     opt.centre = [];
     opt.topleft = [];
+    opt.matlab = [];
     opt.size = [];
+    opt.fillcolor = [];
+    opt.alpha = 1;
+    opt.edgecolor = 'k';
 
-    [opt,varargin] = tb_optparse(opt, varargin);
+    [opt,args] = tb_optparse(opt, varargin);
 
     if ~isempty(opt.size)
         if size(opt.size) == 1
@@ -68,31 +86,48 @@ function plot_box(varargin)
             error('must specify top left or centre');
         end
     else
-        if all(size(varargin{1}) == [2 2])
+       if ~isempty(opt.matlab)
+            if numrows(opt.matlab) > 1
+                for i=1:numrows(opt.matlab)
+                    plot_box('matlab', opt.matlab(i,:), args{:});
+                end
+                return
+            else
+            x1 = opt.matlab(1);
+            y1 = opt.matlab(2);
+            x2 = opt.matlab(1) + opt.matlab(3);
+            y2 = opt.matlab(2) + opt.matlab(4);
+            end
+       elseif all(size(args{1}) == [2 2])
             % first arg is a box
-            b = varargin{1};
+            b = args{1};
             x1 = b(1); y1 = b(2);
             x2 = b(3); y2 = b(4);
-            varargin = varargin(2:end);
+            args = args(2:end);
         else
             % use first 4 args as x1 y1 x2 y2
-            x1 = varargin{1};
-            y1 = varargin{2};
-            x2 = varargin{3};
-            y2 = varargin{4};
-            varargin = varargin(5:end);
+            x1 = args{1};
+            y1 = args{2};
+            x2 = args{3};
+            y2 = args{4};
+            args = args(5:end);
         end
     end
-    p = [	x1 y1
-            x2 y1
-            x2 y2
-            x1 y2
-            x1 y1 ];
-
+    x = [x1 x2 x2 x1 x1];
+    y = [y1 y1 y2 y2 y1];
+    
+    
     holdon = ishold;
     hold on
-
-    plot(p(:,1), p(:,2), varargin{:})
+    
+    if isempty(opt.fillcolor)
+        % outline only
+        plot(x, y, args{:})
+    else
+        % filled shape
+        patch(x, y, 0*y, 'FaceColor', opt.fillcolor, ...
+            'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, args{:});
+    end
 
     if holdon == 0
         hold off

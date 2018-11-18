@@ -1,5 +1,8 @@
 %PLOT2 Plot trajectories
 %
+% Convenience function for plotting 2D or 3D trajectory data stored in a
+% matrix with one row per time step.
+%
 % PLOT2(P) plots a line with coordinates taken from successive rows of P.  P
 % can be Nx2 or Nx3.
 %
@@ -8,9 +11,10 @@
 %
 % PLOT2(P, LS) as above but the line style arguments LS are passed to plot.
 %
-% See also PLOT.
+% See also MPLOT, PLOT.
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 
@@ -31,18 +35,21 @@
 function h = plot2(p1, varargin)
 
     if ndims(p1) == 2
-        if numcols(p1) == 3,
-            hh = plot3(p1(:,1), p1(:,2), p1(:,3), varargin{:});
-        else
-            hh = plot(p1(:,1), p1(:,2), varargin{:});
+        switch numcols(p1)
+            case 3
+                hh = plot3(p1(:,1), p1(:,2), p1(:,3), varargin{:});
+            case 2
+                hh = plot(p1(:,1), p1(:,2), varargin{:});
+            otherwise
+                error('RTB:plot2:badarg', 'Data must have 2 or 3 columns');
         end
-        if nargout == 1,
+        if nargout == 1
             h = hh;
         end
     else
         clf
         hold on
         for i=1:size(p1,2)
-            plot2( squeeze(p1(:,i,:))' );
+            plot2( squeeze(p1(:,:,i)) );
         end
     end

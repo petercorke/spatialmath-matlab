@@ -2,13 +2,13 @@
 %
 % PLOT_SPHERE(C, R, LS) draws spheres in the current plot.  C is the 
 % centre of the sphere (3x1), R is the radius and LS is an optional MATLAB 
-% color spec, either a letter or a 3-vector.  
+% ColorSpec, either a letter or a 3-vector.  
 %
 % H = PLOT_SPHERE(C, R, COLOR) as above but returns the handle(s) for the
 % spheres.
 %
 % H = PLOT_SPHERE(C, R, COLOR, ALPHA) as above but ALPHA specifies the opacity
-% of the sphere were 0 is transparant and 1 is opaque.  The default is 1.
+% of the sphere where 0 is transparant and 1 is opaque.  The default is 1.
 %
 % If C (3xN) then N sphhere are drawn and H is Nx1.  If R (1x1) then all
 % spheres have the same radius or else R (1xN) to specify the radius of
@@ -25,7 +25,8 @@
 % - The sphere is always added, irrespective of figure hold state.
 % - The number of vertices to draw the sphere is hardwired.
 
-% Copyright (C) 1993-2014, by Peter I. Corke
+
+% Copyright (C) 1993-2017, by Peter I. Corke
 %
 % This file is part of The Robotics Toolbox for MATLAB (RTB).
 % 
@@ -47,11 +48,12 @@
 % TODO
 % inconsistant call format compared to other plot_xxx functions.
 
-function h = plot_sphere(c, r, varargin)
+function out = plot_sphere(c, r, varargin)
 
     opt.color = 'b';
     opt.alpha = 1;
     opt.mesh = 'none';
+    opt.n = 40;
 
     [opt,args] = tb_optparse(opt, varargin);
     
@@ -64,9 +66,9 @@ function h = plot_sphere(c, r, varargin)
     end
     
     daspect([1 1 1])
-    hold_on = ishold
+    hold_on = ishold;
     hold on
-    [xs,ys,zs] = sphere(40);
+    [xs,ys,zs] = sphere(opt.n);
 
     if isvec(c,3)
         c = c(:);
@@ -76,7 +78,7 @@ function h = plot_sphere(c, r, varargin)
     end
 
     if nargin < 4
-        alpha = 1
+        alpha = 1;
     end
 
     % transform the sphere
@@ -86,7 +88,7 @@ function h = plot_sphere(c, r, varargin)
         z = r(i)*zs + c(3,i);
                 
         % the following displays a nice smooth sphere with glint!
-        h = surf(x,y,z, 'FaceColor', opt.color, 'EdgeColor', opt.mesh, 'FaceAlpha', opt.alpha);
+        h = surf(x,y,z, ones(size(z)), 'FaceColor', opt.color, 'EdgeColor', opt.mesh, 'FaceAlpha', opt.alpha);
         % camera patches disappear when shading interp is on
         %h = surfl(x,y,z)
     end
@@ -94,4 +96,7 @@ function h = plot_sphere(c, r, varargin)
     %light
     if ~hold_on
         hold off
+    end
+    if nargout > 0
+        out = h;
     end
