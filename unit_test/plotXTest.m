@@ -1,11 +1,8 @@
-
-
-% plot_ellipse
 %     2d outline, filled case
 %     3d outlien, filled case
 %     with LS or edgecolor, color options etc.
 
-function tests = plotTest
+function tests = plotXTest
   tests = functiontests(localfunctions);
   close all
 end
