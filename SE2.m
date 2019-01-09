@@ -276,14 +276,20 @@ classdef SE2 < SO2
             o = obj;
         end
         
-        function t = transl(obj)
+        function [tx,ty] = transl(obj)
             %SE2.t  Get translational component
             %
             % TV = P.transl() is a row vector (1x2) representing the translational component of
             % the rigid-body motion described by the SE2 object P.  If P is a vector of
             % objects (1xN) then TV (Nx2) will have one row per object element.
             
-            t = obj.t';
+            if nargout == 1 || nargout == 0
+                tx = [obj.t]';
+            else
+                t = obj.t;
+                tx = t(1);
+                ty = t(2);
+            end
         end
         
         function T = T(obj)
@@ -366,7 +372,7 @@ classdef SE2 < SO2
             S = logm(obj.data);
         end
         
-        function T = interp(obj1, obj2, s)
+        function Ti = interp(obj1, varargin)
             %SE2.interp Interpolate between SO2 objects
             %
             % P1.interp(P2, s) is an SE2 object representing interpolation
@@ -378,12 +384,35 @@ classdef SE2 < SO2
             % - It is an error if S is outside the interval 0 to 1.
             %
             % See also SO2.angle.
-            assert(all(s>=0 & s<=1), 'RTB:SE2:interp:badarg', 's must be in the interval [0,1]');
             
-            th1 = obj1.angle; th2 = obj2.angle;
-            xy1 = obj1.t; xy2 = obj2.t;
+            if isa(varargin{1}, 'SE2')
+                % interp(SE2, SE2, s)  interpolate between given values
+                obj2 = varargin{1};
+                varargin = varargin(2:end);
+                try
+                    Ti = SE2( trinterp2(obj1.T, obj2.T, varargin{:}) );
+                catch me
+                    switch me.identifier
+                        case 'RTB:trinterp2:badarg'
+                            throw( MException('RTB:SE2:interp:badarg', 'value of S outside interval [0,1]') );
+                        otherwise
+                            rethrow(me);
+                    end
+                end
+            else
+                % interp(SE2, s)  interpolate between null and given value
+                try
+                    Ti = SE2( trinterp2( obj1.T, varargin{:}) );
+                catch me
+                    switch me.identifier
+                        case 'RTB:trinterp2:badarg'
+                            throw( MException('RTB:SE2:interp:badarg', 'value of S outside interval [0,1]') );
+                        otherwise
+                            rethrow(me);
+                    end
+                end
+            end
             
-            T = SE2( xy1 + s*(xy2-xy1), th1 + s*(th2-th1) );
         end
 
         function tw = Twist(obj)

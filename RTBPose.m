@@ -74,6 +74,11 @@ classdef (Abstract) RTBPose
         data   % this is a 2x2, 3x3 or 4x4 matrix, possibly symbolic
     end
     
+    properties
+        ref    % string, name of reference coordinate frame
+        target % string, name of target coordinate frame
+    end
+    
     
     methods
         
@@ -147,6 +152,17 @@ classdef (Abstract) RTBPose
             assert(isa(b, class(a)) && length(a) == length(b), 'RTB:RTBPose:minus:badarg', 'operands don''t conform');
             for i=1:length(a)
                 v(:,:,i) = a(i).data - b(i).data;
+            end
+        end
+        
+        function v = uminus(a)
+            %RTBPose.uminus Unary minus of poses
+            %
+            % -P is the elementwise negation of the matrix elements of the 
+            % pose.
+            
+            for i=1:length(a)
+                v = a.new(-a(i).data);
             end
         end
         
@@ -358,7 +374,7 @@ classdef (Abstract) RTBPose
                 A = [obj.R -skew(obj.t); zeros(3,3) obj.R];
                 out = A * a;   % invokes mtimes Plucker.mtimes
             else
-                error('RTB:RTBPose:badops', 'invalid operand types to * operator');
+                error('RTB:RTBPose:badops', 'operands to * cannot be composed');
             end
         end
         

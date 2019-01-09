@@ -280,7 +280,7 @@ classdef SE3 < SO3
         end
         
         
-        function [t1,t2,t3] = transl(obj)
+        function [tx,ty,tz] = transl(obj)
             %SE3.transl Get translation vector
             %
             % T = P.transl() is the translational part of SE3 object as a 3-element row
@@ -299,12 +299,12 @@ classdef SE3 < SO3
             % See also SE3.t, transl.
             
             if nargout == 1 || nargout == 0
-                t1 = [obj.t]';
+                tx = [obj.t]';
             else
                 t = obj.t;
-                t1 = t(1);
-                t2 = t(2);
-                t3 = t(3);
+                tx = t(1);
+                ty = t(2);
+                tz = t(3);
             end
         end
         
