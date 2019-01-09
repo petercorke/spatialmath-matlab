@@ -297,19 +297,19 @@ function ellipse3d_test(testCase)
     
     clf
     plot_ellipse(E, 'edgecolor', 'g');
-    pause
+    pause(0.1)
     
     clf
     plot_ellipse(E, 'fillcolor', 'g');
-    pause
+    pause(0.1
     
     clf
     plot_ellipse(E, 'fillcolor', 'g', 'shadow');
-    pause
+    pause(0.1
     
     clf
     plot_ellipse(E, 'fillcolor', 'g', 'edgecolor', 'r', 'LineWidth', 2);
-    pause
+    pause(0.1
     
     plot_ellipse(E, [0 8], 'edgecolor', 'r', 'fillcolor', 'c');
     plot_ellipse(E, [4 8], 'LineWidth', 3, 'MarkerStyle', '+');

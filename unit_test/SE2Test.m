@@ -74,10 +74,12 @@ function staticconstructors_test(tc)
     
         
     %% exponential
-    tc.verifyEqual(SE3.exp(zeros(4,4)).T, eye(4,4), 'AbsTol', 1e-10  );
-    t= [1 2 3];
-    tc.verifyEqual(SE3.exp([t 0 0 0]').T, transl(t), 'AbsTol', 1e-10  );
+    tc.verifyEqual(SE2.exp(zeros(3,3)).T, eye(3,3), 'AbsTol', 1e-10  );
+    t = [1 2];
+    tc.verifyEqual(SE2.exp(skewa([t 0])).T, transl2(t), 'AbsTol', 1e-10  );
 end
+
+
 
 function isa_test(tc)
     
@@ -112,21 +114,19 @@ function inverse_test(tc)
     tc.verifyEqual(double(TT1.inv()*TT1), eye(3,3), 'AbsTol', 1e-10  );
 end
 
-% function uminus_test(tc)
-%     R1 = rpy2r( randn(1,3) );  t1 = randn(3,1); T1 = rt2tr(R1, t1);
-%     
-%     TT1 = SE3(T1);
-% 
-%     
-%     TM = - TT1;
-%     tc.verifyEqual(TM.double, -T1, 'AbsTol', 1e-10  );
-% end
+function uminus_test(tc)
+    
+    TT1 = SE2.rand;
+
+    TM = - TT1;
+    tc.verifyEqual(TM.double, -(TT1.double), 'AbsTol', 1e-10  );
+end
 
 function Rt_test(tc)
+   
     
-    R1 = rpy2r( randn(1,3) );  t1 = randn(3,1); T1 = rt2tr(R1, t1);
-    
-    TT1 = SE3(T1);
+    TT1 = SE2.rand
+    T1 = TT1.double; R1 = t2r(T1); t1 = transl2(T1);
     
     tc.verifyEqual(TT1.T, T1, 'AbsTol', 1e-10  );
     tc.verifyEqual(TT1.R, R1, 'AbsTol', 1e-10  );
@@ -143,13 +143,13 @@ function arith_test(tc)
     R1 = rpy2r( randn(1,3) );  t1 = randn(3,1); T1 = rt2tr(R1, t1);
     R2 = rpy2r( randn(1,3) );  t2 = randn(3,1); T2 = rt2tr(R2, t2);
     
-    TT1 = SE3(T1);
-    TT2 = SE3(T2);
+    TT1 = SE2.rand; T1 = TT1.double;
+    TT2 = SE2.rand; T2 = TT2.double;
 
-    I = SE3();
+    I = SE2();
     
     
-    %% SE3-SE3 product
+    %% SE2 * SE2 product
     % scalar x scalar
     
     tc.verifyEqual(double(TT1*TT2), T1*T2, 'AbsTol', 1e-10  );
@@ -166,18 +166,18 @@ function arith_test(tc)
     % vector x scalar
     tc.verifyEqual([TT1 TT2]*TT2, [TT1*TT2 TT2*TT2]);
     
-    %% SE3-vector product
-    vx = [1 0 0]'; vy = [0 1 0]'; vz = [0 0 1]';
+    %% SE2 * vector product
+    vx = [1 0]'; vy = [0 1]'; 
 
     % scalar x scalar
     
     tc.verifyEqual(TT1*vy, h2e( T1*e2h(vy) ), 'AbsTol', 1e-10);
     
     % vector x vector
-    tc.verifyEqual([TT1 TT2 TT1] * [vz vx vy], [h2e(T1*e2h(vz)) h2e(T2*e2h(vx)) h2e(T1*e2h(vy))], 'AbsTol', 1e-10);
+    tc.verifyEqual([TT1 TT2] * [vx vy], [h2e(T1*e2h(vx)) h2e(T2*e2h(vy))], 'AbsTol', 1e-10);
     
     % scalar x vector
-    tc.verifyEqual(TT1 * [vx vy vz], h2e( T1*e2h([vx vy vz]) ), 'AbsTol', 1e-10);
+    tc.verifyEqual(TT1 * [vx vy], h2e( T1*e2h([vx vy]) ), 'AbsTol', 1e-10);
     
     % vector x scalar
     tc.verifyEqual([TT1 TT2 TT1] * vy, [h2e(T1*e2h(vy)) h2e(T2*e2h(vy)) h2e(T1*e2h(vy))], 'AbsTol', 1e-10);
@@ -219,25 +219,17 @@ function conversions_test(tc)
 
 end
 
-function adjoint_test(tc)
-    R = rpy2r( randn(1,3) );  t = randn(3,1); T = rt2tr(R, t);
-    TT = SE3(T);
-    
-    tc.verifyEqual(TT.Ad, [R skew(t)*R; zeros(3,3) R]);
-    
-    % velxform
-    tc.verifyEqual(TT.velxform, [R zeros(3,3); zeros(3,3) R]);
-
-end
 
 function interp_test(tc)
-    R = rpy2r( randn(1,3) );  t = randn(3,1); T = rt2tr(R, t);
-    TT = SE3(T);
-    I = SE3();
+    TT = SE2.rand
+    I = SE2;
+    
+    z = interp(I, TT, 0);
+    tc.verifyClass(z, 'SE2')
     
     tc.verifyEqual(double(interp(I, TT, 0)),   double(I), 'AbsTol', 1e-10 );
     tc.verifyEqual(double(interp(I, TT, 1)),   double(TT), 'AbsTol', 1e-4 );
-    tc.verifyEqual(double(interp(I, TT, 0.5)), double(trinterp(TT, 0.5)), 'AbsTol', 1e-10  );
+    tc.verifyEqual(double(interp(I, TT, 0.5)), double(trinterp2(TT, 0.5)), 'AbsTol', 1e-10  );
     
 end
 
@@ -249,12 +241,12 @@ function miscellany_test(tc)
     
     tc.verifyEqual(dim(TT), 3);
         
-    verifyEqual( tc, isSE(TT), true );
+    tc.verifyEqual(isSE(TT), true );
     
-    verifyClass(tc, TT.new, 'SE2');
+    tc.verifyClass(TT.new, 'SE2');
 
-    verifyClass(tc, SE2.check(TT), 'SE2');
-    verifyClass(tc, SE2.check(TT.T), 'SE2');
+    tc.verifyClass(SE2.check(TT), 'SE2');
+    tc.verifyClass(SE2.check(TT.T), 'SE2');
     z = SE2.check(TT);
     tc.verifyEqual(double(z), double(TT));
     
@@ -266,24 +258,24 @@ end
 
 function display_test(tc)
     
-    T1 = SE3.rand;
-    T2 = SE3.rand
+    T1 = SE2.rand;
+    T2 = SE2.rand
     
     T1.print
-    trprint(T1)   % old style syntax
+    trprint2(T1)   % old style syntax
     
     T1.plot
     
     T1.print
-    trprint(T1)   % old style syntax
+    trprint2(T1)   % old style syntax
     
     T1.plot
-    trplot(T1)   % old style syntax
+    trplot2(T1)   % old style syntax
     
     T1.animate
     T1.animate(T2)
-    tranimate(T1)   % old style syntax
-    tranimate(T1, T2)   % old style syntax
+    tranimate2(T1)   % old style syntax
+    tranimate2(T1, T2)   % old style syntax
     tranimate2(T1)   % old style syntax
     tranimate2(T1, T2)   % old style syntax
 end
