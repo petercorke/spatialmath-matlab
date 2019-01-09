@@ -407,7 +407,7 @@ classdef Twist
             out = obj(1);
             
             for i=2:length(obj)
-                out = out .* obj(i);
+                out = out * obj(i);
             end
         end
         
