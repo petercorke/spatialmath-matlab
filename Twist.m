@@ -243,6 +243,12 @@ classdef Twist
                 elseif length(a.v) == 3 && ishomog(b)
                     % compose a twist with SE2, result is an SE3
                     c = SE3(a.T * double(b));
+                elseif isa(b, 'SpatialVelocity')
+                    c = SpatialVelocity(a.Ad * b.vw);
+                elseif isa(b, 'SpatialAcceleration')
+                    c = SpatialAcceleration(a.Ad * b.vw);
+                elseif isa(b, 'SpatialForce')
+                    c = SpatialForce(a.Ad' * b.vw);
                 else
                     error('RTB:Twist', 'twist * SEn, operands don''t conform');
                 end

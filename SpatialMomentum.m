@@ -1,0 +1,2 @@
+classdef SpatialMomentum < SpatialForce
+end
