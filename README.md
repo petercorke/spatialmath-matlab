@@ -1,4 +1,4 @@
- #Spatial Math Toolbox for MATLAB&reg;.
+# Spatial Math Toolbox for MATLAB&reg;.
 
 ## Synopsis
 
