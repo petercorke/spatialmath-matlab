@@ -163,9 +163,12 @@ function tranimate2(P2, varargin)
     
     waitfor(t)
     delete(t)
-        if opt.cleanup
-            delete(hg);
-        end
+    if ~isempty(opt.movie)
+        ud.anim.close()
+    end
+    if opt.cleanup
+        delete(hg);
+    end
 end
 
 function guts(ud, i)
@@ -181,7 +184,7 @@ function guts(ud, i)
     end
     
     if ~isempty(ud.opt.movie)
-        anim.add();
+        ud.anim.add();
     end
     
     if ~isempty(ud.opt.time)
