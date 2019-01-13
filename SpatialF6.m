@@ -1,7 +1,7 @@
-%SpatialMomentum Spatial momentum class
+%SpatialF6 Abstract spatial force class
 %
-% Concrete subclass of SpatiallVec6 and SpatialF6 and represents the
-% translational and rotational momentum of a rigid-body moving in 3D space.
+% Abstract superclass that represents spatial force.  This class has two
+% concrete subclasses:
 %
 %     SpatialVec6 (abstract handle class)
 %        |
@@ -16,21 +16,22 @@
 %             +---SpatialMomentum
 %
 % Methods::
-%  SpatialMomentum        ^constructor invoked by subclasses
-%  new                    construct new concrete class of same type
-%  double                 ^convert to a 6xN double
-%  cross                  ^^cross product
-%  char                   ^convert to string
-%  display                ^display in human readable form
+%  SpatialF6     ^constructor invoked by subclasses
+%  double        ^convert to a 6xN double
+%  char          ^convert to string
+%  display       ^display in human readable form
 %
 % Operators::
+%
 %  +          ^add spatial vectors of the same type
 %  -          ^subtract spatial vectors of the same type
 %  -          ^unary minus of spatial vectors
 %
 % Notes:
 % - The implementation of methods indicated with ^ is inherited from SpatialVec6.
-% - The implementation of methods indicated with ^^ is inherited from SpatialM6.
+% - Subclass of the MATLAB handle class which means that pass by reference semantics
+%   apply.
+% - Spatial vectors can be placed into arrays and indexed.
 %
 % References::
 %
@@ -40,12 +41,8 @@
 % - A beginner?s guide to 6-d vectors (part 1), R. Featherstone, 
 %   IEEE Robotics Automation Magazine, 17(3):83?94, Sep. 2010.
 %
-% See also SpatialVec6, SpatialF6, SpatialForce.
+% See also SpatialForce, SpatialMomentum, SpatialInertia, SpatialM6.
 
-classdef SpatialMomentum < SpatialF6
-        methods
-        function n = new(a, val)
-            n = SpatialForce(val);
-        end
-    end
+classdef (Abstract) SpatialF6 < SpatialVec6
 end
+
