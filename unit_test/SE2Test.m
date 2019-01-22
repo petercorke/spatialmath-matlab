@@ -229,7 +229,7 @@ function interp_test(tc)
     
     tc.verifyEqual(double(interp(I, TT, 0)),   double(I), 'AbsTol', 1e-10 );
     tc.verifyEqual(double(interp(I, TT, 1)),   double(TT), 'AbsTol', 1e-4 );
-    tc.verifyEqual(double(interp(I, TT, 0.5)), double(trinterp2(TT, 0.5)), 'AbsTol', 1e-10  );
+    tc.verifyEqual(double(interp(I, TT, 0.5)), double(trinterp2(TT.T, 0.5)), 'AbsTol', 1e-10  );
     
 end
 
