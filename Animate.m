@@ -54,11 +54,14 @@ classdef Animate < handle
         frame
         dir
         resolution
-        video
+        video           % video writing object
+        profile
+        fps
+        bgcolor
     end
     
     methods
-        function a = Animate(name, varargin)
+        function a = Animate(filename, varargin)
             %ANIMATE.ANIMATE Create an animation class
             %
             % A = ANIMATE(NAME, OPTIONS) initializes an animation, and creates
@@ -72,59 +75,70 @@ classdef Animate < handle
             % 'resolution',R     Set the resolution of the saved image to R pixels per inch.
             % 'profile',P        Create an MP4 file directly, see VideoWriter
             % 'fps',F            Frame rate (default 30)
+            % 'bgcolor',C        Set background color of axes, 3 vector or MATLAB
+            %                    color name.
             %
             % Notes::
             % - if a profile is given a movie is created, see VideoWriter for allowable
             %   profiles.
             % - if the file has an extension a movie is created.
+            % - if an extension of '.gif' is given an animated GIF is created
             % - otherwise a folder full of frames is created.
             %
             % See also VideoWriter.
         
-            if isempty(name)
+            if isempty(filename)
                 % we're not animating
                 a.dir = [];
             else
                 opt.resolution = [];
                 opt.profile = [];
                 opt.fps = 30;
+                bgcolor = [];
 
-                if iscell(name) && length(varargin) == 0
-                    varargin = name(2:end);
-                    name = name{1};
+                if iscell(filename) && length(varargin) == 0
+                    varargin = filename(2:end);
+                    filename = filename{1};
                 end
                 [opt,args] = tb_optparse(opt, varargin);
                 a.resolution = opt.resolution;
                 a.frame = 0;
 
-                [p,f,e] = fileparts(name);
+                [p,f,e] = fileparts(filename);
                 
                 if ~isempty(opt.profile)
                     % create a video with this profile
-                    a.video = VideoWriter(name, a.profile, args{:});
-                    fprintf('saving video --> %s with profile ''%s''\n', name, a.profile);
-
+                    a.video = VideoWriter(filename, a.profile, args{:});
+                    fprintf('saving video --> %s with profile ''%s''\n', filename, a.profile);
+                    a.profile = opt.profile
                 elseif ~isempty(e)
                     % an extension was given
                     switch (e)
                         case {'.mp4', '.m4v'},  profile = 'MPEG-4';
                         case '.mj2',  profile = 'Motion JPEG 2000';
                         case '.avi', profile = 'Motion JPEG AVI';
+                        case {'.gif','.GIF'}, profile = 'GIF';
                     end
-                    fprintf('Animate: saving video --> %s with profile ''%s''\n', name, profile);
-                    a.video = VideoWriter(name, profile, args{:});
-                    a.video.FrameRate = opt.fps;
-                    a.video.Quality = 95;
-                    open(a.video);
+                    fprintf('Animate: saving video --> %s with profile ''%s''\n', filename, profile);
+                    if strcmp(profile, 'GIF')
+                        a.video = filename;
+                        a.fps = opt.fps;
+                    else
+                        a.video = VideoWriter(filename, profile, args{:});
+                        a.video.FrameRate = opt.fps;
+                        a.video.Quality = 95;
+                        open(a.video);
+                    end
+                    a.profile = profile;
                 else
                     % create a folder to hold the frames
-                    a.dir = name;
-                    mkdir(name);
+                    a.dir = filename;
+                    mkdir(filename);
                     
                     % clear out old frames
-                    delete( fullfile(name, '*.png') );
-                    fprintf('saving frames --> %s\n', name);
-
+                    delete( fullfile(filename, '*.png') );
+                    fprintf('saving frames --> %s\n', filename);
+                    a.profile = 'FILES';
                 end
             end
             
@@ -148,23 +162,38 @@ classdef Animate < handle
                 fh = gcf;
             end
             
-            if isempty(a.video)
-                if isempty(a.resolution)
-                    print(fh, '-dpng', fullfile(a.dir, sprintf('%04d.png', a.frame)));
-                else
-                    print(fh, '-dpng', sprintf('-r%d', a.resolution), fullfile(a.dir, sprintf('%04d.png', a.frame)));
-                end
-            else
-                im = frame2im( getframe(fh) );  % get the frame
-                
-                % crop so that height/width are multiples of two, by default MATLAB pads
-                % with black which gives lines at the edge
-                w = numcols(im); h = numrows(im);
-                w = floor(w/2)*2; h = floor(h/2)*2;
-                im = im(1:h,1:w,:);
-                
-                % add the frame to the movie
-                writeVideo(a.video, im)
+            if ~isempty(a.bgcolor)
+                fh.Color = a.bgcolor;
+            end
+            ax = gca;
+            ax.Units = 'pixels';
+            switch a.profile
+                case 'FILES'
+                    if isempty(a.resolution)
+                        print(fh, '-dpng', fullfile(a.dir, sprintf('%04d.png', a.frame)));
+                    else
+                        print(fh, '-dpng', sprintf('-r%d', a.resolution), fullfile(a.dir, sprintf('%04d.png', a.frame)));
+                    end
+                case 'GIF'
+                    im = frame2im(getframe(fh));  % get the frame
+                    [A, map] = rgb2ind(im, 256);
+                    if a.frame == 0
+                        imwrite(A, map, a.video, 'gif', 'LoopCount',Inf, 'DelayTime', 1/a.fps);
+                    else
+                        imwrite(A, map, a.video, 'gif', 'WriteMode','append', 'DelayTime', 1/a.fps);
+                    end
+                otherwise
+                    
+                    im = frame2im( getframe(fh, ax.Position) );  % get the frame
+                    
+                    % crop so that height/width are multiples of two, by default MATLAB pads
+                    % with black which gives lines at the edge
+                    w = numcols(im); h = numrows(im);
+                    w = floor(w/2)*2; h = floor(h/2)*2;
+                    im = im(1:h,1:w,:);
+                    
+                    % add the frame to the movie
+                    writeVideo(a.video, im)
             end
             a.frame = a.frame + 1;
         end
@@ -175,7 +204,9 @@ classdef Animate < handle
             % A.CLOSE() closes the video file.
             %
             % 
-            if ~isempty(a.video)
+            switch a.profile
+                case {'GIF', 'FILES'}
+                otherwise
                 if nargout > 0
                     out = char(a.video);
                 end
