@@ -243,7 +243,7 @@ classdef (Abstract) RTBPose
             %
             % See also RTBPose.power, RTBPose.mtimes, RTBPose.times.
             assert(isscalar(n) && isreal(n) && floor(n) == n, 'RTB:Pose', 'exponent must be a real integer');
-            e = SE3( double(obj1)^n);
+            e = obj1.new( double(obj1)^n);
         end
         
         function e = power(obj1, n)
