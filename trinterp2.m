@@ -41,19 +41,22 @@
 % http://www.petercorke.com
 
 function T = trinterp2(A, B, C)
-    
+
     switch nargin
         case 2
-            T1 = A; r = B;
+            % trinterp(T, s)
+            T1 = A; s = B;
             
             th0 = 0;
             th1 = atan2(T1(2,1), T1(1,1));
-            if ~isrot2(T0)
+            if ~isrot2(T1)
                 p0 = [0 0]';
                 p1 = transl2(T1);
             end
         case 3
-            T0 = A; T1 = B; r = C;
+            % trinterp(T1, T2, s)
+            T0 = A; T1 = B; s = C;
+            assert(all(size(A) == size(B)), 'RTB:trinterp2:badarg', '2 matrices must be same size');
             th0 = atan2(T0(2,1), T0(1,1));
             th1 = atan2(T1(2,1), T1(1,1));
             if ~isrot2(T0)
@@ -64,26 +67,26 @@ function T = trinterp2(A, B, C)
             error('RTB:trinterp2:badarg', 'must be 2 or 3 arguments');
     end
     
-    if length(r) == 1 && r > 1 && (r == floor(r))
+    if length(s) == 1 && s > 1 && (s == floor(s))
         % integer value
-        r = [0:(r-1)] / (r-1);
-    elseif any(r<0 | r>1)
+        s = [0:(s-1)] / (s-1);
+    elseif any(s<0 | s>1)
         error('RTB:trinterp2:badarg', 'values of S outside interval [0,1]');
     end
     
-    if isrot2(T0)
+    if isrot2(T1)
         
         % SO(2) case
-        for i=1:length(r)
-            th = th0*(1-r(i)) + r(i)*th1;
+        for i=1:length(s)
+            th = th0*(1-s(i)) + s(i)*th1;
             
             T(:,:,i) = rot2(th);
         end
     else
         % SE(2) case
-        for i=1:length(r)
-            th = th0*(1-r(i)) + r(i)*th1;
-            pr = p0*(1-r(i)) + r(i)*p1;
+        for i=1:length(s)
+            th = th0*(1-s(i)) + s(i)*th1;
+            pr = p0*(1-s(i)) + s(i)*p1;
             
             T(:,:,i) = rt2tr(rot2(th), pr);
         end
