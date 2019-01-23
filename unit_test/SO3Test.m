@@ -352,14 +352,20 @@ function display_test(tc)
     
     R.print
     trprint(R)   % old style syntax
+end
+
+function compatability_test(tc)
     
-    R.plot
-    trplot(R)   % old style syntax
+    R1 = SO3.rand();
+    R2 = SO3.rand();
+    
+    R1.plot
+    trplot(R1)   % old style syntax
     
     R2 = SO3.rand()
     
-    R.animate
-    R.animate(R2)
-    tranimate(R)   % old style syntax
-    tranimate(R,R2)   % old style syntax
+    R1.animate
+    R1.animate(R2)
+    tranimate(R1)   % old style syntax
+    tranimate(R1,R2)   % old style syntax
 end

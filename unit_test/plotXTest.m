@@ -1,11 +1,12 @@
+function tests = plotXTest
+  tests = functiontests(localfunctions);
+  
+  clc
+end
+
 %     2d outline, filled case
 %     3d outlien, filled case
 %     with LS or edgecolor, color options etc.
-
-function tests = plotXTest
-  tests = functiontests(localfunctions);
-  close all
-end
 
 function teardownOnce(tc)
     close all
@@ -235,16 +236,16 @@ function plotpoly_test(tc)
     %tc.verifyEqual(patch.Tag, 'bob');  % no tag 
 end
 
-function plot_sphere(tc)
+function plot_sphere_test(tc)
 end
 
-function plot_box(tc)
+function plot_box_test(tc)
 end
 
-function plot_arrow(tc)
+function plot_arrow_test(tc)
 end
 
-function plot_homline(tc)
+function plot_homline_test(tc)
 end
 
 % plot_ellipse
@@ -293,26 +294,25 @@ function ellipse3d_test(testCase)
     E = diag([9 4 6]);
     
     plot_ellipse(E)
-    pause
+
     
     clf
     plot_ellipse(E, 'edgecolor', 'g');
-    pause(0.1)
+
     
     clf
     plot_ellipse(E, 'fillcolor', 'g');
-    pause(0.1
     
     clf
     plot_ellipse(E, 'fillcolor', 'g', 'shadow');
-    pause(0.1
+
     
     clf
     plot_ellipse(E, 'fillcolor', 'g', 'edgecolor', 'r', 'LineWidth', 2);
-    pause(0.1
     
-    plot_ellipse(E, [0 8], 'edgecolor', 'r', 'fillcolor', 'c');
-    plot_ellipse(E, [4 8], 'LineWidth', 3, 'MarkerStyle', '+');
+
+    plot_ellipse(E, [0 8 1], 'edgecolor', 'r', 'fillcolor', 'c');
+    plot_ellipse(E, [4 8 1], 'LineWidth', 3);
 
     axis equal
 end

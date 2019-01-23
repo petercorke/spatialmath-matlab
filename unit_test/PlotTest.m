@@ -187,14 +187,3 @@ end
 function plot_sphere_test(tc)
      plot_sphere([1 2 3],5,'r');
 end
-
-%    qplot                      - plot joint angle trajectories
-function qplot_test(tc)
-    t = [0:0.5:20];
-    qz = [0 0 0 0 0 0]; qr = [1 2 3 4 5 6];
-    q = jtraj(qz, qr, t);
-    clf
-    qplot(t,q);
-    
-    qplot(q);
-end

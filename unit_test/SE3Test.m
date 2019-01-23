@@ -229,26 +229,6 @@ function tv_test(tc)
     
 end
 
-function ctraj_test(tc)
-    
-    TT = SE3([2 4 6])*SE3.Rx(pi);
-    I = SE3();
-    
-    tg = ctraj(I, TT, 3);
-    verifyInstanceOf(tc, tg, 'SE3');
-    verifySize(tc, tg, [1 3]);
-    tc.verifyEqual(double(tg(1)), double(I), 'AbsTol', 1e-10 );
-    tc.verifyEqual(double(tg(2)), double( SE3([2 4 6]/2)*SE3.Rx(pi/2) ), 'AbsTol', 1e-10 );
-    tc.verifyEqual(double(tg(3)), double(TT), 'AbsTol', 1e-10 );
-    
-    tg = ctraj(I, TT, [1 0.5 0]);
-    verifyInstanceOf(tc, tg, 'SE3');
-    verifySize(tc, tg, [1 3]);
-    tc.verifyEqual(double(tg(3)), double(I), 'AbsTol', 1e-10 );
-    tc.verifyEqual(double(tg(2)), double( SE3([2 4 6]/2)*SE3.Rx(pi/2) ), 'AbsTol', 1e-10 );
-    tc.verifyEqual(double(tg(1)), double(TT), 'AbsTol', 1e-10 );
-end
-
 
 function arith_test(tc)
     
@@ -393,6 +373,12 @@ function display_test(tc)
     
     T1.print
     trprint(T1)   % old style syntax
+end
+
+function compatability_test(tc)
+    
+    T1 = SE3.rand();
+    T2 = SE3.rand();
     
     T1.plot
     trplot(T1)   % old style syntax
@@ -402,4 +388,3 @@ function display_test(tc)
     tranimate(T1)   % old style syntax
     tranimate(T1, T2)   % old style syntax
 end
-
