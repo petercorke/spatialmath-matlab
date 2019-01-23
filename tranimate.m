@@ -126,7 +126,7 @@ function tranimate(P2, varargin)
     else
         % tranimate(P1, P2)
         % create a path between them
-        Ttraj = ctraj(T1, T2, opt.nsteps);
+        Ttraj = trinterp(T1, T2, linspace(0, 1, opt.nsteps));
     end
     
     if isempty(opt.axis)
