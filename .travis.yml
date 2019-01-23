@@ -1,3 +1,3 @@
 language: java
 install: source /dev/stdin <<< "$(curl -sL https://ssd.mathworks.com/supportfiles/matlab-runner/install)"
-script: matlab-runner --disableAutoInfiles "disp('Hello World')"
+script: matlab-runner "cd unit_test; results = runtests('IncludeSubfolders',true); assert(all(~[results.Failed]))"
