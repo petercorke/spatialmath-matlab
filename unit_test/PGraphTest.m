@@ -3,7 +3,9 @@ function tests = PGraphTest
 end
 function PGraph2_test(testCase)
  
-    randinit
+    stream = RandStream.getGlobalStream;
+    stream.reset()
+    
     g = PGraph(2);
 
     % add first component, nodes 1-5
@@ -88,7 +90,9 @@ end
 
 function PGraph3_test(testCase)
  
-    randinit
+    stream = RandStream.getGlobalStream;
+    stream.reset()
+    
     g = PGraph(3);
 
     g.add_node( rand(3,1));
