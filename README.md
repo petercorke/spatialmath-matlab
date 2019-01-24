@@ -1,4 +1,6 @@
-# Spatial Math Toolbox for MATLAB&reg;.
+[![Build Status](https://travis-ci.com/petercorke/spatial-math.svg?branch=master)](https://travis-ci.com/petercorke/spatial-math)
+
+# Spatial Math Toolbox for MATLAB&reg;
 
 ## Synopsis
 
@@ -23,6 +25,7 @@ ans =
 
 ## What's new
 
+* Continuous intergration using Travis CI
 * Support for spatial vector notation (Featherstone's 6D vectors)
 * `prod()` method for all `RTBPose` subclasses and `Twist`
 
