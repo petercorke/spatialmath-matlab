@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 %% This is for testing the Homogeneous Transformation functions in the robotics Toolbox
 
 function tests = PluckerTest
@@ -293,29 +292,27 @@ end
 
 function methods_test(tc)
     % intersection
-        px = Plucker([0 0 0], [1 0 0]);  % x-axis
+    px = Plucker([0 0 0], [1 0 0]);  % x-axis
     py = Plucker([0 0 0], [0 1 0]);  % y-axis
     px1 = Plucker([0 1 0], [1 1 0]); % offset x-axis
     
-    verifyEqual(tc, px.origin_distance(), 0);
-    verifyEqual(tc, px1.origin_distance(), 1);
-    verifyEqual(tc, px1.origin_closesst(), [0 1 0]');
-
+    verifyEqual(tc, px.ppd, 0);
+    verifyEqual(tc, px1.ppd, 1);
+    verifyEqual(tc, px1.pp, [0 1 0]');
     
     
-    px.intersect(px)
-      px.intersect(py)  
-          px.intersect(px1)
+    
+    px.intersects(px)
+    px.intersects(py)
+    px.intersects(px1)
 end
 
-function intersect_test(tc)
-    px = Plucker([0 0 0], [1 0 0]);  % x-axis
-    py = Plucker([0 0 0], [0 1 0]);  % y-axis
-    
-    plane.d = [1 0 0]; plane.p = 2; % plane x=2
-    
-    px.intersect_plane(plane)
-    py.intersect_plane(plane)
-end
-
->>>>>>> common/master
+% function intersect_test(tc)
+%     px = Plucker([0 0 0], [1 0 0]);  % x-axis
+%     py = Plucker([0 0 0], [0 1 0]);  % y-axis
+%     
+%     plane.d = [1 0 0]; plane.p = 2; % plane x=2
+%     
+%     px.intersect_plane(plane)
+%     py.intersect_plane(plane)
+% end
