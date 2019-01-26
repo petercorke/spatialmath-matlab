@@ -1,3 +1,3 @@
 language: java
 install: source /dev/stdin <<< "$(curl -sL https://ssd.mathworks.com/supportfiles/matlab-runner/install)"
-script: matlab-runner -xi .git -xi doc -sd unit_test "addpath ..; RunAllTests"
+script: matlab-runner -xi .git -xi doc -o CoverageResults.xml -sd unit_test "addpath ..; RunAllTests"
