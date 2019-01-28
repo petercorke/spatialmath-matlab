@@ -6,9 +6,9 @@ suite = testsuite('IncludeSubfolders', false);
 runner = TestRunner.withTextOutput;
 
 % do a coverage report
-reportFile = 'CoverageResults.xml';
+reportFile = fullfile('..', 'coverage.xml');
 reportFormat = CoberturaFormat(reportFile);
-plugin = CodeCoveragePlugin.forFolder('.', 'Producing',reportFormat);
+plugin = CodeCoveragePlugin.forFolder('..', 'Producing',reportFormat);
 runner.addPlugin(plugin);
 
 % Run all unit tests in my repository.
