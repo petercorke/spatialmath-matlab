@@ -35,26 +35,25 @@
 % http://www.petercorke.com
 
 function T = rt2tr(R, t)
-    t = t(:);
-    if size(R,1) ~= size(R,2)
-        error('R must be square');
-    end
-    if size(R,1) ~= size(t,1)
-        error('R and t must have the same number of rows');
-    end
 
-    if size(R,3) ~= size(t,2)
-        error('For sequence size(R,3) must equal size(t,2)');
-    end
-
+    assert( size(R,1) == size(R,2), 'RTB:rt2tr:badarg', 'R must be square');
+    
+    n = size(R,2);
+    B = [zeros(1,n) 1];
+    
     if size(R,3) > 1
-        Z = zeros(size(R,2),1);
-        B = [Z' 1];
-        T = zeros(4,4,size(R,3));
+        % vector case
+        assert( size(R,1) == size(t,1), 'RTB:rt2tr:badarg', 'R and t must have conforming dimensions')
+        assert( size(R,3) == size(t,2), 'RTB:rt2tr:badarg', 'For sequence size(R,3) must equal size(t,2)');
+        
+        T = zeros(n+1,n+1,size(R,3));
         for i=1:size(R,3)
             T(:,:,i) = [R(:,:,i) t(:,i); B];
         end
     else
-        T = [R t; zeros(1,size(R,2)) 1];
+        % scalar case
+        assert( isvec(t, size(R,1)), 'RTB:rt2tr:badarg', 'R and t must have conforming dimensions')
+        T = [R t(:); B];
     end
+end
 

@@ -40,17 +40,18 @@ function T = r2t(R)
     % check dimensions: R is SO(2) or SO(3)
     d = size(R);
     assert(d(1) == d(2), 'RTB:r2t:badarg', 'matrix must be square');
-    assert(any(d(1) == [2 3]), 'RTB:r2t:badarg', 'argument is not a rotation matrix (sequence)');
-    
-    Z = zeros(d(1),1);
-    B = [Z' 1];
+    assert(any(d(1) == [2 3]), 'RTB:r2t:badarg', 'argument is not a 2x2 or 3x3 rotation matrix (sequence)');
+        
+    n = size(R,2);
+    Z = zeros(n,1);
+    B = [zeros(1,n) 1];
     
     if numel(d) == 2
         % single matrix case
         T = [R Z; B];
     else
         %  matrix sequence case
-        T = zeros(4,4,d(3));
+        T = zeros(n+1,n+1,d(3));
         for i=1:d(3)
             T(:,:,i) = [R(:,:,i) Z; B];
         end
