@@ -6,8 +6,14 @@
 % linear interpolation (slerp).  If S (Nx1) then T (4x4xN) is a sequence of
 % homogeneous transforms corresponding to the interpolation values in S.
 %
+% T = TRINTERP(T0, T1, M) as above but return a sequence (4x4xM) of
+% homogeneous interpolating between T0 and T1 in M steps.
+%
 % T = TRINTERP(T1, S) as above but interpolated between the identity matrix
 % when S=0 to T1 when S=1.
+%
+% T = TRINTERP(T1, M) as above but return a sequence (4x4xM) of
+% homogeneous interpolating between identity matrix and T1 in M steps.
 %
 % See also CTRAJ, SE3.interp, UnitQuaternion, trinterp2.
 
@@ -36,14 +42,14 @@
 function T = trinterp(A, B, C)
     
     if nargin == 3
-        %	TR = TRINTERP(T0, T1, r)
-        T0 = A; T1 = B; r = C(:)';
+        %	TRINTERP(T0, T1, s)
+        T0 = A; T1 = B; s = C(:)';
         
-        if length(r) == 1 && r > 1 && (r == floor(r))
-            % integer value
-            r = [0:(r-1)] / (r-1);
+        if length(s) == 1 && s > 1 && (s == floor(s))
+            % TRINTERP(T0, T1, M)
+            s = linspace(0, 1, s);
         end
-        assert(all(r>=0 & r<=1), 'RTB:trinterp:badarg', 'values of S outside interval [0,1]');
+        assert(all(s>=0 & s<=1), 'RTB:trinterp:badarg', 'values of S outside interval [0,1]');
         
         q0 = UnitQuaternion(T0);
         q1 = UnitQuaternion(T1);
@@ -51,31 +57,31 @@ function T = trinterp(A, B, C)
         p0 = transl(T0);
         p1 = transl(T1);
         
-        for i=1:length(r)
-            qr = q0.interp(q1, r(i));
-            pr = p0*(1-r(i)) + r(i)*p1;
+        for i=1:length(s)
+            qr = q0.interp(q1, s(i));
+            pr = p0*(1-s(i)) + s(i)*p1;
             T(:,:,i) = rt2tr(qr.R, pr);
         end
     elseif nargin == 2
-        %	TR = TRINTERP(T, r)
-        T0 = A; r = B(:)';
+        %	TRINTERP(T, r)
+        T0 = A; s = B(:)';
         
-        if length(r) == 1 && r > 1 && (r == floor(r))
-            % integer value
-            r = linspace(0, 1, r);
-        elseif any(r<0 | r>1)
+        if length(s) == 1 && s > 1 && (s == floor(s))
+            % TRINTERP(T0, T1, M)
+            s = linspace(0, 1, s);
+        elseif any(s<0 | s>1)
             error('RTB:trinterp:badarg', 'values of S outside interval [0,1]');
         end
         
         q0 = UnitQuaternion(T0);
         p0 = transl(T0);
         
-        for i=1:length(r)
-            qr = q0.interp(r(i));
-            pr = r(i)*p0;
+        for i=1:length(s)
+            qr = q0.interp(s(i));
+            pr = s(i)*p0;
             T(:,:,i) = rt2tr(qr.R, pr);
         end
 
     else
-        error('RTB:trinterp:wrongargs', 'must be 2 or 3 arguments');
+        error('RTB:trinterp:badarg', 'must be 2 or 3 arguments');
     end    
