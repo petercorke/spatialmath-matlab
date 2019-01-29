@@ -1,14 +1,17 @@
 [![Build Status](https://travis-ci.com/petercorke/spatial-math.svg?branch=master)](https://travis-ci.com/petercorke/spatial-math)
-
+![Coverage](https://codecov.io/gh/petercorke/spatial-math/branch/master/graph/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+ 
 # Spatial Math Toolbox for MATLAB&reg;
 
 ## Synopsis
 
-This Toolbox contains functions and classes to represent orientation and pose in 2D and 3D (SO(2), SE(2), SO(3), SE(3)) as matrices, quaternions, twists, triple angles, and matrix exponentials. The Toolbox also provides functions for manipulating and converting between datatypes such as vectors, homogeneous transformations and unit-quaternions which are necessary to represent 3-dimensional position and orientation.
+This Toolbox contains functions and classes to represent orientation and pose in 2D and 3D (SO(2), SE(2), SO(3), SE(3)) as orthogonal and homogeneous transformation matrices, quaternions, twists, triple angles, and matrix exponentials. The Toolbox also provides functions for manipulating these datatypes, converting between them, composing them, transforming points and graphically displaying them.
 
-This Toolbox has been factored out of the [Robotics Toolbox for MATLAB](https://github.com/petercorke/robotics-toolbox-matlab).
+Much of this Toolbox functionality was previously in the [Robotics Toolbox for MATLAB](https://github.com/petercorke/robotics-toolbox-matlab).
 
 Advantages of the Toolbox are that:
+
   * the code is mature and provides a point of comparison for other implementations of the same algorithms;
   * the routines are generally written in a straightforward manner which allows for easy understanding, perhaps at the expense of computational efficiency. If you feel strongly about computational efficiency then you can always rewrite the function to be more efficient, compile the M-file using the MATLAB compiler, or create a MEX version;
   * source code is available for the benefit for understanding and teaching.
@@ -16,18 +19,26 @@ Advantages of the Toolbox are that:
 ## Code Example
 
 ```matlab
->> rotx(0.2)  % SO(3) rotation matrix
-ans =
+>> R = rotx(0.2)  % SO(3) rotation matrix
+R =
     1.0000         0         0
          0    0.9801   -0.1987
          0    0.1987    0.9801
 ```
 
+which we could animate simply as
+```matlab
+>> tranimate(R)
+```
+
+![animation from tranimate()](doc/figs/tranimate.gif)
+
 ## What's new
 
-* Continuous intergration using Travis CI
+* Continuous intergration using [Travis CI](travis-ci.com) and [codecov](codecov.io)
 * Support for spatial vector notation (Featherstone's 6D vectors)
 * `prod()` method for all `RTBPose` subclasses and `Twist`
+* Factored out of the [Robotics Toolbox for MATLAB](https://github.com/petercorke/robotics-toolbox-matlab).  RTB now contains only robotics specific code, eg. for manipulator arms and mobile robots.
 
 ## Online resources:
 
