@@ -9,6 +9,171 @@ end
 function teardownOnce(tc)
     close all
 end
+
+%% first of all check we can tell a good matrix from a bad one
+function isrot_test(tc)
+    R1 = diag([1 1 1]);    % proper
+    R2 = diag([1 1 -1]);   % not proper
+    R3 = diag([1 2 1]);    % not proper
+    R4 = diag([2 0.5 1]);  % not proper
+    
+    % test shapes
+    tc.verifyFalse( isrot(1) )
+    tc.verifyFalse( isrot( zeros(2,2) ) )
+    tc.verifyFalse( isrot( zeros(4,4) ) )
+    tc.verifyFalse( isrot( zeros(3,1) ) )
+    tc.verifyFalse( isrot( zeros(1,3) ) )
+    
+    % test shapes with validity check
+    tc.verifyFalse( isrot(1, 1) )
+    tc.verifyFalse( isrot( zeros(2,2), 1 ) )
+    tc.verifyFalse( isrot( zeros(4,4) ), 1 )
+    tc.verifyFalse( isrot( zeros(4,1) ), 1 )
+    tc.verifyFalse( isrot( zeros(1,4) ), 1 )
+    
+    % test 3x3 
+    tc.verifyTrue( isrot(R1) )
+    tc.verifyTrue( isrot(R2) )
+    tc.verifyTrue( isrot(R3) )
+    tc.verifyTrue( isrot(R4) )
+    
+    % test 3x3 with validity check
+    tc.verifyTrue( isrot(R1, 1) )
+    tc.verifyFalse( isrot(R2, 1) )
+    tc.verifyFalse( isrot(R3, 1) )
+    tc.verifyFalse( isrot(R4, 1) )
+    
+    % vector case
+    tc.verifyTrue( isrot(cat(3, R1, R1, R1)) )
+    tc.verifyTrue( isrot(cat(3, R1, R1, R1), 1) )    
+    tc.verifyTrue( isrot(cat(3, R1, R2, R3)) )
+    tc.verifyFalse( isrot(cat(3, R1, R2, R3), 1) )                   
+end
+
+function ishomog_test(tc)
+    T1 = diag([1 1 1 1]);    % proper
+    T2 = diag([1 1 -1 1]);   % not proper
+    T3 = diag([1 2 1 1]);    % not proper
+    T4 = diag([2 0.5 1 1]);  % not proper
+    T5 = diag([1 1 1 0]);    % not proper
+    
+    
+    % test shapes
+    tc.verifyFalse( ishomog(1) )
+    tc.verifyFalse( ishomog( zeros(2,2) ) )
+    tc.verifyFalse( ishomog( zeros(3,3) ) )
+    tc.verifyFalse( ishomog( zeros(4,1) ) )
+    tc.verifyFalse( ishomog( zeros(1,4) ) )
+    
+    % test shapes with validity check
+    tc.verifyFalse( ishomog(1, 1) )
+    tc.verifyFalse( ishomog( zeros(2,2), 1 ) )
+    tc.verifyFalse( ishomog( zeros(3,3) ), 1 )
+    tc.verifyFalse( ishomog( zeros(4,1) ), 1 )
+    tc.verifyFalse( ishomog( zeros(1,4) ), 1 )
+    
+    % test 4x4
+    tc.verifyTrue( ishomog(T1) )
+    tc.verifyTrue( ishomog(T2) )
+    tc.verifyTrue( ishomog(T3) )
+    tc.verifyTrue( ishomog(T4) )
+    tc.verifyTrue( ishomog(T5) )
+    
+    
+    % test 4x4 with validity check
+    tc.verifyTrue( ishomog(T1, 1) )
+    tc.verifyFalse( ishomog(T2, 1) )
+    tc.verifyFalse( ishomog(T3, 1) )
+    tc.verifyFalse( ishomog(T4, 1) )
+    tc.verifyFalse( ishomog(T5, 1) )
+    
+    
+    % vector case
+    tc.verifyTrue( ishomog(cat(3, T1, T1, T1)) )
+    tc.verifyTrue( ishomog(cat(3, T1, T1, T1), 1) )
+    tc.verifyTrue( ishomog(cat(3, T1, T2, T3)) )
+    tc.verifyFalse( ishomog(cat(3, T1, T2, T3), 1) )
+end
+
+
+%% can we convert between rotation matrices and homogeneous coordinate matrices
+
+function r2t_test(tc)
+
+    % SO(3) case
+    R = [1 2 3;4 5 6; 7 8 9];
+    verifyEqual(tc, r2t(R),...
+        [1 2 3 0; 4 5 6 0; 7 8 9 0; 0 0 0 1],'absTol',1e-10);
+
+    % sequence case
+    Rs = cat(3, R, R, R, R, R);
+    Ts = r2t(Rs);
+    verifySize(tc, Ts, [4 4 5]);
+    verifyEqual(tc, Ts(:,:,2), ...
+        [1 2 3 0; 4 5 6 0; 7 8 9 0; 0 0 0 1],'absTol',1e-10);
+
+end
+
+
+function t2r_test(tc)
+    %Unit test for r2t with variables eul2tr([.1, .2, .3])
+
+    % SE(3) case
+    T = [1 2 3 4; 5 6 7 8; 9 10 11 12; 0 0 0 1];
+    verifyEqual(tc, t2r(T),...
+        [1 2 3; 5 6 7; 9 10 11],'absTol',1e-10);
+
+    % sequence case
+    Ts = cat(3, T, T, T, T, T);
+    Rs = t2r(Ts);
+    verifySize(tc, Rs, [3 3 5]);
+    verifyEqual(tc, Rs(:,:,2), ...
+        [1 2 3; 5 6 7; 9 10 11],'absTol',1e-10);
+
+end
+
+function rt2tr_test(tc)
+
+    R = [1 2 3;4 5 6; 7 8 9];
+    t = [-10; -11; -12];
+    
+    verifyEqual(tc, rt2tr(R, t),...
+        [1 2 3 -10; 4 5 6 -11; 7 8 9 -12; 0 0 0 1],'absTol',1e-10);
+
+    % sequence case
+    Rs = cat(3, R, 2*R, 3*R);
+    ts = cat(2, t, 2*t, 3*t);
+    Ts = rt2tr(Rs, ts);
+    verifySize(tc, Ts, [4 4 3]);
+    verifyEqual(tc, Ts(:,:,1), ...
+        [1 2 3 -10; 4 5 6 -11; 7 8 9 -12; 0 0 0 1],'absTol',1e-10);
+    verifyEqual(tc, Ts(:,:,2), ...
+        [2*[1 2 3 -10; 4 5 6 -11; 7 8 9 -12]; 0 0 0 1],'absTol',1e-10);
+    verifyEqual(tc, Ts(:,:,3), ...
+        [3*[1 2 3 -10; 4 5 6 -11; 7 8 9 -12]; 0 0 0 1],'absTol',1e-10);
+end
+   
+
+function tr2rt_test(tc)
+    %Unit test for r2t with variables eul2tr([.1, .2, .3])
+
+    %% SE(3) case
+    T = [1 2 3 4; 5 6 7 8; 9 10 11 12; 0 0 0 1];
+    [R,t] = tr2rt(T);
+    verifyEqual(tc, R, [1 2 3; 5 6 7; 9 10 11], 'absTol',1e-10);
+    verifyEqual(tc, t, [4; 8; 12], 'absTol',1e-10);
+
+    % sequence case
+    Ts = cat(3, T, T, T, T, T);
+    [Rs,ts] = tr2rt(Ts);
+    verifySize(tc, Rs, [3 3 5]);
+    verifySize(tc, ts, [5 3]);
+
+    verifyEqual(tc, Rs(:,:,2), [1 2 3; 5 6 7; 9 10 11], 'absTol',1e-10);
+    verifyEqual(tc, ts(2,:), [4 8 12], 'absTol',1e-10);
+
+end
+
 % Primitives
 function rotx_test(tc)
     verifyEqual(tc, rotx(0), eye(3,3),'absTol',1e-10);
@@ -119,60 +284,6 @@ function transl_test(tc)
      verifyEqual(tc, transl(T), x, 'AbsTol', 1e-10);
 end
    
-
-%% SO(2)
-function rot2_test(tc)
-    verifyEqual(tc,  rot2(0), eye(2,2), 'absTol', 1e-6);
-    verifyEqual(tc,  trot2(0), eye(3,3), 'absTol', 1e-6);
-    verifyEqual(tc,  rot2(0), eye(2,2), 'absTol', 1e-6);
-    verifyEqual(tc,  trot2(pi/2), [0 -1 0; 1 0 0; 0 0 1], 'absTol', 1e-6);
-    
-    verifyEqual(tc,  trot2(90, 'deg'),[0 -1 0; 1 0 0; 0 0 1], 'absTol', 1e-6);
-    verifyEqual(tc,  trot2(pi)*trot2(-pi/2), ...
-        trot2(pi/2), 'absTol', 1e-6);
-    verifyEqual(tc,  rot2(pi)*rot2(-pi/2), ...
-        rot2(pi/2), 'absTol', 1e-6);
-end
-
-%% SE(2)
-function SE2_test(tc)
-    
-    T2 = [1 0 1; 0 1 2; 0 0 1];
-    
-    % transl(T) -> P
-    verifyEqual(tc,  transl2(T2), ...
-        [1;2], 'absTol',1e-10);
-    
-    % transl(P) -> T
-    verifyEqual(tc,  transl2(1, 2), ...
-        [1 0 1; 0 1 2; 0 0 1], 'absTol', 1e-6);
-    verifyEqual(tc,  transl2([2, 3]), ...
-        [1 0 2; 0 1 3; 0 0 1], 'absTol', 1e-6);
-    
-    T3 = transl2([1 2; 3 4; 5 6]);
-    verifySize(tc, T3, [3 3 3]);
-    verifyEqual(tc, T3(:,:,2), transl2([3 4]))
-    
-    
-    T2f = [1 1 1; 1 1 2; 0 0 1];
-    R2 = [1 0 ; 0 1];
-    R2f = [1 1 ; 1 1];
-    verifyEqual(tc,  ishomog2(T2), true);
-    verifyEqual(tc,  ishomog2(T2,1), true);
-    verifyEqual(tc,  ishomog2(T2f,1), false);
-    verifyEqual(tc,  ishomog2(R2), false);
-
-    verifyEqual(tc,  isrot2(R2), true);
-    verifyEqual(tc,  isrot2(R2,1), true);
-    verifyEqual(tc,  isrot2(R2f,1), false);
-    verifyEqual(tc,  isrot2(T2), false);
-    
-    
-%     verifyEqual(tc,  SE2(2, 3, 0), ...
-%         [1 0 2; 0 1 3; 0 0 1], 'absTol', 1e-6);
-%     verifyEqual(tc,  SE2(2, 3, pi/2), ...
-%         transl2(2,3)*trot2(pi/2), 'absTol', 1e-6);
-end
 
 
 
@@ -613,84 +724,6 @@ function oa2tr_test(tc)
     verifyError(tc, @()oa2tr(1),'RTB:oa2tr:badarg');
 end
     
-%    r2t                        - RM to HT
-function r2t_test(tc)
-    %Unit test for r2t
-
-    % SO(3) case
-    R = [1 2 3;4 5 6; 7 8 9];
-    verifyEqual(tc, r2t(R),...
-        [1 2 3 0; 4 5 6 0; 7 8 9 0; 0 0 0 1],'absTol',1e-10);
-
-    % sequence case
-    Rs = cat(3, R, R, R);
-    Ts = r2t(Rs);
-    verifySize(tc, Ts, [4 4 3]);
-    verifyEqual(tc, Ts(:,:,2), ...
-        [1 2 3 0; 4 5 6 0; 7 8 9 0; 0 0 0 1],'absTol',1e-10);
-
-    % SO(2) case
-    R = [1 2; 3 4];
-    verifyEqual(tc, r2t(R),...
-        [1 2 0; 3 4 0; 0 0 1],'absTol',1e-10);
-end
-   
-%    t2r                        - HT to RM
-function t2r_test(tc)
-    %Unit test for r2t with variables eul2tr([.1, .2, .3])
-
-    % SE(3) case
-    T = [1 2 3 4; 5 6 7 8; 9 10 11 12; 0 0 0 1];
-    verifyEqual(tc, t2r(T),...
-        [1 2 3; 5 6 7; 9 10 11],'absTol',1e-10);
-
-    % sequence case
-    Ts = cat(3, T, T, T);
-    Rs = t2r(Ts);
-    verifySize(tc, Rs, [3 3 3]);
-    verifyEqual(tc, Rs(:,:,2), ...
-        [1 2 3; 5 6 7; 9 10 11],'absTol',1e-10);
-
-    % SE(2) case
-    T = [1 2 3; 4 5 6; 0 0 1];
-    verifyEqual(tc, t2r(T),...
-        [1 2; 4 5],'absTol',1e-10);
-end
-
-%    tr2rt                        - HT to RM
-function tr2rt_test(tc)
-    %Unit test for r2t with variables eul2tr([.1, .2, .3])
-
-    %% SE(3) case
-    T = [1 2 3 4; 5 6 7 8; 9 10 11 12; 0 0 0 1];
-    [R,t] = tr2rt(T);
-    verifyEqual(tc, R, [1 2 3; 5 6 7; 9 10 11], 'absTol',1e-10);
-    verifyEqual(tc, t, [4; 8; 12], 'absTol',1e-10);
-
-    % sequence case
-    Ts = cat(3, T, T, T, T, T);
-    [Rs,ts] = tr2rt(Ts);
-    verifySize(tc, Rs, [3 3 5]);
-    verifySize(tc, ts, [5 3]);
-
-    verifyEqual(tc, Rs(:,:,2), [1 2 3; 5 6 7; 9 10 11], 'absTol',1e-10);
-    verifyEqual(tc, ts(2,:), [4 8 12], 'absTol',1e-10);
-
-    %% SE(2) case
-    T = [1 2 3; 4 5 6; 0 0 1];
-    [R,t] = tr2rt(T);
-    verifyEqual(tc, R, [1 2; 4 5], 'absTol',1e-10);
-    verifyEqual(tc, t, [3;6], 'absTol',1e-10);
-    
-    Ts = cat(3, T, T, T, T, T);
-    [Rs,ts] = tr2rt(Ts);
-    verifySize(tc, Rs, [2 2 5]);
-    verifySize(tc, ts, [5 2]);
-
-    verifyEqual(tc, Rs(:,:,2), [1 2; 4 5], 'absTol',1e-10);
-    verifyEqual(tc, ts(2,:), [3 6], 'absTol',1e-10);
-
-end
 
 function trchain_test(tc)
     a1 = 0;
@@ -898,29 +931,6 @@ function trprint_test(tc)
     trprint(a, 'angvec', 'radian', 'fmt', '%g', 'label', 'bob');
 end
 
-function trprint2_test(tc)
-    a = transl2([1,2]) * trot2(0.3);
-
-    trprint2(a);
-    
-    s = evalc( 'trprint2(a)' );
-    tc.verifyTrue(isa(s, 'char') );
-    
-    trprint2(a, 'radian');
-    trprint2(a, 'fmt', '%g');
-    trprint2(a, 'label', 'bob');
-    
-    a = cat(3, a, a, a);
-    trprint2(a);
-    
-    s = evalc( 'trprint(a)' );
-    tc.verifyTrue(isa(s, 'char') );
-    tc.verifyEqual( length(regexp(s, '\n', 'match')), 4);
-    
-    trprint2(a, 'radian');
-    trprint2(a, 'fmt', '%g');
-    trprint2(a, 'label', 'bob');
-end
 
 function trscale_test(tc)
 
@@ -928,7 +938,61 @@ function trscale_test(tc)
     tc.verifyEqual( trscale([1 2 3]), diag([1 2 3 1]) );
     tc.verifyEqual( trscale(1, 2, 3), diag([1 2 3 1]) );
 
-end  
+end
+
+function vex_test(tc)
+    S = [
+             0    -3     2
+             3     0    -1
+            -2     1     0
+    ];
+
+    tc.verifyEqual( vex(S), [1 2 3]');
+    
+    tc.verifyEqual( vex(-S), -[1  2 3]');
+end
+
+
+function skew_test(tc)
+    R = skew([1 2 3]);
+    
+    tc.verifyTrue( isrot(R) );  % check size
+    
+    tc.verifyEqual( norm(R'+ R), 0, 'absTol', 1e-10); % check is skew
+    
+    tc.verifyEqual( vex(R), [1 2 3]'); % check contents, vex already verified
+end
+
+function vexa_test(tc)
+    S = [
+             0    -6     5     1
+             6     0    -4     2
+            -5     4     0     3
+             0     0     0     0
+     ];
+ 
+    tc.verifyEqual( vexa(S), [1:6]');
+    
+    S = [
+             0     6     5     1
+            -6     0     4    -2
+            -5    -4     0     3
+             0     0     0     0
+     ];
+    tc.verifyEqual( vexa(S), [1 -2 3 -4 5 -6]');
+end
+
+
+function skewa_test(tc)
+    T = skewa([3 4 5]);
+    
+    tc.verifyTrue( ishomog2(T) );  % check size
+    
+    R = T(1:2,1:2);
+    tc.verifyEqual( norm(R'+ R), 0, 'absTol', 1e-10); % check is skew
+    
+    tc.verifyEqual( vexa(T), [3 4 5]'); % check contents, vexa already verified
+end
 
 function trlog_test(tc)
     %unit tests for matrix expon stuff
