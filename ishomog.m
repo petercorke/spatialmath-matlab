@@ -33,15 +33,34 @@
 %
 % http://www.petercorke.com
 
-function h = ishomog(tr, rtest)
-    d = size(tr);
-    if ndims(tr) >= 2
-        h =  all(d(1:2) == [4 4]);
-
-        if h && nargin > 1
-            h = abs(det(tr(1:3,1:3)) - 1) < eps;
+function h = ishomog(T, rtest)
+    h = false;
+    d = size(T);
+    
+    if ndims(T) >= 2
+        if ~(all(d(1:2) == [4 4]))
+            return %false
         end
 
-    else
-        h = false;
+        if nargin > 1
+            for i = 1:size(T,3)
+                % check rotational part
+                R = T(1:3,1:3,i);
+                e = R'*R - eye(3,3);
+                if norm(e) > 10*eps
+                    return %false
+                end
+                e = abs(det(R) - 1);
+                if norm(e) > 10*eps
+                    return %false
+                end
+                % check bottom row
+                if ~all(T(4,:,i) == [0 0 0 1])
+                    return %false
+                end
+            end
+        end
     end
+
+    h = true;
+end

@@ -32,15 +32,30 @@
 %
 % http://www.petercorke.com
 
-function h = isrot2(r, dtest)
+function h = isrot2(R, rtest)
 
-    d = size(r);
-    if ndims(r) >= 2
-        h =  all(d(1:2) == [2 2]);
-
-        if h && nargin > 1
-            h = abs(det(r) - 1) < eps;
+    h = false;
+    d = size(R);
+    
+    if ndims(R) >= 2
+        if ~(all(d(1:2) == [2 2]))
+            return %false
         end
-    else
-        h = false;
+
+        if nargin > 1
+            for i = 1:size(R,3)
+                RR = R(:,:,i);
+                e = RR'*RR - eye(2,2);
+                if norm(e) > 10*eps
+                    return %false
+                end
+                e = abs(det(RR) - 1);
+                if norm(e) > 10*eps
+                    return %false
+                end
+            end
+        end
     end
+
+    h = true;
+end
