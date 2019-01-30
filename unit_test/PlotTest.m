@@ -187,3 +187,9 @@ end
 function plot_sphere_test(tc)
      plot_sphere([1 2 3],5,'r');
 end
+
+function xyzlabel_test(tc)
+    
+    plot3(1, 2, 3)
+    xyzlabel()
+end
