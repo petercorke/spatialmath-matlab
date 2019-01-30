@@ -33,39 +33,6 @@ function co_testlnorm(testCase)
                                   'absTol',1e-4);
 end
     
-%    ishomog                    - true if argument is a 4x4 matrix
-function is_testhomog(testCase)
-    tr = [0.9363   -0.2896    0.1987         0
-         0.3130    0.9447   -0.0978         0
-        -0.1593    0.1538    0.9752         0
-              0         0         0    1.0000];
-    r = [0.9363   -0.2896    0.1987
-         0.3130    0.9447   -0.0978
-        -0.1593    0.1538    0.9752];
-    verifyTrue(testCase, ishomog(tr));
-    verifyTrue(testCase, ishomog(cat(3, tr, tr)));
-    verifyTrue(testCase, ishomog(tr),'valid');
-    verifyFalse(testCase, ishomog(r));
-    verifyFalse(testCase, ishomog(1));
-    verifyFalse(testCase, ishomog(ones(4,4),'valid'));
-end
-   
-%    isrot                      - true if argument is a 3x3 matrix
- function is_testrot(testCase)
-    tr = [0.9363   -0.2896    0.1987         0
-         0.3130    0.9447   -0.0978         0
-        -0.1593    0.1538    0.9752         0
-              0         0         0    1.0000];
-    r = [0.9363   -0.2896    0.1987
-         0.3130    0.9447   -0.0978
-        -0.1593    0.1538    0.9752];
-    verifyTrue(testCase, isrot(r));
-    verifyTrue(testCase, isrot(cat(3, r,r)));
-    verifyTrue(testCase, isrot(r),'valid');
-    verifyFalse(testCase, isrot(tr));
-    verifyFalse(testCase, isrot(1));
-    verifyFalse(testCase, isrot(ones(3,3),'valid'));
-end
               
 %    isvec                      - true if argument is a 3-vector
 function is_testvec(testCase)
@@ -239,3 +206,106 @@ function tb_optparse_test(testCase)
     verifyError(testCase,  @() tb_optparse(opt, 'bob'), 'RTB:tboptparse:badargs');
 end
 
+
+function Animate_folder_test(tc)
+    file = 'test';
+    a = Animate(file);
+    plot([1 2], [3 4]);
+    for i=1:10
+        a.add();
+    end
+    a.close();
+    
+    tc.verifyTrue( exist(file, 'dir') > 0 );
+    
+    d = dir('test/*.png')
+    tc.verifyEqual( length(d), 10);
+    
+    for dd=d'
+        delete(fullfile(file, dd.name));
+    end
+    rmdir(file)
+end
+
+function Animate_mp4_test(tc)
+    file = 'test.mp4';
+    a = Animate(file);
+    plot([1 2], [3 4]);
+    for i=1:10
+        a.add();
+    end
+    a.close();
+    
+    tc.verifyTrue( exist(file, 'file') > 0 );
+    
+    delete(file)
+end
+
+function Animate_gif_test(tc)
+    file = 'test.gif';
+    a = Animate(file);
+    plot([1 2], [3 4]);
+    for i=1:10
+        a.add();
+    end
+    a.close();
+    
+    tc.verifyTrue( exist(file, 'file') > 0);
+    
+    im = imread(file);
+    tc.verifyEqual( size(im,4), 10);
+        delete(file)
+end
+
+function homline_test(tc)
+    L = homline(-2, 3, 3, 3);  % y = 3
+    tc.verifyEqual( L/L(2), [0 1 -3]); 
+    
+    L = homline(-2, 10, -2, 30);   % x = -2
+    tc.verifyEqual( L/L(1), [1 0 2]);
+    
+    L = homline(1, 5, 3, 8);   % x = -2
+    tc.verifyEqual( L/L(1)*3, [3 -2 7]);
+end
+
+function about_test(tc)
+    
+    a  = 3;
+    
+    about(a)
+    about('a')  % command line equivalent
+    
+    tc.verifyError( @() about('b'), 'RTB:about')
+    
+    a = sqrt(-1)
+    about(a)
+    
+    a = rand(10,10);
+    about(a)
+    
+    a = SE3();
+    about(a)
+end
+
+function randinit_test(tc)
+    
+    randinit()
+    x = rand;
+    rand(100,1);
+    randinit()
+    y = rand;
+    
+    tc.verifyEqual(x, y);
+end
+
+function angdiff_test(tc)
+    tc.verifyEqual( angdiff(2, 1), 1);
+    tc.verifyEqual( angdiff(1, 2), -1);
+    tc.verifyEqual( angdiff(2, 2), 0);
+    
+    pi34 = pi*3/4;
+    pi2 = pi/2;
+    tc.verifyEqual( angdiff(pi34, pi34), 0)
+    tc.verifyEqual( angdiff(pi34, -pi34), -pi2)
+    tc.verifyEqual( angdiff(-pi34, pi34), pi2)
+end

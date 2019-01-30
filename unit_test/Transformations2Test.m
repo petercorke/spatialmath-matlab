@@ -1,9 +1,9 @@
 %% This is for testing the Homogeneous Transformation functions in the robotics Toolbox
 
 function tests = TransformationsTest
-  tests = functiontests(localfunctions);
-  
-  clc
+    tests = functiontests(localfunctions);
+    
+    clc
 end
 
 function teardownOnce(tc)
@@ -30,7 +30,7 @@ function isrot2_test(tc)
     tc.verifyFalse( isrot2( zeros(4,1) ), 1 )
     tc.verifyFalse( isrot2( zeros(1,4) ), 1 )
     
-    % test 3x3 
+    % test 3x3
     tc.verifyTrue( isrot2(R1) )
     tc.verifyTrue( isrot2(R2) )
     tc.verifyTrue( isrot2(R3) )
@@ -42,9 +42,9 @@ function isrot2_test(tc)
     
     % vector case
     tc.verifyTrue( isrot2(cat(3, R1, R1, R1)) )
-    tc.verifyTrue( isrot2(cat(3, R1, R1, R1), 1) )    
+    tc.verifyTrue( isrot2(cat(3, R1, R1, R1), 1) )
     tc.verifyTrue( isrot2(cat(3, R1, R2, R3)) )
-    tc.verifyFalse( isrot2(cat(3, R1, R2, R3), 1) )                   
+    tc.verifyFalse( isrot2(cat(3, R1, R2, R3), 1) )
 end
 
 function ishomog2_test(tc)
@@ -96,111 +96,111 @@ end
 %% can we convert between rotation matrices and homogeneous coordinate matrices
 %    r2t                        - RM to HT
 function r2t_test(tc)
-
+    
     % SO(2) case
     R = [1 2; 3 4];
-    verifyEqual(tc, r2t(R),...
+    tc.verifyEqual(r2t(R),...
         [1 2 0; 3 4 0; 0 0 1],'absTol',1e-10);
     
     % sequence case
     Rs = cat(3, R, R, R, R, R);
     Ts = r2t(Rs);
     verifySize(tc, Ts, [3 3 5]);
-    verifyEqual(tc, Ts(:,:,2), ...
+    tc.verifyEqual(Ts(:,:,2), ...
         [1 2 0; 3 4 0; 0 0 1],'absTol',1e-10);
 end
-   
+
 
 function t2r_test(tc)
     
     % SE(2) case
     T = [1 2 3; 4 5 6; 0 0 1];
-    verifyEqual(tc, t2r(T),...
+    tc.verifyEqual(t2r(T),...
         [1 2; 4 5],'absTol',1e-10);
     
     % sequence case
     Ts = cat(3, T, T, T, T, T);
     Rs = t2r(Ts);
     verifySize(tc, Rs, [2 2 5]);
-    verifyEqual(tc, Rs(:,:,2), ...
+    tc.verifyEqual(Rs(:,:,2), ...
         [1 2; 4 5],'absTol',1e-10);
 end
 
 function rt2tr_test(tc)
-
+    
     R = [1 2; 3 4];
     t = [5; 6];
     
-    verifyEqual(tc, rt2tr(R, t),...
+    tc.verifyEqual(rt2tr(R, t),...
         [1 2 5; 3 4 6; 0 0 1],'absTol',1e-10);
-
+    
     % sequence case
     Rs = cat(3, R, 2*R, 3*R);
     ts = cat(2, t, 2*t, 3*t);
     Ts = rt2tr(Rs, ts);
     verifySize(tc, Ts, [3 3 3]);
-    verifyEqual(tc, Ts(:,:,1), ...
+    tc.verifyEqual(Ts(:,:,1), ...
         [1 2 5; 3 4 6; 0 0 1],'absTol',1e-10);
-    verifyEqual(tc, Ts(:,:,2), ...
+    tc.verifyEqual(Ts(:,:,2), ...
         [2*[1 2 5; 3 4 6]; 0 0 1],'absTol',1e-10);
-    verifyEqual(tc, Ts(:,:,3), ...
+    tc.verifyEqual(Ts(:,:,3), ...
         [3*[1 2 5; 3 4 6]; 0 0 1],'absTol',1e-10);
 end
 
 function tr2rt_test(tc)
-
+    
     %% SE(2) case
     T = [1 2 3; 4 5 6; 0 0 1];
     [R,t] = tr2rt(T);
-    verifyEqual(tc, R, [1 2; 4 5], 'absTol',1e-10);
-    verifyEqual(tc, t, [3;6], 'absTol',1e-10);
+    tc.verifyEqual(R, [1 2; 4 5], 'absTol',1e-10);
+    tc.verifyEqual(t, [3;6], 'absTol',1e-10);
     
     Ts = cat(3, T, T, T, T, T);
     [Rs,ts] = tr2rt(Ts);
     verifySize(tc, Rs, [2 2 5]);
     verifySize(tc, ts, [5 2]);
-
-    verifyEqual(tc, Rs(:,:,2), [1 2; 4 5], 'absTol',1e-10);
-    verifyEqual(tc, ts(2,:), [3 6], 'absTol',1e-10);
-
+    
+    tc.verifyEqual(Rs(:,:,2), [1 2; 4 5], 'absTol',1e-10);
+    tc.verifyEqual(ts(2,:), [3 6], 'absTol',1e-10);
+    
 end
 
 
-%% Constructors   
+%% Constructors
 
 function transl_test(tc)
     
     % transl(P) -> T
-    verifyEqual(tc, transl(1, 2, 3), [1 0 0 1; 0 1 0 2; 0 0 1 3; 0 0 0 1], 'AbsTol', 1e-10);
-     verifyEqual(tc, transl([1, 2, 3]), [1 0 0 1; 0 1 0 2; 0 0 1 3; 0 0 0 1], 'AbsTol', 1e-10);
-     
-     x = rand(4,3);
-     T = transl(x);
-     verifyEqual(tc, T(1:3,4,1), x(1,:)', 'AbsTol', 1e-10);
-     verifyEqual(tc, T(1:3,4,4), x(4,:)', 'AbsTol', 1e-10);
-         
-     % transl(T) -> P
-     verifyEqual(tc, transl([1 0 0 1; 0 1 0 2; 0 0 1 3; 0 0 0 1]), [1 2 3]', 'AbsTol', 1e-10);
-     [a,b,c] = transl([1 0 0 1; 0 1 0 2; 0 0 1 3; 0 0 0 1]);
-     verifyEqual(tc, a, 1);
-     verifyEqual(tc, b, 2);
-     verifyEqual(tc, c, 3);
-     
-     verifyEqual(tc, transl(T), x, 'AbsTol', 1e-10);
+    tc.verifyEqual(transl(1, 2, 3), [1 0 0 1; 0 1 0 2; 0 0 1 3; 0 0 0 1], 'AbsTol', 1e-10);
+    tc.verifyEqual(transl([1, 2, 3]), [1 0 0 1; 0 1 0 2; 0 0 1 3; 0 0 0 1], 'AbsTol', 1e-10);
+    
+    x = rand(4,3);
+    T = transl(x);
+    tc.verifyEqual(T(1:3,4,1), x(1,:)', 'AbsTol', 1e-10);
+    tc.verifyEqual(T(1:3,4,4), x(4,:)', 'AbsTol', 1e-10);
+    
+    % transl(T) -> P
+    tc.verifyEqual(transl([1 0 0 1; 0 1 0 2; 0 0 1 3; 0 0 0 1]), [1 2 3]', 'AbsTol', 1e-10);
+    [a,b,c] = transl([1 0 0 1; 0 1 0 2; 0 0 1 3; 0 0 0 1]);
+    tc.verifyEqual(a, 1);
+    tc.verifyEqual(b, 2);
+    tc.verifyEqual(c, 3);
+    
+    tc.verifyEqual(transl(T), x, 'AbsTol', 1e-10);
 end
-   
+
 
 %% SO(2)
 function rot2_test(tc)
-    verifyEqual(tc,  rot2(0), eye(2,2), 'absTol', 1e-6);
-    verifyEqual(tc,  trot2(0), eye(3,3), 'absTol', 1e-6);
-    verifyEqual(tc,  rot2(0), eye(2,2), 'absTol', 1e-6);
-    verifyEqual(tc,  trot2(pi/2), [0 -1 0; 1 0 0; 0 0 1], 'absTol', 1e-6);
+    tc.verifyEqual( rot2(0), eye(2,2), 'absTol', 1e-6);
+    tc.verifyEqual( trot2(0), eye(3,3), 'absTol', 1e-6);
+    tc.verifyEqual( rot2(0), eye(2,2), 'absTol', 1e-6);
+    tc.verifyEqual( trot2(pi/2), [0 -1 0; 1 0 0; 0 0 1], 'absTol', 1e-6);
     
-    verifyEqual(tc,  trot2(90, 'deg'),[0 -1 0; 1 0 0; 0 0 1], 'absTol', 1e-6);
-    verifyEqual(tc,  trot2(pi)*trot2(-pi/2), ...
+    tc.verifyEqual( trot2(90, 'deg'),[0 -1 0; 1 0 0; 0 0 1], 'absTol', 1e-6);
+    tc.verifyEqual( trot2(pi)*trot2(-pi/2), ...
         trot2(pi/2), 'absTol', 1e-6);
-    verifyEqual(tc,  rot2(pi)*rot2(-pi/2), ...
+    tc.verifyEqual( rot2(pi)*rot2(-pi/2), ...
         rot2(pi/2), 'absTol', 1e-6);
 end
 
@@ -210,38 +210,38 @@ function SE2_test(tc)
     T2 = [1 0 1; 0 1 2; 0 0 1];
     
     % transl(T) -> P
-    verifyEqual(tc,  transl2(T2), ...
+    tc.verifyEqual( transl2(T2), ...
         [1;2], 'absTol',1e-10);
     
     % transl(P) -> T
-    verifyEqual(tc,  transl2(1, 2), ...
+    tc.verifyEqual( transl2(1, 2), ...
         [1 0 1; 0 1 2; 0 0 1], 'absTol', 1e-6);
-    verifyEqual(tc,  transl2([2, 3]), ...
+    tc.verifyEqual( transl2([2, 3]), ...
         [1 0 2; 0 1 3; 0 0 1], 'absTol', 1e-6);
     
     T3 = transl2([1 2; 3 4; 5 6]);
     verifySize(tc, T3, [3 3 3]);
-    verifyEqual(tc, T3(:,:,2), transl2([3 4]))
+    tc.verifyEqual(T3(:,:,2), transl2([3 4]))
     
     
     T2f = [1 1 1; 1 1 2; 0 0 1];
     R2 = [1 0 ; 0 1];
     R2f = [1 1 ; 1 1];
-    verifyEqual(tc,  ishomog2(T2), true);
-    verifyEqual(tc,  ishomog2(T2,1), true);
-    verifyEqual(tc,  ishomog2(T2f,1), false);
-    verifyEqual(tc,  ishomog2(R2), false);
-
-    verifyEqual(tc,  isrot2(R2), true);
-    verifyEqual(tc,  isrot2(R2,1), true);
-    verifyEqual(tc,  isrot2(R2f,1), false);
-    verifyEqual(tc,  isrot2(T2), false);
+    tc.verifyEqual( ishomog2(T2), true);
+    tc.verifyEqual( ishomog2(T2,1), true);
+    tc.verifyEqual( ishomog2(T2f,1), false);
+    tc.verifyEqual( ishomog2(R2), false);
+    
+    tc.verifyEqual( isrot2(R2), true);
+    tc.verifyEqual( isrot2(R2,1), true);
+    tc.verifyEqual( isrot2(R2f,1), false);
+    tc.verifyEqual( isrot2(T2), false);
     
     
-%     verifyEqual(tc,  SE2(2, 3, 0), ...
-%         [1 0 2; 0 1 3; 0 0 1], 'absTol', 1e-6);
-%     verifyEqual(tc,  SE2(2, 3, pi/2), ...
-%         transl2(2,3)*trot2(pi/2), 'absTol', 1e-6);
+    %     tc.verifyEqual( SE2(2, 3, 0), ...
+    %         [1 0 2; 0 1 3; 0 0 1], 'absTol', 1e-6);
+    %     tc.verifyEqual( SE2(2, 3, pi/2), ...
+    %         transl2(2,3)*trot2(pi/2), 'absTol', 1e-6);
 end
 
 
@@ -254,14 +254,14 @@ function trchain2_test(tc)
     a1 = 1; a2 = 2;
     tc.verifyEqual( trchain2('Tx(a1) Ty(a2)'), transl2(1,2), 'abstol', 1e-10);
     
-    a1 = 0.3; a2 = 0.4; 
+    a1 = 0.3; a2 = 0.4;
     % R() is the same as Rz()
     tc.verifyEqual( trchain2('R(a1) Rz(a2)'), trot2(0.3)*trot2(0.4), 'abstol', 1e-10);
     
     syms q1 a1 a2
     tc.verifyEqual( trchain2('R(q1) Tx(a1) Ty(a2)', [q1]), trot2(q1)*transl2(a1,0)*transl2(0,a2) );
 end
- 
+
 
 function trinterp2_test(tc)
     %% between two transforms
@@ -287,7 +287,7 @@ function trinterp2_test(tc)
     tc.verifyEqual(T(:,:,1), T0, 'abstol', 1e-10);
     tc.verifyEqual(T(:,:,2), Tm, 'abstol', 1e-10);
     tc.verifyEqual(T(:,:,3), T1, 'abstol', 1e-10);
-
+    
     %% between identity and transform
     T0 = eye(3, 3);
     T1 = transl2(2,4)*trot2(pi);
@@ -311,11 +311,16 @@ end
 
 function trprint2_test(tc)
     a = transl2([1,2]) * trot2(0.3);
-
+    
     trprint2(a);
     
     s = evalc( 'trprint2(a)' );
     tc.verifyTrue(isa(s, 'char') );
+    tc.verifyEqual(size(s,1), 1);
+    
+    s = trprint(a);
+    tc.verifyClass(s, 'char');
+    tc.verifyEqual(size(s,1), 1);
     
     trprint2(a, 'radian');
     trprint2(a, 'fmt', '%g');
@@ -326,6 +331,8 @@ function trprint2_test(tc)
     
     s = evalc( 'trprint(a)' );
     tc.verifyTrue(isa(s, 'char') );
+    tc.verifyEqual(size(s,1), 1);
+    
     tc.verifyEqual( length(regexp(s, '\n', 'match')), 4);
     
     trprint2(a, 'radian');
@@ -375,74 +382,46 @@ end
 
 function trexp2_test(tc)
     %unit tests for matrix log stuff
-
-    %%% SO(3) tests
     
-    %% so(3)
+    %% so(2)
+    tc.verifyEqual( trexp2(skew(0)), rot2(0), 'absTol', 1e-6 );
+    tc.verifyEqual( trexp2(skew(pi/2)), rot2(pi/2), 'absTol', 1e-6 );
+    tc.verifyEqual( trexp2(skew(-pi/2)), -rot2(pi/2), 'absTol', 1e-6 );
     
-    % zero rotation case
-    verifyEqual(tc, trexp(skew([0 0 0])), eye(3,3), 'absTol', 1e-6);
+    tc.verifyEqual( trexp2(0), rot2(0), 'absTol', 1e-6 );
+    tc.verifyEqual( trexp2(pi/2), rot2(pi/2), 'absTol', 1e-6 );
+    tc.verifyEqual( trexp2(-pi/2), -rot2(pi/2), 'absTol', 1e-6 );
+        
+    %% se(2)
+    tc.verifyEqual( trexp2(skewa([0 0 0])), transl2([0 0]), 'absTol', 1e-6 );
+    tc.verifyEqual( trexp2(skewa([3 0 0])), transl2([3 0]), 'absTol', 1e-6 );
+    tc.verifyEqual( trexp2(skewa([0 0 0.3])), trot2(0.3), 'absTol', 1e-6 );
     
-    %% so(3), theta
-    
-    verifyEqual(tc, trexp(skew([0 0 0]), 1), eye(3,3), 'absTol', 1e-6);
-
-    % rotation by pi case
-    verifyEqual(tc, trexp(skew([pi 0 0])), rotx(pi), 'absTol', 1e-6);
-    verifyEqual(tc, trexp(skew([0 pi 0])), roty(pi), 'absTol', 1e-6);
-    verifyEqual(tc, trexp(skew([0 0 pi])), rotz(pi), 'absTol', 1e-6);
-
-    % general case
-    verifyEqual(tc, trexp(skew([0.2 0 0])), rotx(0.2), 'absTol', 1e-6);
-    verifyEqual(tc, trexp(skew([0 0.3 0])), roty(0.3), 'absTol', 1e-6);
-    verifyEqual(tc, trexp(skew([0 0 0.4])), rotz(0.4), 'absTol', 1e-6);
-    
-    verifyEqual(tc, trexp(skew([1 0 0]), 0.2), rotx(0.2), 'absTol', 1e-6);
-    verifyEqual(tc, trexp(skew([0 1 0]), 0.3), roty(0.3), 'absTol', 1e-6);
-    verifyEqual(tc, trexp(skew([0 0 1]), 0.4), rotz(0.4), 'absTol', 1e-6);
-    
-    verifyEqual(tc, trexp([1 0 0], 0.2), rotx(0.2), 'absTol', 1e-6);
-    verifyEqual(tc, trexp([0 1 0], 0.3), roty(0.3), 'absTol', 1e-6);
-    verifyEqual(tc, trexp([0 0 1], 0.4), rotz(0.4), 'absTol', 1e-6);
-    
-    verifyEqual(tc, trexp([1 0 0]*0.2), rotx(0.2), 'absTol', 1e-6);
-    verifyEqual(tc, trexp([0 1 0]*0.3), roty(0.3), 'absTol', 1e-6);
-    verifyEqual(tc, trexp([0 0 1]*0.4), rotz(0.4), 'absTol', 1e-6);
-    
-    
-    %%% SE(3) tests
-
-    %% sigma = se(3)
-    % pure translation
-    verifyEqual(tc, trexp( skewa([1 2 3 0 0 0]) ), transl([1 2 3]), 'absTol', 1e-6);
-    verifyEqual(tc, trexp( skewa([0 0 0 0.2 0 0]) ), trotx(0.2), 'absTol', 1e-6);
-    verifyEqual(tc, trexp( skewa([0 0 0 0 0.3 0]) ), troty(0.3), 'absTol', 1e-6);
-    verifyEqual(tc, trexp( skewa([0 0 0 0 0 0.4]) ), trotz(0.4), 'absTol', 1e-6);
-
-    % mixture
-    T = transl([1 2 3])*trotx(0.2)*troty(0.3)*trotz(0.4);
-    verifyEqual(tc, trexp(logm(T)), T, 'absTol', 1e-6);
-    
-    %% twist vector
-    verifyEqual(tc, trexp( double(Twist(T))), T, 'absTol', 1e-6);
-    
-    %% (sigma, theta)
-    verifyEqual(tc, trexp( skewa([1 0 0 0 0 0]), 2), transl([2 0 0]), 'absTol', 1e-6);
-    verifyEqual(tc, trexp( skewa([0 1 0 0 0 0]), 2), transl([0 2 0]), 'absTol', 1e-6);
-    verifyEqual(tc, trexp( skewa([0 0 1 0 0 0]), 2), transl([0 0 2]), 'absTol', 1e-6);
-    
-    verifyEqual(tc, trexp( skewa([0 0 0 1 0 0]), 0.2), trotx(0.2), 'absTol', 1e-6);
-    verifyEqual(tc, trexp( skewa([0 0 0 0 1 0]), 0.2), troty(0.2), 'absTol', 1e-6);
-    verifyEqual(tc, trexp( skewa([0 0 0 0 0 1]), 0.2), trotz(0.2), 'absTol', 1e-6);
-
-    
-    %% (twist, theta)
-    verifyEqual(tc, trexp(Twist('R', [1 0 0], [0 0 0]).S, 0.3), trotx(0.3), 'absTol', 1e-6);
-
-    
-    T = transl([1 2 3])*troty(0.3);
-    verifyEqual(tc, trexp(logm(T)), T, 'absTol', 1e-6);
+    %% errors
+    tc.verifyError( @() trexp2(eye(4,4)), 'RTB:trexp2:badarg');
 end
 
-
+function homtrans_test(tc)
+    
+    P1 = [1;2];
+    P2 = [1 2 3 4 5; 6 7 8 9 10];
+    
+    T = eye(3,3);
+    tc.verifyEqual( homtrans(T, P1), P1);
+    tc.verifyEqual( homtrans(T, P2), P2);
+    
+    Q = [-2;2];
+    T = transl2(Q);
+    tc.verifyEqual( homtrans(T, P1), P1+Q);
+    tc.verifyEqual( homtrans(T, P2), P2+Q);
+    
+    T = trot2(pi/2);
+    tc.verifyEqual( homtrans(T, P1), [-P1(2); P1(1)], 'absTol', 1e-6);
+    tc.verifyEqual( homtrans(T, P2), [-P2(2,:); P2(1,:)], 'absTol', 1e-6);
+    
+    T =  transl2(Q)*trot2(pi/2);
+    tc.verifyEqual( homtrans(T, P1), [-P1(2); P1(1)]+Q, 'absTol', 1e-6);
+    tc.verifyEqual( homtrans(T, P2), [-P2(2,:); P2(1,:)]+Q, 'absTol', 1e-6);
+    
+end
 
