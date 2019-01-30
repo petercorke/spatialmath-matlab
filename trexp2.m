@@ -82,7 +82,7 @@ function T = trexp2(S, theta)
             T = rt2tr(R,t);
             %T = expm([S v; 0 0 0]*theta);
         end
-    else
+    elseif isrot2(S) || isvec(S,1)
         % input is so(2)
         if isrot2(S)
             % input is 2x2 skew symmetric
@@ -90,8 +90,6 @@ function T = trexp2(S, theta)
         elseif isvec(S,1)
             % input is a 1-vector
             w = S;
-        else
-            error('RTB:trexp2:badarg', 'expecting scalar or 2x2');
         end
         
         if nargin == 1
@@ -115,5 +113,6 @@ function T = trexp2(S, theta)
         
         T = eye(2,2) + sin(theta)*S + (1-cos(theta))*S^2;
         
-    end
+    else
+        error('RTB:trexp2:badarg', 'first argument must be so(2), 3-vector, se(2) or 6-vector');end
 end

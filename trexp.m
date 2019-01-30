@@ -89,7 +89,7 @@ function T = trexp(S, theta)
             
             T = rt2tr(R,t);
         end         
-    elseif ishomog2(S) || isvec(S,3)
+    elseif isrot(S) || isvec(S,3)
         % input is so(3)
         
         if isrot(S)
@@ -97,9 +97,7 @@ function T = trexp(S, theta)
             w = vex(S);
         elseif isvec(S)
             % input is a 3-vector
-             w = S;
-        else
-            error('RTB:trexp:badarg', 'expecting 1x3 or 3x3');     
+             w = S;   
         end
         
         % for a zero so(3) return unit matrix, theta not relevant
