@@ -48,7 +48,7 @@ function about(varargin)
     end
     
     if isempty(w)
-        error(['cant find variable ' var])
+        error('RTB:about', ['cant find variable ' var])
     end
     ss = sprintf('%d', w.size(1));
     for i=2:length(w.size)
