@@ -73,10 +73,18 @@ classdef Animate < handle
             %
             % Options::
             % 'resolution',R     Set the resolution of the saved image to R pixels per inch.
-            % 'profile',P        Create an MP4 file directly, see VideoWriter
+            % 'profile',P        See VideoWriter for details
             % 'fps',F            Frame rate (default 30)
             % 'bgcolor',C        Set background color of axes, 3 vector or MATLAB
             %                    color name.
+            %
+            % A profile can also be set by the file extension given:
+            %
+            % none    Create a folder full of frames
+            % .gif    Create animated GIF
+            % .mp4    Create MP4 movie (not on Linux)
+            % .avi    Create AVI movie
+            % .mj2    Create motion jpeg file
             %
             % Notes::
             % - if a profile is given a movie is created, see VideoWriter for allowable
@@ -114,10 +122,17 @@ classdef Animate < handle
                 elseif ~isempty(e)
                     % an extension was given
                     switch (e)
-                        case {'.mp4', '.m4v'},  profile = 'MPEG-4';
-                        case '.mj2',  profile = 'Motion JPEG 2000';
-                        case '.avi', profile = 'Motion JPEG AVI';
-                        case {'.gif','.GIF'}, profile = 'GIF';
+                        case {'.mp4', '.m4v'}
+                            if ~(ismac || ispc)
+                                error('RTB:Animate:nosupported', 'MP4 creation not supported by MATLAB on this platform')
+                            end
+                            profile = 'MPEG-4';
+                        case '.mj2'
+                            profile = 'Motion JPEG 2000';
+                        case '.avi'
+                            profile = 'Motion JPEG AVI';
+                        case {'.gif','.GIF'}
+                            profile = 'GIF';
                     end
                     fprintf('Animate: saving video --> %s with profile ''%s''\n', filename, profile);
                     if strcmp(profile, 'GIF')
@@ -203,14 +218,18 @@ classdef Animate < handle
             %
             % A.CLOSE() closes the video file.
             %
-            % 
-            switch a.profile
-                case {'GIF', 'FILES'}
-                otherwise
-                if nargout > 0
-                    out = char(a.video);
+            %
+            if isempty(a.profile)
+                out = [];
+            else
+                switch a.profile
+                    case {'GIF', 'FILES'}
+                    otherwise
+                        if nargout > 0
+                            out = char(a.video);
+                        end
+                        close(a.video);
                 end
-                close(a.video);
             end
         end
     end
