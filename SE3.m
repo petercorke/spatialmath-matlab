@@ -50,6 +50,7 @@
 %  velxform         compute velocity transformation
 %  interp           interpolate between poses
 %  ctraj            Cartesian motion
+%  norm             normalize the rotation submatrix
 %
 % Conversion methods::
 %  SE3.check        convert object or matrix to SE3 object
@@ -685,9 +686,39 @@ classdef SE3 < SO3
             n = SE3(varargin{:});
         end
         
+        function T = norm(obj)
+            %SE3.norm  Normalize rotation submatrix (compatibility)
+            %
+            % T = P.norm() is an SE3 object equivalent to P but
+            % normalized (rotation matrix guaranteed to be orthogonal).
+            %
+            % Notes::
+            % - Overrides the classic RTB function trnorm for an SE3 object.
+            %
+            % See also trnorm.
+            for k=1:length(obj)
+                T(k) = SE3( trnorm( double(obj(k))) );
+            end
+        end
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %  VANILLA RTB FUNCTION COMPATIBILITY
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        function T = trnorm(obj)
+            %SE3.trnorm  Normalize rotation submatrix (compatibility)
+            %
+            % T = P.trnorm() is an SE3 object equivalent to P but
+            % normalized (rotation matrix guaranteed to be orthogonal).
+            %
+            % Notes::
+            % - Overrides the classic RTB function trnorm for an SE3 object.
+            %
+            % See also trnorm.
+            for k=1:length(obj)
+                T(k) = SE3( trnorm( double(obj(k))) );
+            end
+        end
         
         function Vt = homtrans(P, V)
             %SE3.homtrans  Apply transformation to points

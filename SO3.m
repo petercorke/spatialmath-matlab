@@ -220,6 +220,21 @@ classdef SO3 < RTBPose
             v = obj.data(1:3,3);
         end
 
+        function T = norm(obj)
+            %SO3.norm  Normalize rotation (compatibility)
+            %
+            % R = P.norm() is an SO3 object equivalent to P but
+            % normalized (guaranteed to be orthogonal).
+            %
+            % Notes::
+            % - Overrides the classic RTB function trnorm for an SO3 object.
+            %
+            % See also trnorm.
+            for k=1:length(obj)
+                T(k) = SO3( trnorm( double(obj(k))) );
+            end
+        end
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %  CLASSIC RTB FUNCTION COMPATIBILITY
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -236,7 +251,7 @@ classdef SO3 < RTBPose
             %
             % See also trnorm.
             for k=1:length(obj)
-                T(k) = SE3( trnorm(obj(k).T) );
+                T(k) = SO3( trnorm( double(obj(k))) );
             end
         end
         
