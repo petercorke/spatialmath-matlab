@@ -227,19 +227,21 @@ function Animate_folder_test(tc)
     rmdir(file)
 end
 
-% function Animate_mp4_test(tc)
-%     file = 'test.mp4';
-%     a = Animate(file);
-%     plot([1 2], [3 4]);
-%     for i=1:10
-%         a.add();
-%     end
-%     a.close();
-%     
-%     tc.verifyTrue( exist(file, 'file') > 0 );
-%     
-%     delete(file)
-% end
+function Animate_mp4_test(tc)
+    tc.assumeTrue(ismac || ispc);  % this test won't work on linux
+    
+    file = 'test.mp4';
+    a = Animate(file);
+    plot([1 2], [3 4]);
+    for i=1:10
+        a.add();
+    end
+    a.close();
+    
+    tc.verifyTrue( exist(file, 'file') > 0 );
+    
+    delete(file)
+end
 
 function Animate_gif_test(tc)
     file = 'test.gif';
