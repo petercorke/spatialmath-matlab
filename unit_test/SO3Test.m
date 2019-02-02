@@ -39,6 +39,10 @@ function constructor_test(tc)
     tc.verifyEqual(SO3( roty(-pi/2) ).R, roty(-pi/2), 'AbsTol', 1e-10  );
     tc.verifyEqual(SO3( rotz(pi) ).R, rotz(pi), 'AbsTol', 1e-10  );
     
+    %% symbolic
+    syms theta real
+    tc.verifyEqual(SO3.Rx( theta ).R, rotx(theta))
+    
     
     %% vectorised forms of R
     R = [];
@@ -148,6 +152,17 @@ function resulttype_test(tc)
     
     verifyClass(tc, inv(r), 'SO3');
     
+end
+
+function norm_test(tc)
+    a = SO3.Rx(pi/2);
+    b = a.norm()
+    tc.verifyEqual(a, b)
+    
+    a = cat(3, a, a, a, a, a);
+    b = a.norm()
+    tc.verifyEqual(length(b), length(a));
+    tc.verifyEqual(a(3), b(3));
 end
 
 function multiply_test(tc)
@@ -358,6 +373,8 @@ function compatability_test(tc)
     
     R1 = SO3.rand();
     R2 = SO3.rand();
+    
+    tc.verifyEqual(trnorm(R1), R1)
     
     R1.plot
     trplot(R1)   % old style syntax
