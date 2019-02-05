@@ -54,5 +54,5 @@ function S = skew(v)
         % SO(2) case
         S = [0 -v; v 0];
     else
-        error('argument must be a 1- or 3-vector');
+        error('RTB:skew:badarg', 'argument must be a 1- or 3-vector');
     end
