@@ -3,18 +3,6 @@ function tests = UtilityTest
   tests = functiontests(localfunctions);
 end
 
-%% Utility
-%    about                      - summary of object size and type
-function ab_testout(testCase)
-    a = [1 2 3; 4 5 6];
-    about(a);
-    about a;
-end
-
-%    angdiff                    - subtract 2 angles modulo 2pi
-function an_testgdiff(testCase)
-    verifyEqual(testCase, angdiff(pi/2,pi), -1.5708, 'absTol',1e-4);
-end
 
 %    circle                     - compute/draw points on a circle
 function ci_testrcle(testCase)
@@ -286,6 +274,9 @@ function about_test(tc)
     about(a)
     
     a = SE3();
+    about(a)
+
+    a = zeros(1000000,1);
     about(a)
 end
 

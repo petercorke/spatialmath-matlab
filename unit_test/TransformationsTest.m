@@ -590,6 +590,13 @@ function tr2eul_test(tc)
     
     %test for scalar input
     verifyError(tc, @()tr2eul(1),'RTB:SO3:check:badarg');
+
+    % test flip
+    eul = [-0.1 0.2 0.3];
+    R = eul2r(eul);
+    eul2 = tr2eul(R, 'flip');
+    tc.verifyTrue(eul2(1) > 0);
+    tc.verifyEqual(eul2r(eul2), R,'absTol',1e-10);
 end
 
 function tr2rpy_test(tc)
@@ -887,6 +894,8 @@ function trprint_test(tc)
     a = transl([1,2,3]) * eul2tr([.1, .2, .3]);
     
     trprint(a);
+
+    trprint a
     
     s = evalc( 'trprint(a)' );
     tc.verifyClass(s, 'char');
@@ -968,6 +977,8 @@ function skew_test(tc)
     tc.verifyEqual( norm(R'+ R), 0, 'absTol', 1e-10); % check is skew
     
     tc.verifyEqual( vex(R), [1 2 3]'); % check contents, vex already verified
+
+    tc.verifyError( @() skew([1 2]), 'RTB:skew:badarg')
 end
 
 function vexa_test(tc)
@@ -999,6 +1010,8 @@ function skewa_test(tc)
     tc.verifyEqual( norm(R'+ R), 0, 'absTol', 1e-10); % check is skew
     
     tc.verifyEqual( vexa(T), [3 4 5]'); % check contents, vexa already verified
+    tc.verifyError( @() skewa([1 2]), 'RTB:skewa:badarg')
+
 end
 
 function trlog_test(tc)
@@ -1108,6 +1121,23 @@ function trexp_test(tc)
     tc.verifyError( @() trexp(1), 'RTB:trexp:badarg')
 end
 
+function e2h_test(tc)
+    P1 = [1;2; 3];
+    P2 = [1 2 3 4 5; 6 7 8 9 10; 11 12 13 14 15];
+
+    tc.verifyEqual( e2h(P1), [P1; 1]);
+    tc.verifyEqual( e2h(P2), [P2; ones(1,5)]);
+end
+
+function h2e_test(tc)
+    P1 = [1;2; 3];
+    P2 = [1 2 3 4 5; 6 7 8 9 10; 11 12 13 14 15];
+
+    tc.verifyEqual( h2e(e2h(P1)), P1);
+    tc.verifyEqual( h2e(e2h(P2)), P2);
+end
+
+
 function homtrans_test(tc)
     
     P1 = [1;2; 3];
@@ -1129,6 +1159,20 @@ function homtrans_test(tc)
     T =  transl(Q)*trotx(pi/2);
     tc.verifyEqual( homtrans(T, P1), [P1(1); -P1(3); P1(2)]+Q, 'absTol', 1e-6);
     tc.verifyEqual( homtrans(T, P2), [P2(1,:); -P2(3,:); P2(2,:)]+Q, 'absTol', 1e-6);
-    
+
+    % projective point case
+    P1h = e2h(P1);
+    P2h = e2h(P2);
+    tc.verifyEqual( homtrans(T, P1h), [P1h(1); -P1h(3); P1h(2); 1]+[Q;0], 'absTol', 1e-6);
+    tc.verifyEqual( homtrans(T, P2h), [P2h(1,:); -P2h(3,:); P2h(2,:); ones(1,5)]+[Q;0], 'absTol', 1e-6);
+
+    % sequence case
+    TT = cat(3, T, T, T, T, T);
+    Q = homtrans(T, TT);
+    tc.verifyEqual( Q(:,:,3), T*T);
+
+    % error case
+    tc.verifyError( @() homtrans(ones(2,2), P1), 'RTB:homtrans:badarg')
+
 end
 
