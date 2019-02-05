@@ -45,7 +45,7 @@ function out = trprint2(T, varargin)
     
     if ischar(T)
         % command form: trprint T
-        trprint( evalin('base', T) );
+        trprint( evalin('caller', T) );
         return;
     end
 
