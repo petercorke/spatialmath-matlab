@@ -895,7 +895,7 @@ function trprint_test(tc)
     
     trprint(a);
 
-    trprint a
+    trprint('a') % equivalent to trprint a on the command line
     
     s = evalc( 'trprint(a)' );
     tc.verifyClass(s, 'char');

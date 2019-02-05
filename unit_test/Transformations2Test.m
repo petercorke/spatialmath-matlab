@@ -317,7 +317,7 @@ function trprint2_test(tc)
     
     trprint2(a);
 
-    trprint a
+    trprint('a') % equivalent to trprint a on the command line
     
     s = evalc( 'trprint2(a)' );
     tc.verifyTrue(isa(s, 'char') );
