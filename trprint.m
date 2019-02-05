@@ -125,10 +125,10 @@ function s = tr2s(T, opt, varargin)
         case 'angvec'
             % as a vector and angle
             [th,v] = tr2angvec(T);
-            if isnan(v(1))
+            if th == 0
                 s = strcat(s, sprintf(' R = nil') );
             elseif opt.radian
-                s = strcat(s, sprintf(' R = (%sdeg | %s)', ...
+                s = strcat(s, sprintf(' R = (%srad | %s)', ...
                     sprintf(opt.fmt, th), vec2s(opt.fmt, v)) );
             else
                 s = strcat(s, sprintf(' R = (%sdeg | %s)', ...
