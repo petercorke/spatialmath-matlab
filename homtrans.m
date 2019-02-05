@@ -46,16 +46,18 @@ function pt = homtrans(T, p)
 
     if numrows(p) == numrows(T)
         if ndims(p) == 3
+            % homtrans(T1, T2)
             pt = [];
             for i=1:size(p,3)
                 pt = cat(3, pt, T*p(:,:,i));
             end
         else
+            % points are in projective coordinates
             pt = T * p;
         end
     elseif (numrows(T)-numrows(p)) == 1
-        % second argument is Euclidean coordinate, promote to homogeneous
+        % points are in Euclidean coordinates, promote to homogeneous
         pt = h2e( T * e2h(p) );
     else
-        error('matrices and point data do not conform')
+        error('RTB:homtrans:badarg', 'matrices and point data do not conform')
     end
