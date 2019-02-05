@@ -348,7 +348,7 @@ classdef Quaternion
                         qp(i) = new([s1*s2-v1*v2.' s1*v2+s2*v1+cross(v1,v2)]);
                     end
                 else
-                    error('RTB:quaternion:badarg', '* operand length/size mismatch');
+                    error('RTB:Quaternion:badarg', '* operand length/size mismatch');
                 end
                 
             elseif isa(q1, 'Quaternion') && isa(q2, 'double')
@@ -357,7 +357,7 @@ classdef Quaternion
                 %
                 % Q = qsmul(Q, S) multiply quaternion by real scalar.
                 %
-                assert(isscalar(q2), 'quaternion-double product: must be a scalar');
+                assert(isscalar(q2), 'RTB:Quaternion:badarg', 'quaternion-double product: must be a scalar');
                 for i=1:length(q1)
                     qp(i) = Quaternion( double(q1(i))*q2);
                 end
@@ -370,7 +370,7 @@ classdef Quaternion
                 % Q = qsmul(Q, S) multiply quaternion by real scalar.
                 %
                 
-                assert(isscalar(q1), 'quaternion-double product: must be a scalar');
+                assert(isscalar(q1), 'RTB:Quaternion:badarg', 'quaternion-double product: must be a scalar');
                 
                 for i=1:length(q2)
                     qp(i) = Quaternion( double(q2(i))*q1);
@@ -423,7 +423,7 @@ classdef Quaternion
                         qq(i) = q1(i) * inv(q2);
                     end
                 else
-                    error('RTB:quaternion:badarg', '/ operand length mismatch');
+                    error('RTB:Quaternion:badarg', '/ operand length mismatch');
                 end
                 
             elseif isa(q1, 'Quaternion') && isa(q2, 'double')
@@ -583,7 +583,7 @@ classdef Quaternion
                     e(i) = q1(i) == q2(i);
                 end
             else
-                error('RTB:Quaternion:badargs');
+                error('RTB:Quaternion:badarg', 'vectors not of same length');
             end
         end
         
@@ -623,7 +623,7 @@ classdef Quaternion
                     e(i) = q1(i) ~= q2(i);
                 end
             else
-                error('RTB:quaternion:badargs');
+                error('RTB:Quaternion:badarg','vectors not of same length');
             end
         end
         
@@ -641,7 +641,7 @@ classdef Quaternion
             if length(q) > 1
                 s = '';
                 for qq = q;
-                    s = char(s, char(qq));
+                    s = strvcat(s, char(qq));
                 end
                 return
             end
@@ -704,7 +704,7 @@ classdef Quaternion
 
             
             if ~isvec(v)
-                error('RTB:Quaternion:bad arg', 'must be a 3-vector');
+                error('RTB:Quaternion:badarg', 'must be a 3-vector');
             end
             q = Quaternion(0, v(:));
         end
