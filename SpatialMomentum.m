@@ -45,7 +45,7 @@
 classdef SpatialMomentum < SpatialF6
         methods
         function n = new(a, val)
-            n = SpatialForce(val);
+            n = SpatialMomentum(val);
         end
     end
 end
