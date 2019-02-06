@@ -206,7 +206,7 @@ function Animate_folder_test(tc)
     
     tc.verifyTrue( exist(file, 'dir') > 0 );
     
-    d = dir('test/*.png')
+    d = dir('test/*.png');
     tc.verifyEqual( length(d), 10);
     
     for dd=d'
@@ -301,4 +301,22 @@ function angdiff_test(tc)
     tc.verifyEqual( angdiff(pi34, pi34), 0)
     tc.verifyEqual( angdiff(pi34, -pi34), -pi2)
     tc.verifyEqual( angdiff(-pi34, pi34), pi2)
+end
+
+function stl_test(tc)
+    [v, f, n, name] = stlRead('data/20mm_cube_ascii.stl');
+    tc.verifyClass(v, 'double');
+    tc.verifySize(v, [8 3]);
+    tc.verifyClass(f, 'double');
+    tc.verifySize(f, [12 3]);
+    tc.verifyClass(n, 'double');
+    tc.verifySize(n, [12 3]);
+    
+    [v, f, n, name] = stlRead('data/20mm_cube_binary.stl');
+    tc.verifyClass(v, 'double');
+    tc.verifySize(v, [8 3]);
+    tc.verifyClass(f, 'double');
+    tc.verifySize(f, [12 3]);
+    tc.verifyClass(n, 'double');
+    tc.verifySize(n, [12 3]);
 end
