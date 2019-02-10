@@ -143,6 +143,7 @@ function hout = trplot2(T, varargin)
     if ~isempty(opt.axhandle)
         hax = opt.axhandle;
         hold(hax);
+        ih = ishold;
     else
         ih = ishold;
         if ~ih
