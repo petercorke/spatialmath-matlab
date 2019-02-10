@@ -21,8 +21,8 @@
 % 'alter',H        alter existing ellipses with handle H
 % 'npoints',N      use N points to define the ellipse (default 40)
 % 'edgecolor'      color of the ellipse boundary edge, MATLAB color spec
-% 'fillcolor'      the color of the circle's interior, MATLAB color spec
-% 'alpha'          transparency of the fillcolored circle: 0=transparent, 1=solid
+% 'fillcolor'      the color of the ellipses's interior, MATLAB color spec
+% 'alpha'          transparency of the fillcolored ellipse: 0=transparent, 1=solid
 % 'shadow'         show shadows on the 3 walls of the plot box
 %
 % - For an unfilled ellipse any standard MATLAB LineStyle such as 'r' or 'b---'.
@@ -97,7 +97,7 @@ function handles = plot_ellipse(E, varargin)
 
     % check the ellipse to be altered
     if ~isempty(opt.alter) & ~ishandle(opt.alter)
-        error('RTB:plot_circle:badarg', 'argument to alter must be a valid graphic object handle');
+        error('RTB:plot_ellipse:badarg', 'argument to alter must be a valid graphic object handle');
     end
     
     holdon = ishold();
