@@ -327,6 +327,33 @@ function conversions_test(tc)
     tc.verifyEqual(RR.log, skew(v)*th);
 end
 
+function interp_test(tc)
+        
+    rx = SO3.Rx(pi/2);
+    ry = SO3.Ry(pi/2);
+    rz = SO3.Rz(pi/2);
+    u = SO3();
+    
+    R = rx*ry*rz;
+    
+    % from null
+    tc.verifyEqual(u.interp(R, 0), u);
+    tc.verifyEqual(u.interp(R, 1), R );
+    
+    tc.verifyEqual(length(u.interp(R, linspace(0,1, 10))), 10);
+    verifyTrue(tc, all( u.interp(R, [0 1]) == [u R]));
+    
+    R0_5 = u.interp(R, 0.5);
+    tc.verifyEqual( R0_5 * R0_5, R);
+    
+    % between two SO3
+    tc.verifyEqual(R.interp(rx, 0), R );
+    tc.verifyEqual(R.interp(rx, 1), rx );
+    
+    verifyTrue(tc, all( R.interp(rx, [0 1]) == [R rx]));
+    
+end
+
 function miscellany_test(tc)
     
     r = SO3.rpy( 0.1, 0.2, 0.3 );

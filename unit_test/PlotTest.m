@@ -104,6 +104,7 @@ end
     clf
     h = trplot2(Rt1);
     trplot2(Rt1, 'handle', h);
+    h = trplot2(Rt1, 'handle', h);
     trplot2(Rt1, 'color', 'r');
     trplot2(Rt1, 'color', [1 0 1]);
     trplot2(Rt1, 'noaxes');
@@ -111,6 +112,14 @@ end
     trplot2(Rt1, 'frame', 'A', 'text_opts', {'FontSize', 10, 'FontWeight', 'bold'})
     trplot2(Rt1, 'view', [10 20]);
     trplot2(Rt1, 'arrow')
+    trplot2(Rt1, 'framelabel', 'A')
+    
+    clf
+    a = gca;
+    trplot2(Rt1, 'axhandle', a);
+ 
+    h = trplot2(Rt1);
+    tc.verifyWarning( @() trplot2(h, Rt1), 'RTB:trplot2:deprecated')
 end
 
 %    plot2                      - plot trajectory

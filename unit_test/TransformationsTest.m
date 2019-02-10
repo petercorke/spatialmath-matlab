@@ -816,6 +816,11 @@ function trinterp_test(tc)
     tc.verifyEqual(T(:,:,1), T0, 'abstol', 1e-10);
     tc.verifyEqual(T(:,:,2), Tm, 'abstol', 1e-10);
     tc.verifyEqual(T(:,:,3), T1, 'abstol', 1e-10);
+    
+    tc.verifyError( @() trinterp(T0, T1, -1), 'RTB:trinterp:badarg');
+    tc.verifyError( @() trinterp(T0, T1, 1.7), 'RTB:trinterp:badarg');
+    tc.verifyError( @() trinterp(T0), 'RTB:trinterp:badarg');
+
 end
 
 
@@ -890,6 +895,10 @@ function trnorm_test(tc)
 end
 
 function trprint_test(tc)
+    
+    % null case
+    
+    trprint(eye(4,4))
     
     a = transl([1,2,3]) * eul2tr([.1, .2, .3]);
     
@@ -1031,6 +1040,11 @@ function trlog_test(tc)
     tc.verifyEqual(trlog( roty(0.3) ), skew([0 0.3 0]), 'absTol', 1e-6);
     tc.verifyEqual(trlog( rotz(0.4) ), skew([0 0 0.4]), 'absTol', 1e-6);
     
+    
+    R = rotx(0.2) * roty(0.3) * rotz(0.4);
+    [th,w] = trlog(R);
+    tc.verifyEqual( logm(R), skew(th*w), 'absTol', 1e-10)
+    
     %%% SE(3) tests
     
     % pure translation
@@ -1043,6 +1057,10 @@ function trlog_test(tc)
     
     T = transl([1 2 3])*troty(0.3);
     tc.verifyEqual(trlog(T), logm(T), 'absTol', 1e-6);
+    
+    [th,w] = trlog(T);
+    tc.verifyEqual( logm(T), skewa(th*w), 'absTol', 1e-10)
+    
     
     verifyError(tc, @()trlog(0),'RTB:trlog:badarg');
 end

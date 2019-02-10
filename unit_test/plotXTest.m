@@ -249,7 +249,7 @@ function plot_homline_test(tc)
 end
 
 % plot_ellipse
-function ellipse2d_test(testCase)
+function ellipse2d_test(tc)
     clf
     
     E = diag([9 4]);
@@ -260,11 +260,14 @@ function ellipse2d_test(testCase)
     plot_ellipse(E, [4 4], 'fillcolor', 'g');
     plot_ellipse(E, [0 8 0.5], 'edgecolor', 'r', 'fillcolor', 'c', 'alpha', 0.5, 'LineWidth', 3);
     plot_ellipse(E, [4 8], 'b--', 'LineWidth', 3);
+    plot_ellipse(E, 'confidence', 0.5);
 
-    axis equal
+    h = plot_ellipse(E);
+    plot_ellipse(E, [1 1], 'alter', h);
+    tc.verifyError(@() plot_ellipse(E, 'alter', 7), 'RTB:plot_ellipse:badarg');
 end
 
-function ellipse2d_animate_test(testCase)
+function ellipse2d_animate_test(tc)
     clf
     axis([-4 4 -4 4]);
     
@@ -288,7 +291,7 @@ function ellipse2d_animate_test(testCase)
 end
 
 % plot_ellipse
-function ellipse3d_test(testCase)
+function ellipse3d_test(tc)
     clf
     
     E = diag([9 4 6]);
@@ -317,7 +320,7 @@ function ellipse3d_test(testCase)
     axis equal
 end
 
-function ellipse3d_animate_test(testCase)
+function ellipse3d_animate_test(tc)
     clf
     axis([-4 4 -4 4 -4 4]);
     

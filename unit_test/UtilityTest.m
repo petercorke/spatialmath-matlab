@@ -5,72 +5,94 @@ end
 
 
 %    circle                     - compute/draw points on a circle
-function ci_testrcle(testCase)
-    x= circle([1 2],5,'n', 5 );
-    verifyEqual(testCase, x, [6.0000    2.5451   -3.0451   -3.0451    2.5451
-                                  2.0000    6.7553    4.9389   -0.9389   -2.7553],...
-                                  'absTol',1e-4);
+function circle_test(tc)
+    C = [1 2]';
+    R = 5;
+    x = circle(C, R, 'n', 15 );
+    tc.verifyClass(x, 'double');
+    tc.verifySize(x, [2 15]);
+    tc.verifyTrue( all( (colnorm(x - C(:)) - R) < 1e-10) )
+    
+    circle(C, R, 'n', 15 );
+    
+    C = [1 2];
+    x = circle(C, R, 'n', 15 );
+    tc.verifyClass(x, 'double');
+    tc.verifySize(x, [2 15]);
+    tc.verifyTrue( all( (colnorm(x - C(:)) - R) < 1e-10) )
+    
+    circle(C, R, 'n', 15 );
+    
+    C = [1 2 3];
+    x = circle(C, R, 'n', 15 );
+    tc.verifyClass(x, 'double');
+    tc.verifySize(x, [3 15]);
+    tc.verifyTrue( all( (colnorm(x(1:2,:) - C(1:2)') - R) < 1e-10) )
+    tc.verifyTrue( all( abs(x(3,:) - C(3)) < 1e-10) )
+    
+    circle(C, R, 'n', 15 );
+   
 end
 
 %    colnorm                    - columnwise norm of matrix
-function co_testlnorm(testCase)
+function co_testlnorm(tc)
     x= [6.0000    2.5451   -3.0451   -3.0451    2.5451
         2.0000    6.7553    4.9389   -0.9389   -2.7553];
     cn = colnorm(x);
-    verifyEqual(testCase, cn, [6.3246    7.2188    5.8022    3.1866    3.7509],...
+    tc.verifyEqual(cn, [6.3246    7.2188    5.8022    3.1866    3.7509],...
                                   'absTol',1e-4);
 end
     
               
 %    isvec                      - true if argument is a 3-vector
-function is_testvec(testCase)
+function is_testvec(tc)
     vh = [1 2 3];
     vv = [1;2;3];
     s = 45;
-    verifyTrue(testCase, isvec(vh),3);
-    verifyTrue(testCase, isvec(vv));
-    verifyFalse(testCase, isvec(s));
-    verifyFalse(testCase, isvec(ones(2,2)));
-    verifyFalse(testCase, isvec(ones(2,2,2)));
+    tc.verifyTrue(isvec(vh),3);
+    tc.verifyTrue(isvec(vv));
+    verifyFalse(tc, isvec(s));
+    verifyFalse(tc, isvec(ones(2,2)));
+    verifyFalse(tc, isvec(ones(2,2,2)));
 end
     
 %    numcols                    - number of columns in matrix
-function numcols_test(testCase)
+function numcols_test(tc)
     a = ones(2,3,4);
     b = 2;
-    verifyEqual(testCase, numcols(a),3);
-    verifyEqual(testCase, numcols(b),1);
+    tc.verifyEqual(numcols(a),3);
+    tc.verifyEqual(numcols(b),1);
 end
 
 %    numrows                    - number of rows in matrix
-function numrows_test(testCase)
+function numrows_test(tc)
     a = ones(2,3,4);
     b = 3;
-    verifyEqual(testCase, numrows(a),2);
-    verifyEqual(testCase, numrows(b),1);
+    tc.verifyEqual(numrows(a),2);
+    tc.verifyEqual(numrows(b),1);
 end
 
 %    Polygon                    - general purpose polygon class
-function Po_testlygon(testCase)
+function Po_testlygon(tc)
     v = [1 2 1 2;1 1 2 2];
     p = Polygon(v);
 %    unit                       - unitize a vector
 end
 
-function unit_test(testCase)
+function unit_test(tc)
     vh = [1 2 3];
     vv = [1;2;3];
     vo = [0 0 0];
-    verifyEqual(testCase, unit(vh), [0.2673    0.5345    0.8018], 'absTol',1e-4);
-    verifyEqual(testCase, unit(vv), [0.2673
+    tc.verifyEqual(unit(vh), [0.2673    0.5345    0.8018], 'absTol',1e-4);
+    tc.verifyEqual(unit(vv), [0.2673
                                          0.5345
                                          0.8018], 'absTol',1e-4);
 
-    verifyError(testCase,  @() unit(vo), 'RTB:unit:zero_norm');
+    verifyError(tc,  @() unit(vo), 'RTB:unit:zero_norm');
 end
 
 %    tb_optparse                - toolbox argument parser
-function tb_optparse_test(testCase)
+function tb_optparse_test(tc)
 
     opt.one = [];
     opt.two = 2;
@@ -81,97 +103,97 @@ function tb_optparse_test(testCase)
     opt.select = {'#bob', '#nancy'};
 
     opt2 = tb_optparse(opt, {'verbose'});
-    verifyEqual(testCase, opt2.one, []);
-    verifyEqual(testCase, opt2.two, 2);
-    verifyEqual(testCase, opt2.three, 'three');
-    verifyEqual(testCase, opt2.four, false);
-    verifyEqual(testCase, opt2.five, true);
-    verifyEqual(testCase, opt2.color, 'red');
-    verifyEqual(testCase, opt2.select, 1);
+    tc.verifyEqual(opt2.one, []);
+    tc.verifyEqual(opt2.two, 2);
+    tc.verifyEqual(opt2.three, 'three');
+    tc.verifyEqual(opt2.four, false);
+    tc.verifyEqual(opt2.five, true);
+    tc.verifyEqual(opt2.color, 'red');
+    tc.verifyEqual(opt2.select, 1);
 
     opt2 = tb_optparse(opt, {'one', 7});
-    verifyEqual(testCase, opt2.one, 7);
-    verifyEqual(testCase, opt2.two, 2);
-    verifyEqual(testCase, opt2.three, 'three');
-    verifyEqual(testCase, opt2.four, false);
-    verifyEqual(testCase, opt2.five, true);
-    verifyEqual(testCase, opt2.color, 'red');
-    verifyEqual(testCase, opt2.select, 1);
+    tc.verifyEqual(opt2.one, 7);
+    tc.verifyEqual(opt2.two, 2);
+    tc.verifyEqual(opt2.three, 'three');
+    tc.verifyEqual(opt2.four, false);
+    tc.verifyEqual(opt2.five, true);
+    tc.verifyEqual(opt2.color, 'red');
+    tc.verifyEqual(opt2.select, 1);
 
-    verifyError(testCase, @() tb_optparse(opt, {'one'}), 'RTB:tboptparse:badargs');
+    verifyError(tc, @() tb_optparse(opt, {'one'}), 'RTB:tboptparse:badargs');
 
     opt2 = tb_optparse(opt, {'two', 3});
-    verifyEqual(testCase, opt2.one, []);
-    verifyEqual(testCase, opt2.two, 3);
-    verifyEqual(testCase, opt2.three, 'three');
-    verifyEqual(testCase, opt2.four, false);
-    verifyEqual(testCase, opt2.five, true);
-    verifyEqual(testCase, opt2.color, 'red');
-    verifyEqual(testCase, opt2.select, 1);
+    tc.verifyEqual(opt2.one, []);
+    tc.verifyEqual(opt2.two, 3);
+    tc.verifyEqual(opt2.three, 'three');
+    tc.verifyEqual(opt2.four, false);
+    tc.verifyEqual(opt2.five, true);
+    tc.verifyEqual(opt2.color, 'red');
+    tc.verifyEqual(opt2.select, 1);
 
     opt2 = tb_optparse(opt, {'three', 'bob'});
-    verifyEqual(testCase, opt2.one, []);
-    verifyEqual(testCase, opt2.two, 2);
-    verifyEqual(testCase, opt2.three, 'bob');
-    verifyEqual(testCase, opt2.four, false);
-    verifyEqual(testCase, opt2.five, true);
-    verifyEqual(testCase, opt2.color, 'red');
-    verifyEqual(testCase, opt2.select, 1);
+    tc.verifyEqual(opt2.one, []);
+    tc.verifyEqual(opt2.two, 2);
+    tc.verifyEqual(opt2.three, 'bob');
+    tc.verifyEqual(opt2.four, false);
+    tc.verifyEqual(opt2.five, true);
+    tc.verifyEqual(opt2.color, 'red');
+    tc.verifyEqual(opt2.select, 1);
 
     opt2 = tb_optparse(opt, {'four'});
-    verifyEqual(testCase, opt2.one, []);
-    verifyEqual(testCase, opt2.two, 2);
-    verifyEqual(testCase, opt2.three, 'three');
-    verifyEqual(testCase, opt2.four, true);
-    verifyEqual(testCase, opt2.five, true);
-    verifyEqual(testCase, opt2.color, 'red');
-    verifyEqual(testCase, opt2.select, 1);
+    tc.verifyEqual(opt2.one, []);
+    tc.verifyEqual(opt2.two, 2);
+    tc.verifyEqual(opt2.three, 'three');
+    tc.verifyEqual(opt2.four, true);
+    tc.verifyEqual(opt2.five, true);
+    tc.verifyEqual(opt2.color, 'red');
+    tc.verifyEqual(opt2.select, 1);
 
     opt2 = tb_optparse(opt, {'nofour'});
-    verifyEqual(testCase, opt2.one, []);
-    verifyEqual(testCase, opt2.two, 2);
-    verifyEqual(testCase, opt2.three, 'three');
-    verifyEqual(testCase, opt2.four, false);
-    verifyEqual(testCase, opt2.five, true);
-    verifyEqual(testCase, opt2.color, 'red');
-    verifyEqual(testCase, opt2.select, 1);
+    tc.verifyEqual(opt2.one, []);
+    tc.verifyEqual(opt2.two, 2);
+    tc.verifyEqual(opt2.three, 'three');
+    tc.verifyEqual(opt2.four, false);
+    tc.verifyEqual(opt2.five, true);
+    tc.verifyEqual(opt2.color, 'red');
+    tc.verifyEqual(opt2.select, 1);
 
     opt2 = tb_optparse(opt, {'nofive'});
-    verifyEqual(testCase, opt2.one, []);
-    verifyEqual(testCase, opt2.two, 2);
-    verifyEqual(testCase, opt2.three, 'three');
-    verifyEqual(testCase, opt2.four, false);
-    verifyEqual(testCase, opt2.five, false);
-    verifyEqual(testCase, opt2.color, 'red');
-    verifyEqual(testCase, opt2.select, 1);
+    tc.verifyEqual(opt2.one, []);
+    tc.verifyEqual(opt2.two, 2);
+    tc.verifyEqual(opt2.three, 'three');
+    tc.verifyEqual(opt2.four, false);
+    tc.verifyEqual(opt2.five, false);
+    tc.verifyEqual(opt2.color, 'red');
+    tc.verifyEqual(opt2.select, 1);
 
     opt2 = tb_optparse(opt, {'green'});
-    verifyEqual(testCase, opt2.one, []);
-    verifyEqual(testCase, opt2.two, 2);
-    verifyEqual(testCase, opt2.three, 'three');
-    verifyEqual(testCase, opt2.four, false);
-    verifyEqual(testCase, opt2.five, true);
-    verifyEqual(testCase, opt2.color, 'green');
-    verifyEqual(testCase, opt2.select, 1);
+    tc.verifyEqual(opt2.one, []);
+    tc.verifyEqual(opt2.two, 2);
+    tc.verifyEqual(opt2.three, 'three');
+    tc.verifyEqual(opt2.four, false);
+    tc.verifyEqual(opt2.five, true);
+    tc.verifyEqual(opt2.color, 'green');
+    tc.verifyEqual(opt2.select, 1);
 
     opt2 = tb_optparse(opt, {'nancy'});
-    verifyEqual(testCase, opt2.one, []);
-    verifyEqual(testCase, opt2.two, 2);
-    verifyEqual(testCase, opt2.three, 'three');
-    verifyEqual(testCase, opt2.four, false);
-    verifyEqual(testCase, opt2.five, true);
-    verifyEqual(testCase, opt2.color, 'red');
-    verifyEqual(testCase, opt2.select, 2);
+    tc.verifyEqual(opt2.one, []);
+    tc.verifyEqual(opt2.two, 2);
+    tc.verifyEqual(opt2.three, 'three');
+    tc.verifyEqual(opt2.four, false);
+    tc.verifyEqual(opt2.five, true);
+    tc.verifyEqual(opt2.color, 'red');
+    tc.verifyEqual(opt2.select, 2);
 
     opt2 = tb_optparse(opt, {});
-    verifyEqual(testCase, opt2.verbose, false);
-    verifyEqual(testCase, opt2.debug, 0);
+    tc.verifyEqual(opt2.verbose, false);
+    tc.verifyEqual(opt2.debug, 0);
     opt2 = tb_optparse(opt, {'verbose'});
-    verifyEqual(testCase, opt2.verbose, true);
+    tc.verifyEqual(opt2.verbose, true);
     opt2 = tb_optparse(opt, {'verbose=2'});
-    verifyEqual(testCase, opt2.verbose, 2);
+    tc.verifyEqual(opt2.verbose, 2);
     opt2 = tb_optparse(opt, {'debug', 11});
-    verifyEqual(testCase, opt2.debug, 11);
+    tc.verifyEqual(opt2.debug, 11);
 
     opt2 = tb_optparse(opt, {'showopt'});
 
@@ -179,19 +201,19 @@ function tb_optparse_test(testCase)
     opt3.five = false;
 
     opt2 = tb_optparse(opt, {'setopt', opt3});
-    verifyEqual(testCase, opt2.one, []);
-    verifyEqual(testCase, opt2.two, 2);
-    verifyEqual(testCase, opt2.three, 'three');
-    verifyEqual(testCase, opt2.four, false);
-    verifyEqual(testCase, opt2.five, false);
-    verifyEqual(testCase, opt2.color, 'green');
-    verifyEqual(testCase, opt2.select, 1);
+    tc.verifyEqual(opt2.one, []);
+    tc.verifyEqual(opt2.two, 2);
+    tc.verifyEqual(opt2.three, 'three');
+    tc.verifyEqual(opt2.four, false);
+    tc.verifyEqual(opt2.five, false);
+    tc.verifyEqual(opt2.color, 'green');
+    tc.verifyEqual(opt2.select, 1);
 
     [opt2,args] = tb_optparse(opt, {1, 'three', 4, 'spam', 2, 'red',  'spam'});
-    verifyEqual(testCase, args, {1, 'spam', 2, 'spam'});
+    tc.verifyEqual(args, {1, 'spam', 2, 'spam'});
 
-    verifyError(testCase,  @() tb_optparse(opt, {'two'}), 'RTB:tboptparse:badargs');
-    verifyError(testCase,  @() tb_optparse(opt, 'bob'), 'RTB:tboptparse:badargs');
+    verifyError(tc,  @() tb_optparse(opt, {'two'}), 'RTB:tboptparse:badargs');
+    verifyError(tc,  @() tb_optparse(opt, 'bob'), 'RTB:tboptparse:badargs');
 end
 
 
@@ -292,15 +314,32 @@ function randinit_test(tc)
 end
 
 function angdiff_test(tc)
+    % 2 arg case
     tc.verifyEqual( angdiff(2, 1), 1);
     tc.verifyEqual( angdiff(1, 2), -1);
     tc.verifyEqual( angdiff(2, 2), 0);
     
+    % 1 arg case
+    tc.verifyEqual( angdiff([2, 1]), 1);
+    tc.verifyEqual( angdiff([1, 2]), -1);
+    tc.verifyEqual( angdiff([2, 2]), 0);
+    
     pi34 = pi*3/4;
     pi2 = pi/2;
+    % 2 arg case
     tc.verifyEqual( angdiff(pi34, pi34), 0)
     tc.verifyEqual( angdiff(pi34, -pi34), -pi2)
     tc.verifyEqual( angdiff(-pi34, pi34), pi2)
+    
+    % 1 arg case
+    tc.verifyEqual( angdiff([pi34, pi34]), 0)
+    tc.verifyEqual( angdiff([pi34, -pi34]), -pi2)
+    tc.verifyEqual( angdiff([-pi34, pi34]), pi2)
+    
+    % vector case
+    tc.verifyEqual( angdiff( [pi34 pi34 -pi34], [pi34 -pi34 pi34]), [0 -pi2 pi2])
+    
+    tc.verifyError( @() angdiff( [pi34 pi34 -pi34], [pi34 -pi34]), 'RTB:angdiff:badarg')
 end
 
 function stl_test(tc)

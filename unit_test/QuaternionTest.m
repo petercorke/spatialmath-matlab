@@ -172,7 +172,8 @@ function multiply_test(tc)
     tc.verifyError( @() q1 * [1 2 3], 'RTB:Quaternion:badarg')
     tc.verifyError( @() [1 2 3]*q1, 'RTB:Quaternion:badarg')
     tc.verifyError( @() [q1 q1] * [q1 q1 q1], 'RTB:Quaternion:badarg')
-    
+    tc.verifyError( @() q1*SE3, 'RTB:Quaternion:badarg')
+
     
 end
 
@@ -210,7 +211,7 @@ function divide_test(tc)
     %% errors
     
     tc.verifyError( @() q1 / [1 2 3], 'RTB:Quaternion:badarg')
-    tc.verifyError( @() [q1 q1] / [q1 q1 q1], 'RTB:Quaternion:badarg')
+    tc.verifyError( @() [q1 q1] / SE3, 'RTB:Quaternion:badarg')
     
 end
 
