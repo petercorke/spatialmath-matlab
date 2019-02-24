@@ -36,24 +36,28 @@
 %
 % See also trexp, trexp2, trlog.
 
-% Copyright (C) 1993-2017, by Peter I. Corke
+% Copyright (C) 1993-2019 Peter I. Corke
 %
-% This file is part of The Robotics Toolbox for MATLAB (RTB).
+% This file is part of The Spatial Math Toolbox for MATLAB (SMTB).
 % 
-% RTB is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-% 
-% RTB is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU Lesser General Public License for more details.
-% 
-% You should have received a copy of the GNU Leser General Public License
-% along with RTB.  If not, see <http://www.gnu.org/licenses/>.
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+% of the Software, and to permit persons to whom the Software is furnished to do
+% so, subject to the following conditions:
 %
-% http://www.petercorke.com
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+% FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+% COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+% IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+% CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+% https://github.com/petercorke/spatial-math
 
 classdef Twist
     properties (SetAccess = protected)
@@ -108,7 +112,7 @@ classdef Twist
                             % 3D case
                             dir = varargin{1};
                             if length(dir) < 3
-                                error('RTB:Twist:badarg', 'For 2d case can only specify position');
+                                error('SMTB:Twist:badarg', 'For 2d case can only specify position');
                             end
                             point = varargin{2};
                             
@@ -168,7 +172,7 @@ classdef Twist
                         tw.v = T(1:3)'; tw.w = T(4:6)';
                         
                     otherwise
-                        error('RTB:Twist:badarg', '3 or 6 element vector expected');
+                        error('SMTB:Twist:badarg', '3 or 6 element vector expected');
                 end
             end
         end
@@ -250,14 +254,14 @@ classdef Twist
                 elseif isa(b, 'SpatialForce')
                     c = SpatialForce(a.Ad' * b.vw);
                 else
-                    error('RTB:Twist', 'twist * SEn, operands don''t conform');
+                    error('SMTB:Twist', 'twist * SEn, operands don''t conform');
                 end
             elseif isreal(a) && isa(b, 'Twist')
                 c = Twist(a * b.S);
             elseif isa(a, 'Twist') && isreal(b)
                 c = Twist(a.S * b);
             else
-                error('RTB:Twist: incorrect operand types for * operator')
+                error('SMTB:Twist: incorrect operand types for * operator')
             end
         end
                 

@@ -65,13 +65,28 @@
 %   'thick', 5.
 % - The 'arrow' option requires arrow3 from FileExchange.
 
-% - The handle H is an hgtransform object. 
-% - When using the form TRPLOT(H, ...) to animate a frame it is best to set 
-%   the axis bounds.
-% - The '3d' option requires that the plot is viewed with anaglyph glasses.
-% - You cannot specify 'color' and '3d' at the same time.
+% Copyright (C) 1993-2019 Peter I. Corke
 %
-% See also TRPLOT2, TRANIMATE.
+% This file is part of The Spatial Math Toolbox for MATLAB (SMTB).
+% 
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+% of the Software, and to permit persons to whom the Software is furnished to do
+% so, subject to the following conditions:
+%
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+% FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+% COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+% IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+% CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+% https://github.com/petercorke/spatial-math
 
 %TODO:
 % 'rviz', chunky RGB lines, no arrows
@@ -107,12 +122,12 @@ function hout = trplot(T, varargin)
     end
     
     if size(T,3) > 1
-        error('RTB:trplot:badarg', 'trplot cannot operate on a sequence');
+        error('SMTB:trplot:badarg', 'trplot cannot operate on a sequence');
     end
     if isa(T, 'SE3')
         T = T.T;
     elseif ~ishomog(T) && ~isrot(T)
-        error('RTB:trplot:badarg', 'trplot operates only on transform (4x4) or rotation matrix (3x3)');
+        error('SMTB:trplot:badarg', 'trplot operates only on transform (4x4) or rotation matrix (3x3)');
     end
     
     opt.color = 'b';
@@ -144,11 +159,11 @@ function hout = trplot(T, varargin)
     
     if opt.arrow && ~exist('arrow3')
         opt.arrow = false;
-        warning('RTB:trplot:badarg', 'arrow option requires arrow3 from FileExchange');
+        warning('SMTB:trplot:badarg', 'arrow option requires arrow3 from FileExchange');
     end
         
     if isscalar(T) && ishandle(T)
-        warning('RTB:trplot:deprecated', 'Use ''handle'' option');
+        warning('SMTB:trplot:deprecated', 'Use ''handle'' option');
         % trplot(H, T)
         opt.handle = T; T = args{1};
     end
@@ -179,7 +194,7 @@ function hout = trplot(T, varargin)
     end
 
     if opt.rgb && opt.d_3d
-        error('RTB:trplot:badarg', 'cannot specify ''rgb'' and ''3d'', use ''anaglyph'' option');
+        error('SMTB:trplot:badarg', 'cannot specify ''rgb'' and ''3d'', use ''anaglyph'' option');
     end
     if isempty(opt.textcolor)
         opt.textcolor = opt.color;

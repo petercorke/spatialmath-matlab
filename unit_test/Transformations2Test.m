@@ -363,7 +363,7 @@ function skew_test(tc)
     
     tc.verifyEqual( vex(R), 3); % check contents, vex already verified
 
-    tc.verifyError( @() skew([1 2]), 'RTB:skew:badarg')
+    tc.verifyError( @() skew([1 2]), 'SMTB:skew:badarg')
 
 end
 
@@ -386,7 +386,7 @@ function skewa_test(tc)
     
     tc.verifyEqual( vexa(T), [3 4 5]'); % check contents, vexa already verified
 
-    tc.verifyError( @() skewa([1 2]), 'RTB:skewa:badarg')
+    tc.verifyError( @() skewa([1 2]), 'SMTB:skewa:badarg')
 
 end
 
@@ -409,7 +409,7 @@ function trexp2_test(tc)
     tc.verifyEqual( trexp2(skewa([0 0 0.3])), trot2(0.3), 'absTol', 1e-6 );
     
     %% errors
-    tc.verifyError( @() trexp2(eye(4,4)), 'RTB:trexp2:badarg');
+    tc.verifyError( @() trexp2(eye(4,4)), 'SMTB:trexp2:badarg');
 end
 
 function e2h_test(tc)
@@ -462,7 +462,7 @@ function homtrans_test(tc)
     tc.verifyEqual( Q(:,:,3), 3*T*T);
 
     % error case
-    tc.verifyError( @() homtrans(7, P1), 'RTB:homtrans:badarg')
+    tc.verifyError( @() homtrans(7, P1), 'SMTB:homtrans:badarg')
     
 end
 

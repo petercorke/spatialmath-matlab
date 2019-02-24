@@ -89,25 +89,28 @@
 %
 % See also Quaternion, SO3.
 
-
-% Copyright (C) 1993-2017, by Peter I. Corke
+% Copyright (C) 1993-2019 Peter I. Corke
 %
-% This file is part of The Robotics Toolbox for MATLAB (RTB).
+% This file is part of The Spatial Math Toolbox for MATLAB (SMTB).
 % 
-% RTB is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-% 
-% RTB is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU Lesser General Public License for more details.
-% 
-% You should have received a copy of the GNU Leser General Public License
-% along with RTB.  If not, see <http://www.gnu.org/licenses/>.
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+% of the Software, and to permit persons to whom the Software is furnished to do
+% so, subject to the following conditions:
 %
-% http://www.petercorke.com
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+% FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+% COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+% IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+% CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+% https://github.com/petercorke/spatial-math
 
 % TODO
 %  constructor handles R, T trajectory and returns vector
@@ -193,7 +196,7 @@ classdef UnitQuaternion < Quaternion
                 uq.s = s(1);
                 uq.v = s(2:4);
             else
-                error ('RTB:UnitQuaternion:badarg', 'bad argument to quaternion constructor');
+                error ('SMTB:UnitQuaternion:badarg', 'bad argument to quaternion constructor');
             end
             
         end
@@ -274,7 +277,7 @@ classdef UnitQuaternion < Quaternion
                 % integer value
                 r = [0:(r-1)] / (r-1);
             elseif any(r<0 | r>1)
-                error('RTB:UnitQuaternion:interp', 'values of S outside interval [0,1]');
+                error('SMTB:UnitQuaternion:interp', 'values of S outside interval [0,1]');
             end
             
             q(length(r)) = UnitQuaternion();  % preallocate space for Quaternion vector
@@ -335,7 +338,7 @@ classdef UnitQuaternion < Quaternion
                     th(i) = 2*atan2( colnorm((q1d(i,:)-q2d)'), colnorm((q1d(i,:)+q2d)') );
                 end
             else
-                error('RTB:Quaternion:badarg', 'angle arguments must be vectors of same length');
+                error('SMTB:Quaternion:badarg', 'angle arguments must be vectors of same length');
             end
             % clip it, just in case it's unnormalized
             c(c<-1) = -1;  c(c>1) = 1;
@@ -510,8 +513,8 @@ classdef UnitQuaternion < Quaternion
 
                 %% 2?qv ×(?qv ×v+qwv)+v
                 %% 2*q.v x ( q.v x v + s v) + v
-                assert(isreal(q2), 'RTB:UnitQuaternion:*', 'quat-double: matrix must be real');
-                assert(size(q2,1) == 3, 'RTB:UnitQuaternion:*', 'quat-double: matrix must have 3 rows');
+                assert(isreal(q2), 'SMTB:UnitQuaternion:*', 'quat-double: matrix must be real');
+                assert(size(q2,1) == 3, 'SMTB:UnitQuaternion:*', 'quat-double: matrix must have 3 rows');
                 if isnumeric(q2)
                     q2 = double(q2); % force to double
                 end
@@ -538,11 +541,11 @@ classdef UnitQuaternion < Quaternion
                         qp(:,i) = q.v(:);
                     end
                 else
-                    error('RTB:UnitQuaternion:badarg', 'quaternion-double product: vectors lengths incorrect');
+                    error('SMTB:UnitQuaternion:badarg', 'quaternion-double product: vectors lengths incorrect');
                 end
 
             else
-                error('RTB:UnitQuaternion:badarg', 'quaternion product: incorrect right hand operand');
+                error('SMTB:UnitQuaternion:badarg', 'quaternion product: incorrect right hand operand');
             end
         end
         
@@ -566,7 +569,7 @@ classdef UnitQuaternion < Quaternion
             if isa(q2, 'UnitQuaternion')
                 qp = unit(q1*q2 );
             else
-                error('RTB:UnitQuaternion:badarg', 'quaternion product .*: incorrect operands');
+                error('SMTB:UnitQuaternion:badarg', 'quaternion product .*: incorrect operands');
             end
         end
         
@@ -597,7 +600,7 @@ classdef UnitQuaternion < Quaternion
                 
                 qq = q1 * inv(q2);
             else
-                nerror('RTB:UnitQuaternion:badarg', 'quaternion divide /: incorrect RH operands');
+                nerror('SMTB:UnitQuaternion:badarg', 'quaternion divide /: incorrect RH operands');
             end
         end
 
@@ -621,7 +624,7 @@ classdef UnitQuaternion < Quaternion
             if isa(q2, 'UnitQuaternion')
                 qp = unit( q1/q2 );
             else
-                error('RTB:UnitQuaternion:badarg', 'quaternion product .*: incorrect operands');
+                error('SMTB:UnitQuaternion:badarg', 'quaternion product .*: incorrect operands');
             end
         end
 
@@ -882,7 +885,7 @@ classdef UnitQuaternion < Quaternion
                     e(i) = q1(i) == q2(i);
                 end
             else
-                error('RTB:UnitQuaternion:eq: badargs');
+                error('SMTB:UnitQuaternion:eq: badargs');
             end
         end
 
@@ -992,7 +995,7 @@ classdef UnitQuaternion < Quaternion
             % Q = UnitQuaternion.omega(W) is a UnitQuaternion representing rotation of |W| about the vector W (3x1).
             %
             % See also UnitQuaternion.angvec.            
-            assert(isvec(w), 'RTB:UnitQuaternion:bad arg', 'must be a 3-vector');
+            assert(isvec(w), 'SMTB:UnitQuaternion:bad arg', 'must be a 3-vector');
 
             theta = norm(w);
             s = cos(theta/2);
@@ -1006,7 +1009,7 @@ classdef UnitQuaternion < Quaternion
             % Q = UnitQuaternion.angvec(TH, V) is a UnitQuaternion representing rotation of TH about the vector V (3x1).
             %
             % See also UnitQuaternion.omega.              
-            assert(isvec(v), 'RTB:UnitQuaternion:bad arg', 'must be a 3-vector');
+            assert(isvec(v), 'SMTB:UnitQuaternion:bad arg', 'must be a 3-vector');
 
             uq = UnitQuaternion();
             uq.s = cos(theta/2);

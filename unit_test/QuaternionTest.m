@@ -32,7 +32,7 @@ function constructor_test(tc)
     v = [5 6 7];
     tc.verifyEqual(Quaternion.pure(v).double, [0 v],'absTol',1e-4);
     
-    tc.verifyError( @() Quaternion.pure([1 2]), 'RTB:Quaternion:badarg');
+    tc.verifyError( @() Quaternion.pure([1 2]), 'SMTB:Quaternion:badarg');
     
     %% copy constructor
     q = Quaternion([1 2 3 4]);
@@ -42,8 +42,8 @@ function constructor_test(tc)
     
     %% errors
     
-    tc.verifyError( @() Quaternion(2), 'RTB:Quaternion:badarg')
-    tc.verifyError( @() Quaternion([1 2 3]), 'RTB:Quaternion:badarg')
+    tc.verifyError( @() Quaternion(2), 'SMTB:Quaternion:badarg')
+    tc.verifyError( @() Quaternion([1 2 3]), 'SMTB:Quaternion:badarg')
     
     
 end
@@ -169,10 +169,10 @@ function multiply_test(tc)
     
     %% errors
     
-    tc.verifyError( @() q1 * [1 2 3], 'RTB:Quaternion:badarg')
-    tc.verifyError( @() [1 2 3]*q1, 'RTB:Quaternion:badarg')
-    tc.verifyError( @() [q1 q1] * [q1 q1 q1], 'RTB:Quaternion:badarg')
-    tc.verifyError( @() q1*SE3, 'RTB:Quaternion:badarg')
+    tc.verifyError( @() q1 * [1 2 3], 'SMTB:Quaternion:badarg')
+    tc.verifyError( @() [1 2 3]*q1, 'SMTB:Quaternion:badarg')
+    tc.verifyError( @() [q1 q1] * [q1 q1 q1], 'SMTB:Quaternion:badarg')
+    tc.verifyError( @() q1*SE3, 'SMTB:Quaternion:badarg')
 
     
 end
@@ -210,8 +210,8 @@ function divide_test(tc)
     
     %% errors
     
-    tc.verifyError( @() q1 / [1 2 3], 'RTB:Quaternion:badarg')
-    tc.verifyError( @() [q1 q1] / SE3, 'RTB:Quaternion:badarg')
+    tc.verifyError( @() q1 / [1 2 3], 'SMTB:Quaternion:badarg')
+    tc.verifyError( @() [q1 q1] / SE3, 'SMTB:Quaternion:badarg')
     
 end
 
@@ -249,8 +249,8 @@ function equality_test(tc)
     
     %% errors
     
-    tc.verifyError( @() [q1 q1] == [q1 q1 q1], 'RTB:Quaternion:badarg')
-    tc.verifyError( @() [q1 q1] ~= [q1 q1 q1], 'RTB:Quaternion:badarg')
+    tc.verifyError( @() [q1 q1] == [q1 q1 q1], 'SMTB:Quaternion:badarg')
+    tc.verifyError( @() [q1 q1] ~= [q1 q1 q1], 'SMTB:Quaternion:badarg')
     
 end
 
@@ -373,5 +373,5 @@ end
 %     tc.verifyEqual(q.double(), expected_out,'absTol',1e-4);
 %
 %     %test for input errors!!
-%     verifyError(tc, @()Quaternion([1 2 3 4 5]),'RTB:Quaternion:badarg');
+%     verifyError(tc, @()Quaternion([1 2 3 4 5]),'SMTB:Quaternion:badarg');
 % end

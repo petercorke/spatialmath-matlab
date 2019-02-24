@@ -47,25 +47,28 @@
 %
 % See also SO2, SO3, SE2, SE3.
 
-
-% Copyright (C) 1993-2017, by Peter I. Corke
+% Copyright (C) 1993-2019 Peter I. Corke
 %
-% This file is part of The Robotics Toolbox for MATLAB (RTB).
+% This file is part of The Spatial Math Toolbox for MATLAB (SMTB).
 % 
-% RTB is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-% 
-% RTB is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU Lesser General Public License for more details.
-% 
-% You should have received a copy of the GNU Leser General Public License
-% along with RTB.  If not, see <http://www.gnu.org/licenses/>.
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+% of the Software, and to permit persons to whom the Software is furnished to do
+% so, subject to the following conditions:
 %
-% http://www.petercorke.com
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+% FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+% COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+% IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+% CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+% https://github.com/petercorke/spatial-math
 
 
 classdef (Abstract) RTBPose
@@ -136,7 +139,7 @@ classdef (Abstract) RTBPose
             % poses.  The result is a matrix not the input class type since the result
             % of addition is not in the group.
             
-            assert(isa(b, class(a)) && length(a) == length(b), 'RTB:RTBPose:plus:badarg', 'operands don''t conform');
+            assert(isa(b, class(a)) && length(a) == length(b), 'SMTB:RTBPose:plus:badarg', 'operands don''t conform');
             for i=1:length(a)
                 v(:,:,i) = a(i).data + b(i).data;
             end
@@ -149,7 +152,7 @@ classdef (Abstract) RTBPose
             % poses.  The result is a matrix not the input class type since the result
             % of subtraction is not in the group.
             
-            assert(isa(b, class(a)) && length(a) == length(b), 'RTB:RTBPose:minus:badarg', 'operands don''t conform');
+            assert(isa(b, class(a)) && length(a) == length(b), 'SMTB:RTBPose:minus:badarg', 'operands don''t conform');
             for i=1:length(a)
                 v(:,:,i) = a(i).data - b(i).data;
             end
@@ -218,7 +221,7 @@ classdef (Abstract) RTBPose
                 return;
             end
             
-            assert(length(obj1) == length(obj2), 'RTB:RTBPose:eq', 'arrays must be same size');
+            assert(length(obj1) == length(obj2), 'SMTB:RTBPose:eq', 'arrays must be same size');
             e = zeros(size(obj1), 'logical');
             for i=1:length(obj1)
                 e(i) = all(all(abs([obj1(i).data] - [obj2(i).data]) < 10*eps));
@@ -242,7 +245,7 @@ classdef (Abstract) RTBPose
             % - N can be negative which is equivalent to the inverse of P^abs(N).
             %
             % See also RTBPose.power, RTBPose.mtimes, RTBPose.times.
-            assert(isscalar(n) && isreal(n) && floor(n) == n, 'RTB:Pose', 'exponent must be a real integer');
+            assert(isscalar(n) && isreal(n) && floor(n) == n, 'SMTB:Pose', 'exponent must be a real integer');
             e = obj1.new( double(obj1)^n);
         end
         
@@ -257,15 +260,15 @@ classdef (Abstract) RTBPose
             % - N can be negative which is equivalent to the inverse of P.^abs(N).
             %
             % See also RTBPose.mpower, RTBPose.mtimes, RTBPose.times.
-            assert(isscalar(n) && isreal(n) && floor(n) == n, 'RTB:Pose', 'exponent must be a real integer');
+            assert(isscalar(n) && isreal(n) && floor(n) == n, 'SMTB:Pose', 'exponent must be a real integer');
             e = SE3( trnorm(double(obj1)^n) );
         end
         
         function e = transpose(obj1, obj2)
-            error('RTB:Pose', 'transpose operator not supported by RTBPose subclass object')
+            error('SMTB:Pose', 'transpose operator not supported by RTBPose subclass object')
         end
         function e = ctranspose(obj1, obj2)
-            error('RTB:Pose', 'transpose operator not supported by RTBPose subclass object')
+            error('SMTB:Pose', 'transpose operator not supported by RTBPose subclass object')
         end
         
         
@@ -323,12 +326,12 @@ classdef (Abstract) RTBPose
                         out(i) = obj1.new( obj(i).data * a.data);
                     end
                 else
-                    error('RTB:RTBPose:badops', 'invalid operand lengths to * operator');
+                    error('SMTB:RTBPose:badops', 'invalid operand lengths to * operator');
                 end
                 
             elseif isa(obj, 'RTBPose') && isnumeric(a)
                 % obj * vectors (nxN), result is nxN
-                assert(isreal(a), 'RTB:RTBPose:*', 'matrix must be real');
+                assert(isreal(a), 'SMTB:RTBPose:*', 'matrix must be real');
                 q2 = double(a); % force to double
                 
                 obj1 = obj(1);
@@ -336,10 +339,10 @@ classdef (Abstract) RTBPose
 
                 if obj1.isSE
                     % is SE(n) convert to homogeneous form
-                    assert(numrows(a) == n-1, 'RTB:RTBPose:badops', 'LHS should be matrix with %d rows', n-1);
+                    assert(numrows(a) == n-1, 'SMTB:RTBPose:badops', 'LHS should be matrix with %d rows', n-1);
                     a = [a; ones(1, numcols(a))];
                 else
-                    assert(numrows(a) == n, 'RTB:RTBPose:badops', 'LHS should be matrix with %d rows', n);
+                    assert(numrows(a) == n, 'SMTB:RTBPose:badops', 'LHS should be matrix with %d rows', n);
                 end
                 
                 out = zeros(n, max(length(obj),numcols(a)));  % preallocate space
@@ -360,7 +363,7 @@ classdef (Abstract) RTBPose
                         out(:,i) = obj(i).data * a;
                     end
                 else
-                    error('RTB:RTBPose:badops', 'unequal vector lengths to * operator');
+                    error('SMTB:RTBPose:badops', 'unequal vector lengths to * operator');
                 end
                 
                 if obj1.isSE
@@ -374,7 +377,7 @@ classdef (Abstract) RTBPose
                 A = [obj.R -skew(obj.t); zeros(3,3) obj.R];
                 out = A * a;   % invokes mtimes Plucker.mtimes
             else
-                error('RTB:RTBPose:badops', 'operands to * cannot be composed');
+                error('SMTB:RTBPose:badops', 'operands to * cannot be composed');
             end
         end
         
@@ -436,10 +439,10 @@ classdef (Abstract) RTBPose
                         out(i) = obj1.new( obj(i).data * inv(a.data));
                     end
                 else
-                    error('RTB:RTBPose:badops', 'unequal vector lengths to / operator');
+                    error('SMTB:RTBPose:badops', 'unequal vector lengths to / operator');
                 end 
             else
-                error('RTB:RTBPose:badops', 'invalid operand types to / operator');
+                error('SMTB:RTBPose:badops', 'invalid operand types to / operator');
             end
         end
   

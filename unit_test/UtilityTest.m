@@ -88,7 +88,7 @@ function unit_test(tc)
                                          0.5345
                                          0.8018], 'absTol',1e-4);
 
-    verifyError(tc,  @() unit(vo), 'RTB:unit:zero_norm');
+    verifyError(tc,  @() unit(vo), 'SMTB:unit:zero_norm');
 end
 
 %    tb_optparse                - toolbox argument parser
@@ -120,7 +120,7 @@ function tb_optparse_test(tc)
     tc.verifyEqual(opt2.color, 'red');
     tc.verifyEqual(opt2.select, 1);
 
-    verifyError(tc, @() tb_optparse(opt, {'one'}), 'RTB:tboptparse:badargs');
+    verifyError(tc, @() tb_optparse(opt, {'one'}), 'SMTB:tboptparse:badargs');
 
     opt2 = tb_optparse(opt, {'two', 3});
     tc.verifyEqual(opt2.one, []);
@@ -212,8 +212,8 @@ function tb_optparse_test(tc)
     [opt2,args] = tb_optparse(opt, {1, 'three', 4, 'spam', 2, 'red',  'spam'});
     tc.verifyEqual(args, {1, 'spam', 2, 'spam'});
 
-    verifyError(tc,  @() tb_optparse(opt, {'two'}), 'RTB:tboptparse:badargs');
-    verifyError(tc,  @() tb_optparse(opt, 'bob'), 'RTB:tboptparse:badargs');
+    verifyError(tc,  @() tb_optparse(opt, {'two'}), 'SMTB:tboptparse:badargs');
+    verifyError(tc,  @() tb_optparse(opt, 'bob'), 'SMTB:tboptparse:badargs');
 end
 
 
@@ -287,7 +287,7 @@ function about_test(tc)
     about(a)
     about('a')  % command line equivalent
     
-    tc.verifyError( @() about('b'), 'RTB:about')
+    tc.verifyError( @() about('b'), 'SMTB:about')
     
     a = sqrt(-1)
     about(a)
@@ -339,7 +339,7 @@ function angdiff_test(tc)
     % vector case
     tc.verifyEqual( angdiff( [pi34 pi34 -pi34], [pi34 -pi34 pi34]), [0 -pi2 pi2])
     
-    tc.verifyError( @() angdiff( [pi34 pi34 -pi34], [pi34 -pi34]), 'RTB:angdiff:badarg')
+    tc.verifyError( @() angdiff( [pi34 pi34 -pi34], [pi34 -pi34]), 'SMTB:angdiff:badarg')
 end
 
 function stl_test(tc)

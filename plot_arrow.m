@@ -10,25 +10,28 @@
 %
 % See also ARROW3.
 
-
-% Copyright (C) 1993-2017, by Peter I. Corke
+% Copyright (C) 1993-2019 Peter I. Corke
 %
-% This file is part of The Robotics Toolbox for MATLAB (RTB).
+% This file is part of The Spatial Math Toolbox for MATLAB (SMTB).
 % 
-% RTB is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-% 
-% RTB is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU Lesser General Public License for more details.
-% 
-% You should have received a copy of the GNU Leser General Public License
-% along with RTB.  If not, see <http://www.gnu.org/licenses/>.
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+% of the Software, and to permit persons to whom the Software is furnished to do
+% so, subject to the following conditions:
 %
-% http://www.petercorke.com
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+% FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+% COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+% IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+% CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+% https://github.com/petercorke/spatial-math
 function plot_arrow(p1, varargin)
     
     if min(size(p1)) == 1
@@ -36,15 +39,15 @@ function plot_arrow(p1, varargin)
         p1 = p1(:);
         p2 = varargin{1};
         p2 = p2(:);
-        assert(numrows(p1) == numrows(p2), 'RTB:plot_arrow', 'P1 and P2 must be the same length');
+        assert(numrows(p1) == numrows(p2), 'SMTB:plot_arrow', 'P1 and P2 must be the same length');
         varargin = varargin{2:end};
     else
         % p1 is a 2-column matrix
-        assert(numcols(p1) == 2, 'RTB:plot_arrow', 'P1 must have 2 columns');
+        assert(numcols(p1) == 2, 'SMTB:plot_arrow', 'P1 must have 2 columns');
         p2 = p1(:,2);
         p1 = p1(:,1);
     end
     
-    assert(any(numrows(p1) == [2 3]), 'RTB:plot_arrow', '2D or 3D points only');
+    assert(any(numrows(p1) == [2 3]), 'SMTB:plot_arrow', '2D or 3D points only');
 
     arrow3(p1', p2', varargin{:});

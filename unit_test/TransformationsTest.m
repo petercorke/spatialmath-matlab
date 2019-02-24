@@ -190,7 +190,7 @@ function rotx_test(tc)
     tc.verifyEqual(simplify(det(R)), sym(1));
     
     %test for non-scalar input
-    verifyError(tc, @()rotx([1 2 3]),'RTB:rotx:badarg');
+    verifyError(tc, @()rotx([1 2 3]),'SMTB:rotx:badarg');
 end
 
 function roty_test(tc)
@@ -208,7 +208,7 @@ function roty_test(tc)
     tc.verifyEqual(simplify(det(R)), sym(1));
     
     %test for non-scalar input
-    verifyError(tc, @()roty([1 2 3]),'RTB:roty:badarg');
+    verifyError(tc, @()roty([1 2 3]),'SMTB:roty:badarg');
 end
 
 function rotz_test(tc)
@@ -226,7 +226,7 @@ function rotz_test(tc)
     tc.verifyEqual(simplify(det(R)), sym(1));
     
     %test for non-scalar input
-    verifyError(tc, @()rotz([1 2 3]),'RTB:rotz:badarg');
+    verifyError(tc, @()rotz([1 2 3]),'SMTB:rotz:badarg');
 end
 
 function trotx_test(tc)
@@ -300,10 +300,10 @@ function angvec2r_test(tc)
     tc.verifyEqual(angvec2r(0, [0 0 1]), eye(3,3),'absTol',1e-10);
     tc.verifyEqual(angvec2r(0, [0 0 0]), eye(3,3),'absTol',1e-10);
     
-    verifyError(tc, @()angvec2r(1, [0 0 0]),'RTB:angvec2r:badarg');
+    verifyError(tc, @()angvec2r(1, [0 0 0]),'SMTB:angvec2r:badarg');
     
-    verifyError(tc, @()angvec2r([1,2,3],0.1),'RTB:angvec2r:badarg');
-    verifyError(tc, @()angvec2r(1),'RTB:angvec2r:badarg');
+    verifyError(tc, @()angvec2r([1,2,3],0.1),'SMTB:angvec2r:badarg');
+    verifyError(tc, @()angvec2r(1),'SMTB:angvec2r:badarg');
 end
 
 %    angvec2tr                  - angle/vector to HT
@@ -318,10 +318,10 @@ function angvec2tr_test(tc)
     tc.verifyEqual(angvec2tr(0, [0 0 1]), eye(4,4),'absTol',1e-10);
     tc.verifyEqual(angvec2tr(0, [0 0 0]), eye(4,4),'absTol',1e-10);
     
-    verifyError(tc, @()angvec2tr(1, [0 0 0]),'RTB:angvec2r:badarg');
+    verifyError(tc, @()angvec2tr(1, [0 0 0]),'SMTB:angvec2r:badarg');
     
-    verifyError(tc, @()angvec2tr([1,2,3],0.1),'RTB:angvec2r:badarg');
-    verifyError(tc, @()angvec2tr(1),'RTB:angvec2tr:badarg');
+    verifyError(tc, @()angvec2tr([1,2,3],0.1),'SMTB:angvec2r:badarg');
+    verifyError(tc, @()angvec2tr(1),'SMTB:angvec2tr:badarg');
 end
 
 %    tr2angvec                  - HT/RM to angle/vector form
@@ -380,7 +380,7 @@ function tr2angvec_test(tc)
     tc.verifyEqual(v, eye(3,3), 'absTol',1e-6);
     
     %test for scalar input
-    verifyError(tc, @()tr2angvec(1), 'RTB:tr2angvec:badarg');
+    verifyError(tc, @()tr2angvec(1), 'SMTB:tr2angvec:badarg');
 end
 
 
@@ -409,7 +409,7 @@ function eul2r_test(tc)
     tc.verifyEqual(Rs(:,:,2), R, 'absTol',1e-10);
     
     %test for scalar input
-    verifyError(tc, @()eul2r(1),'RTB:eul2r:badarg');
+    verifyError(tc, @()eul2r(1),'SMTB:eul2r:badarg');
 end
 
 %    eul2tr                     - Euler angles to HT
@@ -433,7 +433,7 @@ function eul2tr_test(tc)
     tc.verifyEqual(Ts(:,:,2), T, 'absTol',1e-10);
     
     %test for scalar input
-    verifyError(tc, @()eul2tr(1),'RTB:eul2r:badarg');
+    verifyError(tc, @()eul2tr(1),'SMTB:eul2r:badarg');
 end
 
 function rpy2r_test(tc)
@@ -494,7 +494,7 @@ function rpy2r_test(tc)
     tc.verifyEqual(Rs(:,:,2), R, 'absTol',1e-10);
     
     %test for scalar input
-    verifyError(tc, @()rpy2tr(1),'RTB:rpy2r:badarg');
+    verifyError(tc, @()rpy2tr(1),'SMTB:rpy2r:badarg');
 end
 
 function rpy2tr_test(tc)
@@ -552,7 +552,7 @@ function rpy2tr_test(tc)
     tc.verifyEqual(Ts(:,:,2), T, 'absTol',1e-10);
     
     %test for scalar input
-    verifyError(tc, @()rpy2tr(1),'RTB:rpy2r:badarg');
+    verifyError(tc, @()rpy2tr(1),'SMTB:rpy2r:badarg');
 end
 
 function tr2eul_test(tc)
@@ -589,7 +589,7 @@ function tr2eul_test(tc)
     tc.verifyEqual(eul2r( tr2eul(R, 'deg'), 'deg'), R,'absTol',1e-10);
     
     %test for scalar input
-    verifyError(tc, @()tr2eul(1),'RTB:SO3:check:badarg');
+    verifyError(tc, @()tr2eul(1),'SMTB:SO3:check:badarg');
 
     % test flip
     eul = [-0.1 0.2 0.3];
@@ -703,7 +703,7 @@ function tr2rpy_test(tc)
     tc.verifyEqual(rpy2tr(tr2rpy(a, seq), seq), a, 'absTol',1e-10);
     
     %test for scalar input
-    verifyError(tc, @()tr2rpy(1),'RTB:tr2rpy:badarg');
+    verifyError(tc, @()tr2rpy(1),'SMTB:tr2rpy:badarg');
 end
 
 
@@ -716,7 +716,7 @@ function oa2r_test(tc)
         0     1     0
         0     0     1],'absTol',1e-10);
     %test for scalar input
-    verifyError(tc, @()oa2r(1),'RTB:oa2r:badarg');
+    verifyError(tc, @()oa2r(1),'SMTB:oa2r:badarg');
 end
 
 %    oa2tr                      - orientation and approach vector to HT
@@ -728,7 +728,7 @@ function oa2tr_test(tc)
         0     0     1     0
         0     0     0     1],'absTol',1e-10);
     %test for scalar input
-    verifyError(tc, @()oa2tr(1),'RTB:oa2tr:badarg');
+    verifyError(tc, @()oa2tr(1),'SMTB:oa2tr:badarg');
 end
 
 
@@ -817,9 +817,9 @@ function trinterp_test(tc)
     tc.verifyEqual(T(:,:,2), Tm, 'abstol', 1e-10);
     tc.verifyEqual(T(:,:,3), T1, 'abstol', 1e-10);
     
-    tc.verifyError( @() trinterp(T0, T1, -1), 'RTB:trinterp:badarg');
-    tc.verifyError( @() trinterp(T0, T1, 1.7), 'RTB:trinterp:badarg');
-    tc.verifyError( @() trinterp(T0), 'RTB:trinterp:badarg');
+    tc.verifyError( @() trinterp(T0, T1, -1), 'SMTB:trinterp:badarg');
+    tc.verifyError( @() trinterp(T0, T1, 1.7), 'SMTB:trinterp:badarg');
+    tc.verifyError( @() trinterp(T0), 'SMTB:trinterp:badarg');
 
 end
 
@@ -891,7 +891,7 @@ function trnorm_test(tc)
     %HACK)    tc.verifyEqual(arrayfun( @(x) det(trnorm(x)), RR
     
     %test for scalar input
-    verifyError(tc, @()trnorm(1),'RTB:trnorm:badarg');
+    verifyError(tc, @()trnorm(1),'SMTB:trnorm:badarg');
 end
 
 function trprint_test(tc)
@@ -987,7 +987,7 @@ function skew_test(tc)
     
     tc.verifyEqual( vex(R), [1 2 3]'); % check contents, vex already verified
 
-    tc.verifyError( @() skew([1 2]), 'RTB:skew:badarg')
+    tc.verifyError( @() skew([1 2]), 'SMTB:skew:badarg')
 end
 
 function vexa_test(tc)
@@ -1019,7 +1019,7 @@ function skewa_test(tc)
     tc.verifyEqual( norm(R'+ R), 0, 'absTol', 1e-10); % check is skew
     
     tc.verifyEqual( vexa(T), [3 4 5]'); % check contents, vexa already verified
-    tc.verifyError( @() skewa([1 2]), 'RTB:skewa:badarg')
+    tc.verifyError( @() skewa([1 2]), 'SMTB:skewa:badarg')
 
 end
 
@@ -1062,7 +1062,7 @@ function trlog_test(tc)
     tc.verifyEqual( logm(T), skewa(th*w), 'absTol', 1e-10)
     
     
-    verifyError(tc, @()trlog(0),'RTB:trlog:badarg');
+    verifyError(tc, @()trlog(0),'SMTB:trlog:badarg');
 end
 
 
@@ -1136,7 +1136,7 @@ function trexp_test(tc)
     T = transl([1 2 3])*troty(0.3);
     tc.verifyEqual(trexp(logm(T)), T, 'absTol', 1e-6);
     
-    tc.verifyError( @() trexp(1), 'RTB:trexp:badarg')
+    tc.verifyError( @() trexp(1), 'SMTB:trexp:badarg')
 end
 
 function e2h_test(tc)
@@ -1190,7 +1190,7 @@ function homtrans_test(tc)
     tc.verifyEqual( Q(:,:,3), T*T);
 
     % error case
-    tc.verifyError( @() homtrans(ones(2,2), P1), 'RTB:homtrans:badarg')
+    tc.verifyError( @() homtrans(ones(2,2), P1), 'SMTB:homtrans:badarg')
 
 end
 

@@ -46,25 +46,28 @@
 % - There is a huge variety of notation used across the literature, as well as the ordering
 %   of the direction and moment components in the 6-vector
 
-
-% Copyright (C) 1993-2017, by Peter I. Corke
+% Copyright (C) 1993-2019 Peter I. Corke
 %
-% This file is part of The Robotics Toolbox for MATLAB (RTB).
+% This file is part of The Spatial Math Toolbox for MATLAB (SMTB).
 % 
-% RTB is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-% 
-% RTB is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU Lesser General Public License for more details.
-% 
-% You should have received a copy of the GNU Leser General Public License
-% along with RTB.  If not, see <http://www.gnu.org/licenses/>.
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+% of the Software, and to permit persons to whom the Software is furnished to do
+% so, subject to the following conditions:
 %
-% http://www.petercorke.com
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+% FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+% COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+% IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+% CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+% https://github.com/petercorke/spatial-math
 
 % NOTES
 % working: constructor, origin-distance, plane+volume intersect, plot, .L
@@ -127,7 +130,7 @@ classdef Plucker < handle
             opt.type = {'points', 'planes', 'Pw', 'wv', 'UQ'};
             [opt,args] = tb_optparse(opt, varargin);
             
-            assert(length(args) == 2, 'RTB:Plucker:badarg', 'expecting two vectors');
+            assert(length(args) == 2, 'SMTB:Plucker:badarg', 'expecting two vectors');
 
             % get the two arguments
             A = args{1}; A = A(:);
@@ -138,26 +141,26 @@ classdef Plucker < handle
             % handle various options
             switch opt.type
                 case 'points'
-                    assert( isvec(A,3) && isvec(B,3), 'RTB:Plucker:badarg', 'expecting 3-vectors');
+                    assert( isvec(A,3) && isvec(B,3), 'SMTB:Plucker:badarg', 'expecting 3-vectors');
                     % compute direction and moment
                     pl.w = A - B;
                     pl.v = cross(A-B, A);
                 case 'planes'
-                    assert( isvec(A,4) && isvec(B,4), 'RTB:Plucker:badarg', 'expecting 4-vectors');
+                    assert( isvec(A,4) && isvec(B,4), 'SMTB:Plucker:badarg', 'expecting 4-vectors');
                     pl.w = cross(A(1:3), B(1:3));
                     pl.v = B(4)*A(1:3) - A(4)*B(1:3);
                 case 'wv'
-                    assert( isvec(A,3) && isvec(B,3), 'RTB:Plucker:badarg', 'expecting 3-vectors');
+                    assert( isvec(A,3) && isvec(B,3), 'SMTB:Plucker:badarg', 'expecting 3-vectors');
                     pl.w = A;
                     pl.v = B;
                 case 'Pw'
-                    assert( isvec(A,3) && isvec(B,3), 'RTB:Plucker:badarg', 'expecting 3-vectors');
+                    assert( isvec(A,3) && isvec(B,3), 'SMTB:Plucker:badarg', 'expecting 3-vectors');
                     %                     pl.P = B;
                     %                     pl.Q = A+B;
                     pl.w = B;
                     pl.v = cross(pl.w, A);
                 otherwise
-                    error('RTB:Plucker:badarg', 'unknown argument type');
+                    error('SMTB:Plucker:badarg', 'unknown argument type');
             end
         end
         
@@ -179,7 +182,7 @@ classdef Plucker < handle
                 % reciprocal product
                 z = dot(a1.uw, a2.v) + dot(a2.uw, a1.v);
             elseif isa(a1, 'Plucker') && isfloat(a2)
-                assert(numrows(a2) == 4, 'RTB:Plucker:badarg', 'must postmultiply by 4xN matrix');
+                assert(numrows(a2) == 4, 'SMTB:Plucker:badarg', 'must postmultiply by 4xN matrix');
                 z = a1.skew * a2;  % postmultiply by 4xN
             elseif isfloat(a1) && isa(a2, 'Plucker')
                 if numcols(a1) == 4
@@ -187,7 +190,7 @@ classdef Plucker < handle
                 elseif all(size(a1) == [6 6])
                     z = Plucker( a1 * double(a2) ); % premultiply by 6x6 adjoint
                 else
-                    error('RTB:Plucker:badarg', 'must premultiply by Nx4 matrix');
+                    error('SMTB:Plucker:badarg', 'must premultiply by Nx4 matrix');
                 end
             end
         end
@@ -241,7 +244,7 @@ classdef Plucker < handle
         end
         
         function z = L(pl)
-            warning('RTB:Plucker', 'deprecated: please use skew() method instead');
+            warning('SMTB:Plucker', 'deprecated: please use skew() method instead');
             z = pl.skew();
         end
 
@@ -278,7 +281,7 @@ classdef Plucker < handle
             %
             % PL.contains(X) is true if the point X (3x1) lies on the line defined by
             % the Plucker object PL.
-            assert( size(x,1) == 3, 'RTB:Plucker: points must have 3 rows');
+            assert( size(x,1) == 3, 'SMTB:Plucker: points must have 3 rows');
             t = zeros(1, size(x,2), 'logical');
             for i=1:size(x,2)
                 t(i) = norm( cross(x(:,i) - pl.pp, pl.w) ) < 10*eps;
@@ -593,7 +596,7 @@ classdef Plucker < handle
                 P = pl.intersect_volume(bounds);
 
                 if isempty(P)
-                    warning('RTB:Plucker', 'line does not intersect the plot volume');
+                    warning('SMTB:Plucker', 'line does not intersect the plot volume');
                 else
                     plot3(P(1,:), P(2,:), P(3,:), varargin{:});
                 end
@@ -660,7 +663,7 @@ classdef Plucker < handle
 %             % See also Plucker.or.
 %             
 %             if ~isa(pl2, 'Plucker')
-%                 error('RTB:Plucker:badarg', 'both arguments to | must be Plucker objects');
+%                 error('SMTB:Plucker:badarg', 'both arguments to | must be Plucker objects');
 %             end
 %             L1 = pl1.line(); L2 = pl2.line();
 %             

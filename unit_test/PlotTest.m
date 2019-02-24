@@ -119,7 +119,7 @@ end
     trplot2(Rt1, 'axhandle', a);
  
     h = trplot2(Rt1);
-    tc.verifyWarning( @() trplot2(h, Rt1), 'RTB:trplot2:deprecated')
+    tc.verifyWarning( @() trplot2(h, Rt1), 'SMTB:trplot2:deprecated')
 end
 
 %    plot2                      - plot trajectory

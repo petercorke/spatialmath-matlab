@@ -54,8 +54,28 @@
 %
 % See also UnitQuaternion.
 
-% TODO
-% properties s, v for the vector case
+% Copyright (C) 1993-2019 Peter I. Corke
+%
+% This file is part of The Spatial Math Toolbox for MATLAB (SMTB).
+% 
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+% of the Software, and to permit persons to whom the Software is furnished to do
+% so, subject to the following conditions:
+%
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+% FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+% COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+% IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+% CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+% https://github.com/petercorke/spatial-math
 
 
 % Copyright (C) 1993-2017, by Peter I. Corke
@@ -119,7 +139,7 @@ classdef Quaternion
                 q.s = s(1);
                 q.v = s(2:4);
             else
-                error ('RTB:Quaternion:badarg', 'bad argument to quaternion constructor');
+                error ('SMTB:Quaternion:badarg', 'bad argument to quaternion constructor');
             end
             
         end
@@ -128,7 +148,7 @@ classdef Quaternion
             %Quaternion.set.s Set scalar component
             %
             % Q.s = S sets the scalar part of the Quaternion object to S.
-            assert(isa(s, 'sym') || ( isreal(s) && isscalar(s) ), 'RTB:Quaternion:badarg', 's must be real scalar');
+            assert(isa(s, 'sym') || ( isreal(s) && isscalar(s) ), 'SMTB:Quaternion:badarg', 's must be real scalar');
             
             qo = q;
             qo.s = s;
@@ -138,7 +158,7 @@ classdef Quaternion
             %Quaternion.set.v Set vector component
             %
             % Q.v = V sets the vector part of the Quaternion object to V (1x3).
-            assert(isvec(v,3), 'RTB:Quaternion:badarg', 'v must be a real 3-vector');
+            assert(isvec(v,3), 'SMTB:Quaternion:badarg', 'v must be a real 3-vector');
             
             qo = q;
             qo.v = v(:).';
@@ -348,7 +368,7 @@ classdef Quaternion
                         qp(i) = new([s1*s2-v1*v2.' s1*v2+s2*v1+cross(v1,v2)]);
                     end
                 else
-                    error('RTB:Quaternion:badarg', '* operand length/size mismatch');
+                    error('SMTB:Quaternion:badarg', '* operand length/size mismatch');
                 end
                 
             elseif isa(q1, 'Quaternion') && isa(q2, 'double')
@@ -357,7 +377,7 @@ classdef Quaternion
                 %
                 % Q = qsmul(Q, S) multiply quaternion by real scalar.
                 %
-                assert(isscalar(q2), 'RTB:Quaternion:badarg', 'quaternion-double product: must be a scalar');
+                assert(isscalar(q2), 'SMTB:Quaternion:badarg', 'quaternion-double product: must be a scalar');
                 for i=1:length(q1)
                     qp(i) = Quaternion( double(q1(i))*q2);
                 end
@@ -370,13 +390,13 @@ classdef Quaternion
                 % Q = qsmul(Q, S) multiply quaternion by real scalar.
                 %
                 
-                assert(isscalar(q1), 'RTB:Quaternion:badarg', 'quaternion-double product: must be a scalar');
+                assert(isscalar(q1), 'SMTB:Quaternion:badarg', 'quaternion-double product: must be a scalar');
                 
                 for i=1:length(q2)
                     qp(i) = Quaternion( double(q2(i))*q1);
                 end
             else
-                error('RTB:Quaternion:badarg', 'quaternion product: incorrect right hand operand');
+                error('SMTB:Quaternion:badarg', 'quaternion product: incorrect right hand operand');
             end
         end
        
@@ -423,7 +443,7 @@ classdef Quaternion
                         qq(i) = q1(i) * inv(q2);
                     end
                 else
-                    error('RTB:Quaternion:badarg', '/ operand length mismatch');
+                    error('SMTB:Quaternion:badarg', '/ operand length mismatch');
                 end
                 
             elseif isa(q1, 'Quaternion') && isa(q2, 'double')
@@ -433,13 +453,13 @@ classdef Quaternion
                 % Q = qsdiv(Q, S) divide quaternion by real scalar.
                 %
                 
-                assert(isscalar(q2), 'RTB:Quaternion:badarg', 'quaternion-double quotient: must be a scalar');
+                assert(isscalar(q2), 'SMTB:Quaternion:badarg', 'quaternion-double quotient: must be a scalar');
                 for i=1:length(q1)
                     qq(i) = Quaternion( double(q1(i))/q2);
                 end
             
             else
-                error('RTB:Quaternion:badarg', 'quaternion quotient: incorrect right hand operand');
+                error('SMTB:Quaternion:badarg', 'quaternion quotient: incorrect right hand operand');
             end
         end
 
@@ -458,7 +478,7 @@ classdef Quaternion
             % See also Quaternion.mtimes.
             
             % check that exponent is an integer
-            assert(p - floor(p) == 0, 'RTB:Quaternion:badarg', 'quaternion exponent must be integer');
+            assert(p - floor(p) == 0, 'SMTB:Quaternion:badarg', 'quaternion exponent must be integer');
             
             if p == 0
                 qp = q.new([1 0 0 0]);
@@ -583,7 +603,7 @@ classdef Quaternion
                     e(i) = q1(i) == q2(i);
                 end
             else
-                error('RTB:Quaternion:badarg', 'vectors not of same length');
+                error('SMTB:Quaternion:badarg', 'vectors not of same length');
             end
         end
         
@@ -623,7 +643,7 @@ classdef Quaternion
                     e(i) = q1(i) ~= q2(i);
                 end
             else
-                error('RTB:Quaternion:badarg','vectors not of same length');
+                error('SMTB:Quaternion:badarg','vectors not of same length');
             end
         end
         
@@ -704,7 +724,7 @@ classdef Quaternion
 
             
             if ~isvec(v)
-                error('RTB:Quaternion:badarg', 'must be a 3-vector');
+                error('SMTB:Quaternion:badarg', 'must be a 3-vector');
             end
             q = Quaternion(0, v(:));
         end

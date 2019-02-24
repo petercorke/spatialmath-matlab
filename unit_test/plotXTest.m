@@ -264,7 +264,7 @@ function ellipse2d_test(tc)
 
     h = plot_ellipse(E);
     plot_ellipse(E, [1 1], 'alter', h);
-    tc.verifyError(@() plot_ellipse(E, 'alter', 7), 'RTB:plot_ellipse:badarg');
+    tc.verifyError(@() plot_ellipse(E, 'alter', 7), 'SMTB:plot_ellipse:badarg');
 end
 
 function ellipse2d_animate_test(tc)

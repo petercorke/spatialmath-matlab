@@ -52,18 +52,28 @@
 % Static methods::
 %  check        convert object or matrix to SO2 object
 
+% Copyright (C) 1993-2019 Peter I. Corke
 %
-% * means inherited from RTBPose
+% This file is part of The Spatial Math Toolbox for MATLAB (SMTB).
+% 
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+% of the Software, and to permit persons to whom the Software is furnished to do
+% so, subject to the following conditions:
 %
-% Operators::
-%  +           elementwise addition, result is a matrix
-%  -           elementwise subtraction, result is a matrix
-%  *           multiplication within group, also group x vector
-%  /           multiply by inverse
-%  ==          test equality
-%  ~=          test inequality
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
 %
-% See also SE2, SO3, SE3, RTBPose.
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+% FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+% COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+% IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+% CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+% https://github.com/petercorke/spatial-math
 
 
 
@@ -199,7 +209,7 @@ classdef SE2 < SO2
                         end
                         return
                     else
-                        error('RTB:SE2:badarg', 'unknown arguments');
+                        error('SMTB:SE2:badarg', 'unknown arguments');
                     end
                     
                 case 2
@@ -215,7 +225,7 @@ classdef SE2 < SO2
                         % (R, t)
                         obj.data = [a b(:); 0 0 1];
                     else
-                        error('RTB:SE3:badarg', 'unknown arguments');
+                        error('SMTB:SE3:badarg', 'unknown arguments');
                     end
                     
                 case 3
@@ -225,10 +235,10 @@ classdef SE2 < SO2
                         % (x, y, th)
                         obj.data = [ rot2(c*scale) [a b]'; 0 0 1];
                     else
-                        error('RTB:SE3:badarg', 'unknown arguments');
+                        error('SMTB:SE3:badarg', 'unknown arguments');
                     end
                 otherwise
-                    error('RTB:SE3:badarg', 'unknown arguments');
+                    error('SMTB:SE3:badarg', 'unknown arguments');
                     
             end
             
@@ -236,7 +246,7 @@ classdef SE2 < SO2
 %             if numrows(obj.data) == 2
 %                 obj.data = [obj.data; 0 0 1];
 %             end
-            assert(all(size(obj(1).data) == [3 3]), 'RTB:SE2:SE2', 'created wrong size data element');
+            assert(all(size(obj(1).data) == [3 3]), 'SMTB:SE2:SE2', 'created wrong size data element');
             %% HACK
         end
         
@@ -393,8 +403,8 @@ classdef SE2 < SO2
                     Ti = SE2( trinterp2(obj1.T, obj2.T, varargin{:}) );
                 catch me
                     switch me.identifier
-                        case 'RTB:trinterp2:badarg'
-                            throw( MException('RTB:SE2:interp:badarg', 'value of S outside interval [0,1]') );
+                        case 'SMTB:trinterp2:badarg'
+                            throw( MException('SMTB:SE2:interp:badarg', 'value of S outside interval [0,1]') );
                         otherwise
                             rethrow(me);
                     end
@@ -405,8 +415,8 @@ classdef SE2 < SO2
                     Ti = SE2( trinterp2( obj1.T, varargin{:}) );
                 catch me
                     switch me.identifier
-                        case 'RTB:trinterp2:badarg'
-                            throw( MException('RTB:SE2:interp:badarg', 'value of S outside interval [0,1]') );
+                        case 'SMTB:trinterp2:badarg'
+                            throw( MException('SMTB:SE2:interp:badarg', 'value of S outside interval [0,1]') );
                         otherwise
                             rethrow(me);
                     end

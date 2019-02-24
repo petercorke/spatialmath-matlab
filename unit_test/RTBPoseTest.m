@@ -65,7 +65,7 @@ function interp_test(tc)
         verifyEqual(tc, double(a1.interp(a2, 0)), double(a1), 'absTol',1e-10);
         verifyEqual(tc, double(a1.interp(a2, 1)), double(a2), 'absTol',1e-10);
         
-        errmsg = sprintf('RTB:%s:interp:badarg', cn);
+        errmsg = sprintf('SMTB:%s:interp:badarg', cn);
         verifyError(tc, @() a1.interp(a2, -1), errmsg );
         verifyError(tc, @() a1.interp(a2, 1.2), errmsg );
     end
