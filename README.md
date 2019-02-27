@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.com/petercorke/spatial-math.svg?branch=master)](https://travis-ci.com/petercorke/spatial-math)
 ![Coverage](https://codecov.io/gh/petercorke/spatial-math/branch/master/graph/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/petercorke/robotics-toolbox-matlab/graphs/commit-activity)
+[![GitHub stars](https://img.shields.io/github/stars/petercorke/spatial-math.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/petercorke/robotics-toolbox-matlab/stargazers/)
  
 # Spatial Math Toolbox for MATLAB&reg;
 
