@@ -1,8 +1,6 @@
 %ANIMATE Create an animation
 %
-% Helper class for creating animations.  Creates a movie file or saves snapshots 
-% of a figure as individual PNG format frames numbered 0000.png, 0001.png and so
-% on.
+% Helper class for creating animations as MP4, animated GIF or a folder of images.
 %
 % Example::
 %
@@ -15,9 +13,10 @@
 %
 % will save the frames in an MP4 movie file using VideoWriter.
 %
-% Alternatively::
+% Alternatively, to createa of images in PNG format frames named 0000.png, 
+% 0001.png and so on in a folder called 'frames'
 %
-%          anim = Animate('movie');
+%          anim = Animate('frames');
 %          for i=1:100
 %              plot(...);
 %              anim.add();
@@ -25,7 +24,10 @@
 %          anim.close();
 %
 % To convert the image files to a movie you could use a tool like ffmpeg
-%           ffmpeg -r 10 -i movie/%04d.png out.mp4
+%           ffmpeg -r 10 -i frames/%04d.png out.mp4
+%
+% Notes::
+% - MP4 movies cannot be generated under Linux, a limitation of MATLAB VideoWriter.
 %
 
 % Copyright (C) 1993-2019 Peter I. Corke
@@ -56,21 +58,19 @@ classdef Animate < handle
     properties
         frame
         dir
-        resolution
         video           % video writing object
+        opt
         profile
-        fps
-        bgcolor
     end
     
     methods
         function a = Animate(filename, varargin)
             %ANIMATE.ANIMATE Create an animation class
             %
-            % A = ANIMATE(NAME, OPTIONS) initializes an animation, and creates
+            % ANIM = ANIMATE(NAME, OPTIONS) initializes an animation, and creates
             % a movie file or a folder holding individual frames.
             %
-            % A = ANIMATE({NAME, OPTIONS}) as above but arguments are passed as a cell array,
+            % ANIM = ANIMATE({NAME, OPTIONS}) as above but arguments are passed as a cell array,
             % which allows a single argument to a higher-level option like 'movie',M to express
             % options as well as filename.
             %
@@ -80,21 +80,26 @@ classdef Animate < handle
             % 'fps',F            Frame rate (default 30)
             % 'bgcolor',C        Set background color of axes, 3 vector or MATLAB
             %                    color name.
+            % 'inner'            inner frame of axes; no axes, labels, ticks.
             %
             % A profile can also be set by the file extension given:
             %
-            % none    Create a folder full of frames
+            % none    Create a folder full of frames in PNG format frames named
+            %         0000.png, 0001.png and so on
             % .gif    Create animated GIF
             % .mp4    Create MP4 movie (not on Linux)
             % .avi    Create AVI movie
             % .mj2    Create motion jpeg file
             %
             % Notes::
+            % - MP4 movies cannot be generated under Linux, a limitation of MATLAB VideoWriter.
+            % - if no extension or profile is given a folder full of frames is created.
             % - if a profile is given a movie is created, see VideoWriter for allowable
             %   profiles.
-            % - if the file has an extension a movie is created.
+            % - if the file has an extension it specifies the profile.
             % - if an extension of '.gif' is given an animated GIF is created
-            % - otherwise a folder full of frames is created.
+            % - if NAME is [] then an Animation object is created but the add() and close()
+            %   methods do nothing.
             %
             % See also VideoWriter.
         
@@ -105,14 +110,15 @@ classdef Animate < handle
                 opt.resolution = [];
                 opt.profile = [];
                 opt.fps = 30;
-                bgcolor = [];
+                opt.bgcolor = [];
+                opt.inner = false;
 
                 if iscell(filename) && length(varargin) == 0
                     varargin = filename(2:end);
                     filename = filename{1};
                 end
                 [opt,args] = tb_optparse(opt, varargin);
-                a.resolution = opt.resolution;
+                a.opt = opt;
                 a.frame = 0;
 
                 [p,f,e] = fileparts(filename);
@@ -140,7 +146,6 @@ classdef Animate < handle
                     fprintf('Animate: saving video --> %s with profile ''%s''\n', filename, profile);
                     if strcmp(profile, 'GIF')
                         a.video = filename;
-                        a.fps = opt.fps;
                     else
                         a.video = VideoWriter(filename, profile, args{:});
                         a.video.FrameRate = opt.fps;
@@ -165,10 +170,15 @@ classdef Animate < handle
         function add(a, fh)
             %ANIMATE.ADD Adds current plot to the animation
             %
-            % A.ADD() adds the current figure in PNG format to the animation
-            % folder with a unique sequential filename.
+            % A.ADD() adds the current figure to the animation.
             %
             % A.ADD(FIG) as above but captures the figure FIG.
+            %
+            % Notes::
+            % - the frame is added to the output file or as a new sequentially
+            %   numbered image in a folder.
+            % - if the filename was given as [] in the constructor then no
+            %   action is taken.
             %
             % See also print.
 
@@ -180,30 +190,37 @@ classdef Animate < handle
                 fh = gcf;
             end
             
-            if ~isempty(a.bgcolor)
-                fh.Color = a.bgcolor;
+            if ~isempty(a.opt.bgcolor)
+                fh.Color = a.opt.bgcolor;
             end
             ax = gca;
             ax.Units = 'pixels';
             switch a.profile
                 case 'FILES'
-                    if isempty(a.resolution)
+                    if isempty(a.opt.resolution)
                         print(fh, '-dpng', fullfile(a.dir, sprintf('%04d.png', a.frame)));
                     else
-                        print(fh, '-dpng', sprintf('-r%d', a.resolution), fullfile(a.dir, sprintf('%04d.png', a.frame)));
+                        print(fh, '-dpng', sprintf('-r%d', a.opt.resolution), fullfile(a.dir, sprintf('%04d.png', a.frame)));
                     end
                 case 'GIF'
-                    im = frame2im(getframe(fh));  % get the frame
+                    if a.opt.inner
+                        im = frame2im( getframe(fh, ax.Position) );  % get the frame
+                    else
+                        im = frame2im(getframe(fh));  % get the frame
+                    end
                     [A, map] = rgb2ind(im, 256);
                     if a.frame == 0
-                        imwrite(A, map, a.video, 'gif', 'LoopCount',Inf, 'DelayTime', 1/a.fps);
+                        imwrite(A, map, a.video, 'gif', 'LoopCount',Inf, 'DelayTime', 1/a.opt.fps);
                     else
-                        imwrite(A, map, a.video, 'gif', 'WriteMode','append', 'DelayTime', 1/a.fps);
+                        imwrite(A, map, a.video, 'gif', 'WriteMode','append', 'DelayTime', 1/a.opt.fps);
                     end
                 otherwise
                     
-                    im = frame2im( getframe(fh, ax.Position) );  % get the frame
-                    
+                    if a.opt.inner
+                        im = frame2im( getframe(fh, ax.Position) );  % get the frame
+                    else
+                        im = frame2im(getframe(fh));  % get the frame
+                    end
                     % crop so that height/width are multiples of two, by default MATLAB pads
                     % with black which gives lines at the edge
                     w = numcols(im); h = numrows(im);
@@ -219,8 +236,11 @@ classdef Animate < handle
         function out = close(a)
             %ANIMATE.CLOSE  Closes the animation
             %
-            % A.CLOSE() closes the video file.
+            % A.CLOSE() ends the animation process and closes any output file.
             %
+            % Notes::
+            % - if the filename was given as [] in the constructor then no
+            %   action is taken.
             %
             if isempty(a.profile)
                 out = [];
