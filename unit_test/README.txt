@@ -1,9 +1,12 @@
-To run tests in matlab.
+To run unit tests from MATLAB:
   
 
-  Make the folder containing all the test you working folder 
-  
-  Type >> runtests
+Ensure that SMTB is on your path, then
 
-Make sure to add the old unit-test stuff
+```matlab
+>> RunAllTests
+```
 
+will also generate a [Cobertura](http://cobertura.github.io/cobertura/) format coverage report which is viewable using services like [codecov](https://codecov.io/gh/petercorke/spatial-math).
+
+This file is invoked from Travis CI via the `matlab-runner`.
