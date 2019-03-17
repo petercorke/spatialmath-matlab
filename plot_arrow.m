@@ -45,7 +45,7 @@
 % CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %
 % https://github.com/petercorke/spatial-math
-function plot_arrow(p1, varargin)
+function h = plot_arrow(p1, varargin)
     if isvec(p1, 2) || isvec(p1, 3)
         p1 = p1(:)';  % force row vector
     else
@@ -65,4 +65,9 @@ function plot_arrow(p1, varargin)
     end
     assert(numcols(p1) == numcols(p2), 'SMTB:plot_arrow', 'P1 and P2 must be the same length');
 
-    arrow3(p1, p2, varargin{:});
+    hh = arrow3(p1, p2, varargin{:});
+
+    if nargout > 0
+        h = hh;
+    end
+end
