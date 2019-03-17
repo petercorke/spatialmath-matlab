@@ -16,18 +16,25 @@
 % specifying a region in terms of top-left coordinate, width and height.  One box is
 % drawn for each row of BOX which is [xleft ytop width height].
 %
+%
+% H = PLOT_ARROW(...) as above but returns the graphics handle of the arrow.
+%
 % Options::
-% 'edgecolor'   the color of the circle's edge, Matlab color spec
-% 'fillcolor'   the color of the circle's interior, Matlab color spec
+% 'edgecolor'   the color of the circle's edge, MATLAB ColorSpec
+% 'fillcolor'   the color of the circle's interior, MATLAB ColorSpec
 % 'alpha'       transparency of the filled circle: 0=transparent, 1=solid
 %
-% - For an unfilled box any standard MATLAB LineStyle such as 'r' or 'b---'.
-% - For an unfilled box any MATLAB LineProperty options can be given such as 'LineWidth', 2.
+% - For an unfilled box:
+%   - any standard MATLAB LineSpec such as 'r' or 'b---'.
+%   - any MATLAB LineProperty options can be given such as 'LineWidth', 2.
 % - For a filled box any MATLAB PatchProperty options can be given.
+%
+% Examples::
+%          plot_box([0 1; 0 2], 'r')   % draw a hollow red box
+%          plot_box([0 1; 0 2], 'fillcolor', 'b', 'alpha', 0.5)   % translucent filled blue box
 %
 % Notes::
 % - The box is added to the current plot irrespective of hold status.
-% - Additional options LS are MATLAB LineSpec options and are passed to PLOT.
 %
 % See also PLOT_POLY, PLOT_CIRCLE, PLOT_ELLIPSE.
 
@@ -54,7 +61,7 @@
 %
 % https://github.com/petercorke/spatial-math
 
-function plot_box(varargin)
+function h = plot_box(varargin)
     opt.centre = [];
     opt.topleft = [];
     opt.matlab = [];
@@ -124,13 +131,17 @@ function plot_box(varargin)
     
     if isempty(opt.fillcolor)
         % outline only
-        plot(x, y, args{:})
+        hh = plot(x, y, args{:})
     else
         % filled shape
-        patch(x, y, 0*y, 'FaceColor', opt.fillcolor, ...
+        hh = patch(x, y, 0*y, 'FaceColor', opt.fillcolor, ...
             'FaceAlpha', opt.alpha, 'EdgeColor', opt.edgecolor, args{:});
     end
 
+    if nargout > 0
+        h = hh;
+    end
+    
     if holdon == 0
         hold off
     end
