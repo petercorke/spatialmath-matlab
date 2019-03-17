@@ -220,8 +220,7 @@ classdef SE3 < SO3
                         % (T)
                         for i=1:length(a)
                             obj(i).data = a(i).data;
-                        end
-                        
+                        end                        
                     elseif numcols(a) == 3
                         % SE3( xyz )
                         for i=1:length(a)
@@ -359,9 +358,12 @@ classdef SE3 < SO3
         function T = increment(obj, v)
             %SE3.increment  Apply incremental motion to an SE3 pose
             %
-            % P1 = P.increment(d) is an SE3 pose object formed by applying the
-            % incremental motion vector d (1x6) in the frame associated with SE3 pose
-            % P.
+            % P1 = P.increment(D) is an SE3 pose object formed by compounding the 
+            % SE3 pose with the incremental motion described by D (6x1).
+            %
+            % The vector D=(dx, dy, dz, dRx, dRy, dRz) represents infinitessimal translation
+            % and rotation, and is an approximation to the instantaneous spatial velocity 
+            % multiplied by time step.
             %
             % See also SE3.todelta, DELTA2TR, TR2DELTA.
             T = obj .* SE3(delta2tr(v));
@@ -635,13 +637,17 @@ classdef SE3 < SO3
         end
         
         function d = todelta(P1, P2)
-            %SE3.todelta Convert SE(3) object to differential motion vector
+            %SE3.todelta Convert SE3 object to differential motion vector
             %
-            % D = SE3.todelta(P0, P1) is the (6x1) differential motion vector (dx, dy,
-            % dz, dRx, dRy, dRz) corresponding to infinitessimal motion (in the P0
-            % frame) from SE(3) pose P0 to P1. .
+            % D = P0.todelta(P1) is the differential motion (6x1) corresponding to 
+            % infinitessimal motion (in the P0 frame) from SE3 pose P0 to P1.
             %
-            % D = SE3.todelta(P) as above but the motion is with respect to the world frame.
+            % The vector D=(dx, dy, dz, dRx, dRy, dRz) represents infinitessimal translation
+            % and rotation, and is an approximation to the instantaneous spatial velocity 
+            % multiplied by time step.
+            %
+            % D = P.todelta() as above but the motion is from the world frame to the SE3
+            % pose P.
             %
             % Notes::
             % - D is only an approximation to the motion, and assumes
@@ -890,12 +896,14 @@ classdef SE3 < SO3
         end
         
         function obj = delta(d)
-            %SE3.delta SE3 object from differential motion vector
+            %SE3.delta Construct SE3 object from differential motion vector
             %
             % T = SE3.delta(D) is an SE3 pose object representing differential
-            % translation and rotation. The vector D=(dx, dy, dz, dRx, dRy, dRz)
-            % represents an infinitessimal motion, and is an approximation to the spatial
-            % velocity multiplied by time.
+            % motion D (6x1).
+            %
+            % The vector D=(dx, dy, dz, dRx, dRy, dRz) represents infinitessimal translation
+            % and rotation, and is an approximation to the instantaneous spatial velocity 
+            % multiplied by time step.
             %
             % See also SE3.todelta, SE3.increment, TR2DELTA.
             

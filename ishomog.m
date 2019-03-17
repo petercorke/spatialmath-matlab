@@ -3,10 +3,11 @@
 % ISHOMOG(T) is true (1) if the argument T is of dimension 4x4 or 4x4xN, else 
 % false (0).
 %
-% ISHOMOG(T, 'valid') as above, but also checks the validity of the rotation
+% ISHOMOG(T, 'check') as above, but also checks the validity of the rotation
 % sub-matrix.
 %
 % Notes::
+% - A valid rotation sub-matrix has determinant of 1.
 % - The first form is a fast, but incomplete, test for a transform is SE(3).
 %
 % See also ISROT, ISHOMOG2, ISVEC.

@@ -3,6 +3,9 @@
 % H = E2H(E) is the homogeneous version (K+1xN) of the Euclidean 
 % points E (KxN) where each column represents one point in R^K.
 %
+% Reference::
+% - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p604.
+%
 % See also H2E.
 
 % Copyright (C) 1993-2019 Peter I. Corke

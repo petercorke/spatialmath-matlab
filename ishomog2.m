@@ -3,10 +3,11 @@
 % ISHOMOG2(T) is true (1) if the argument T is of dimension 3x3 or 3x3xN, else 
 % false (0).
 %
-% ISHOMOG2(T, 'valid') as above, but also checks the validity of the rotation
+% ISHOMOG2(T, 'check') as above, but also checks the validity of the rotation
 % sub-matrix.
 %
 % Notes::
+% - A valid rotation sub-matrix has determinant of 1.
 % - The first form is a fast, but incomplete, test for a transform in SE(3).
 %
 % See also ISHOMOG, ISROT2, ISVEC.

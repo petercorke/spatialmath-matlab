@@ -1,22 +1,15 @@
 %PLOT_CIRCLE Draw a circle
 %
-% PLOT_CIRCLE(C, R, OPTIONS) draws a circle on the current plot with 
+% plot_circleC, R, OPTIONS) draws a circle on the current plot with 
 % centre C=[X,Y] and radius R.  If C=[X,Y,Z] the circle is drawn in the
 % XY-plane at height Z.
 %
-% If C (2xN) then N circles are drawn and H is Nx1.  If R (1x1) then all
+% If C (2xN) then N circles are drawn.  If R (1x1) then all
 % circles have the same radius or else R (1xN) to specify the radius of
 % each circle.
 %
-% H = PLOT_CIRCLE(C, R, OPTIONS) as above but return handles. For multiple
+% H = plot_circle(...) as above but return handles. For multiple
 % circles H is a vector of handles, one per circle.
-%
-% Animation::
-%
-% First draw the circle and keep its graphic handle, then alter it, eg.
-%
-%          H = PLOT_CIRCLE(C, R)
-%          PLOT_ELLIPSE(C, R, 'alter', H);
 %
 % Options::
 % 'edgecolor'   the color of the circle's edge, Matlab color spec
@@ -24,11 +17,19 @@
 % 'alpha'       transparency of the filled circle: 0=transparent, 1=solid
 % 'alter',H     alter existing circles with handle H
 %
-% - For an unfilled circle any standard MATLAB LineStyle such as 'r' or 'b---'.
-% - For an unfilled circle any MATLAB LineProperty options can be given such as 'LineWidth', 2.
+% - For an unfilled circle:
+%   - any standard MATLAB LineStyle such as 'r' or 'b---'.
+%   - any MATLAB LineProperty options can be given such as 'LineWidth', 2.
 % - For a filled circle any MATLAB PatchProperty options can be given.
 %
+% Example::
+%
+%          H = plot_circle([3 4]', 2, 'r');  % draw red circle
+%          plot_circle([3 4]', 3, 'alter', H); % change the circle radius
+%          plot_circle([3 4]', 3, 'alter', H, 'LineColor', 'k'); % change the color
+%
 % Notes::
+% - The 'alter' option can be used to create a smooth animation.
 % - The circle(s) is added to the current plot irrespective of hold status.
 %
 % See also PLOT_ELLIPSE, PLOT_BOX, PLOT_POLY.

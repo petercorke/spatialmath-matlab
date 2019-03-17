@@ -1,12 +1,13 @@
 %ISVEC Test if vector
 %
-% ISVEC(V) is true (1) if the argument V is a 3-vector, else false (0).
+% ISVEC(V) is true (1) if the argument V is a 3-vector, either a 
+% row- or column-vector.  Otherwise false (0).
 %
 % ISVEC(V, L) is true (1) if the argument V is a vector of length L,
 % either a row- or column-vector.  Otherwise false (0).
 %
 % Notes::
-% - Differs from MATLAB builtin function ISVECTOR, the latter returns true
+% - Differs from MATLAB builtin function ISVECTOR which returns true
 %   for the case of a scalar, ISVEC does not.
 % - Gives same result for row- or column-vector, ie. 3x1 or 1x3 gives true.
 %

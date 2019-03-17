@@ -2,7 +2,7 @@
 %
 % ISROT2(R) is true (1) if the argument is of dimension 2x2 or 2x2xN, else false (0).
 %
-% ISROT2(R, 'valid') as above, but also checks the validity of the rotation
+% ISROT2(R, 'check') as above, but also checks the validity of the rotation
 % matrix.
 %
 % Notes::

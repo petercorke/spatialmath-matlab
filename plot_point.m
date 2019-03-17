@@ -1,7 +1,9 @@
 %PLOT_POINT Draw a point
 %
-% PLOT_POINT(P, OPTIONS) adds point markers to the current plot, where P (2xN)
-% and each column is the point coordinate.
+% PLOT_POINT(P, OPTIONS) adds point markers and optional annotation text
+% to the current plot, where P (2xN) and each column is a point coordinate.
+%
+% H = PLOT_POINT(...) as above but return handles to the points.
 %
 % Options::
 %  'textcolor', colspec     Specify color of text
@@ -16,28 +18,31 @@
 % - standard MATLAB LineStyle such as 'r' or 'b---'
 % - any MATLAB LineProperty options can be given such as 'LineWidth', 2.
 %
+% Notes::
+% - The point(s) and annotations are added to the current plot.
+% - Points can be drawn in 3D axes but will always lie in the
+%   xy-plane.
+% - Handles are to the points but not the annotations.
+%
 % Examples::
-%   Simple point plot
+%   Simple point plot with two markers
 %        P = rand(2,4);
 %        plot_point(P);
 %
 %   Plot points with markers
 %        plot_point(P, '*');
 %
-%   Plot points with markers
-%        plot_point(P, 'o', 'MarkerFaceColor', 'b');
+%   Plot points with solid blue circular markers
+%        plot_point(P, 'bo', 'MarkerFaceColor', 'b');
 %
-%   Plot points with square markers and labels 1 to 4
+%   Plot points with square markers and labelled 1 to 4
 %        plot_point(P, 'sequence', 's');
 %
-%   Plot points with circles and annotations P1 to P4
+%   Plot points with circles and labelled P1, P2, P4 and P8
 %        data = [1 2 4 8];
 %        plot_point(P, 'printf', {' P%d', data}, 'o');
 %
-% Notes::
-% - The point(s) and annotations are added to the current plot.
-% - Points can be drawn in 3D axes but will always lie in the
-%   xy-plane.
+
 %
 % See also PLOT_SPHERE, PLOT, TEXT.
 

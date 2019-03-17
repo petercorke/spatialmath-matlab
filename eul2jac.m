@@ -1,14 +1,18 @@
 %EUL2JAC Euler angle rate Jacobian
 %
-% J = EUL2JAC(PHI, THETA, PSI) is a Jacobian matrix (3x3) that maps Euler angle rates to 
+% J = EUL2JAC(PHI, THETA, PSI) is a Jacobian matrix (3x3) that maps ZYZ Euler angle rates to 
 % angular velocity at the operating point specified by the Euler angles PHI, THETA, PSI.
 %
 % J = EUL2JAC(EUL)  as above but the Euler angles are passed as a vector EUL=[PHI, THETA, PSI]. 
 %
 % Notes::
 % - Used in the creation of an analytical Jacobian.
+% - Angles in radians, rates in radians/sec.
 %
-% See also rpy2jac, SerialLink.jacobe.
+% Reference::
+% - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p232-3.
+%
+% See also rpy2jac, eul2r, SerialLink.jacobe.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

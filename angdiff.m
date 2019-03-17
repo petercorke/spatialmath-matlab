@@ -1,6 +1,6 @@
 %ANGDIFF Difference of two angles
 %
-% ANGDIFF(TH1, TH2) is the difference between angles TH1 and TH2
+% ANGDIFF(TH1, TH2) is the difference between angles TH1 and TH2, ie. TH1-TH2
 % on the circle.  The result is in the interval [-pi pi).  Either or both
 % arguments can be a vector:
 % - If TH1 is a vector, and TH2 a scalar then return a vector where TH2 is modulo 
@@ -8,13 +8,16 @@
 % - If TH1 is a scalar, and TH2 a vector then return a vector where the
 %   corresponding elements of TH2 are modulo subtracted from TH1.
 % - If TH1 and TH2 are vectors then return a vector whose elements are the modulo 
-%   difference of the corresponding elements of TH1 and TH2.
+%   difference of the corresponding elements of TH1 and TH2, which must be the 
+%   same length.
 %
 % ANGDIFF(TH) as above but TH=[TH1 TH2].
 %
-% ANGDIFF(TH) is the equivalent angle to TH in the interval [-pi pi).
+% ANGDIFF(TH) is the equivalent angle to the scalar TH in the interval [-pi pi).
 %
 % Notes::
+% - The MathWorks Robotics Systems Toolbox defines a function with the same name
+%   which computes TH2-TH1 rather than TH1-TH2.
 % - If TH1 and TH2 are both vectors they should have the same
 %   orientation, which the output will assume.
 %

@@ -1,20 +1,13 @@
 %PLOT_ELLIPSE Draw an ellipse or ellipsoid
 %
-% PLOT_ELLIPSE(E, OPTIONS) draws an ellipse or ellipsoid defined by X'EX =
+% plot_ellipse(E, OPTIONS) draws an ellipse or ellipsoid defined by X'EX =
 % 0 on the current plot, centred at the origin.  E (2x2) for an ellipse and
 % E (2x3) for an ellipsoid.
 %
-% PLOT_ELLIPSE(E, C, OPTIONS) as above but centred at C=[X,Y].  If
+% plot_ellipse(E, C, OPTIONS) as above but centred at C=[X,Y].  If
 % C=[X,Y,Z] the ellipse is parallel to the XY plane but at height Z.
 %
-% H = PLOT_ELLIPSE(E, C, OPTIONS) as above but return graphic handle.
-%
-% Animation::
-%
-% First draw the ellipse and keep its graphic handle, then alter it, eg.
-%
-%          H = PLOT_ELLIPSE(E, C, 'r')
-%          PLOT_ELLIPSE(C, R, 'alter', H);
+% H = plot_ellipse(...) as above but return graphic handle.
 %
 % Options::
 % 'confidence',C   confidence interval, range 0 to 1
@@ -25,18 +18,29 @@
 % 'alpha'          transparency of the fillcolored ellipse: 0=transparent, 1=solid
 % 'shadow'         show shadows on the 3 walls of the plot box
 %
-% - For an unfilled ellipse any standard MATLAB LineStyle such as 'r' or 'b---'.
-% - For an unfilled ellipse any MATLAB LineProperty options can be given such as 'LineWidth', 2.
+% - For an unfilled ellipse:
+%   - any standard MATLAB LineStyle such as 'r' or 'b---'.
+%   - any MATLAB LineProperty options can be given such as 'LineWidth', 2.
 % - For a filled ellipse any MATLAB PatchProperty options can be given.
 %
+% Example::
+%
+%          H = plot_ellipse(diag([1 2]), [3 4]', 'r'); % draw red ellipse
+%          plot_ellipse(diag([1 2]), [5 6]', 'alter', H); % move the ellipse
+%          plot_ellipse(diag([1 2]), [5 6]', 'alter', H, 'LineColor', 'k'); % change color
+%
+%          plot_ellipse(COVAR, 'confidence', 0.95); % draw 95% confidence ellipse
+%
 % Notes::
-% - If A (2x2) draw an ellipse, else if A(3x3) draw an ellipsoid.
+% - The 'alter' option can be used to create a smooth animation.
+% - If E (2x2) draw an ellipse, else if E (3x3) draw an ellipsoid.
 % - The ellipse is added to the current plot irrespective of hold status.
 % - Shadow option only valid for ellipsoids.
-% - If a confidence interval is given the scaling factor is com;uted using
-%   an approximate inverse chi-squared function.
+% - If a confidence interval is given then E is interpretted as a covariance
+%   matrix and the ellipse size is computed using an approximate inverse 
+%   chi-squared function.
 %
-% See also PLOT_ELLIPSE_INV, PLOT_CIRCLE, PLOT_BOX, PLOT_POLY.
+% See also PLOT_ELLIPSE_INV, PLOT_CIRCLE, PLOT_BOX, PLOT_POLY, CH2INV_RTB.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

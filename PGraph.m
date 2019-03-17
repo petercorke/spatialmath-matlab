@@ -5,46 +5,73 @@
 %
 % Provides support for graphs that:
 %   - are directed
-%   - are embedded in a coordinate system
+%   - are embedded in a coordinate system (2D or 3D)
+%   - have multiple unconnected components
 %   - have symmetric cost edges (A to B is same cost as B to A)
 %   - have no loops (edges from A to A)
-%   - have vertices that are represented by integers VID
-%   - have edges that are represented by integers EID
+%
+% Graph representation:
+%   - vertices are represented by integer vertex ids (vid)
+%   - edges are represented by integer edge ids (eid)
+%   - each vertex can have arbitrary associated data
+%   - each edge can have arbitrary associated data
 %
 % Methods::
 %
 % Constructing the graph::
-%   g.add_node(coord)      add vertex, return vid
-%   g.add_edge(v1, v2)     add edge from v1 to v2, return eid
-%   g.setcost(e, c)        set cost for edge e
-%   g.setdata(v, u)        set user data for vertex v
-%   g.data(v)              get user data for vertex v
+%   g.add_node(coord)      add vertex
+%   g.add_edge(v1, v2)     add edge fbetween vertices
+%   g.setcost(e, c)        set cost for edge
+%   g.setedata(e, u)       set user data for edge
+%   g.setvdata(v, u)       set user data for vertex
+%
+% Modifying the graph::
 %   g.clear()              remove all vertices and edges from the graph
+%   g.delete_edge(e)       remove edge
+%   g.delete_node(v)       remove vertex
+%   g.setcoord(v)          set coordinate of vertex
 %
 % Information from graph::
-%   g.edges(v)             list of edges for vertex v
-%   g.cost(e)              cost of edge e
-%   g.neighbours(v)        neighbours of vertex v
-%   g.component(v)         component id for vertex v
-%   g.connectivity()       number of edges for all vertices
+%   g.about()                   summary information about node
+%   g.component(v)              component id for vertex
+%   g.componentnodes(c)         vertices in component
+%   g.connectivity()            number of edges for all vertices
+%   g.connectivity_in()         number of incoming edges for all vertices
+%   g.connectivity_out()        number of outgoing edges for all vertices
+%   g.coord(v)                  coordinate of vertex
+%   g.cost(e)                   cost of edge
+%   g.distance_metric(v1,v2)    distance between nodes
+%   g.edata(e)                  get edge user data
+%   g.edgedir(v1,v2)            direction of edge
+%   g.edges(v)                  list of edges for vertex
+%   g.edges_in(v)               list of edges into vertex
+%   g.edges_out(v)              list of edges from vertex
+%   g.lookup(name)              vertex from name
+%   g.name(v)                   name of vertex
+%   g.neighbours(v)             neighbours of vertex
+%   g.neighbours_d(v)           neighbours of vertex and edge directions
+%   g.neighbours_in(v)          neighbours with edges in
+%   g.neighbours_out(v)         neighbours with edges out
+%   g.samecomponent(v1,v2)      test if vertices in same component
+%   g.vdata(v)                  vertex user data
+%   g.vertices(e)               vertices for edge
 %
 % Display::
 %
-%   g.plot()                   set goal vertex for path planning
-%   g.highlight_node(v)        highlight vertex v
-%   g.highlight_edge(e)        highlight edge e
-%   g.highlight_component(c)   highlight all nodes in component c
-%   g.highlight_path(p)        highlight nodes and edge along path p
-%
-%   g.pick(coord)              vertex closest to coord
-%
 %   g.char()                   convert graph to string
 %   g.display()                display summary of graph
+%   g.highlight_node(v)        highlight vertex
+%   g.highlight_edge(e)        highlight edge
+%   g.highlight_component(c)   highlight all nodes in component
+%   g.highlight_path(p)        highlight nodes and edge along path
+%   g.pick(coord)              vertex closest to coord
+%   g.plot()                   plot graph
+%
 %
 % Matrix representations::
 %   g.adjacency()          adjacency matrix
-%   g.incidence()          incidence matrix
 %   g.degree()             degree matrix
+%   g.incidence()          incidence matrix
 %   g.laplacian()          Laplacian  matrix
 %
 % Planning paths through the graph::
@@ -53,17 +80,17 @@
 %   g.path(v)              list of vertices from v to goal
 %
 % Graph and world points::
+%   g.closest(coord)       vertex closest to coord
 %   g.coord(v)             coordinate of vertex v
 %   g.distance(v1, v2)     distance between v1 and v2
 %   g.distances(coord)     return sorted distances from coord to all vertices
-%   g.closest(coord)       vertex closest to coord
 %
 % Object properties (read only)::
 %   g.n            number of vertices
 %   g.ne           number of edges
 %   g.nc           number of components
 %
-% Examples::
+% Example::
 %         g = PGraph();
 %         g.add_node([1 2]');  % add node 1
 %         g.add_node([3 4]');  % add node 1
@@ -74,7 +101,8 @@
 %         g.plot()
 %
 % Notes::
-% - Support for edge direction is rudimentary.
+% - Support for edge direction is quite simple.
+% - The method distance_metric() could be redefined in a subclass.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %
@@ -462,7 +490,7 @@ classdef PGraph < matlab.mixin.Copyable
         function c = connectivity_in(g,n )
             %PGraph.connectivity Graph connectivity
             %
-            % C = G.connectivity() is a vector (Nx1) with the number of edges per
+            % C = G.connectivity() is a vector (Nx1) with the number of incoming edges per
             % vertex.
             %
             % The average vertex connectivity is
@@ -483,7 +511,7 @@ classdef PGraph < matlab.mixin.Copyable
         function c = connectivity_out(g,n )
             %PGraph.connectivity Graph connectivity
             %
-            % C = G.connectivity() is a vector (Nx1) with the number of edges per
+            % C = G.connectivity() is a vector (Nx1) with the number of outgoing edges per
             % vertex.
             %
             % The average vertex connectivity is
@@ -790,8 +818,7 @@ classdef PGraph < matlab.mixin.Copyable
         function v = componentnodes(g, c)
             %PGraph.component Graph component
             %
-            % C = G.component(V) is the id of the graph component that contains vertex
-            % V.
+            % C = G.component(V) are the ids of all vertices in the graph component V.
             v = find(g.labels == c);
         end
         

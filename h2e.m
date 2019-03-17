@@ -3,6 +3,9 @@
 % E = H2E(H) is the Euclidean version (K-1xN) of the homogeneous 
 % points H (KxN) where each column represents one point in P^K.
 %
+% Reference::
+% - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p604.
+%
 % See also E2H.
 
 % Copyright (C) 1993-2019 Peter I. Corke

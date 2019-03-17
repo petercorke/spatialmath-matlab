@@ -8,7 +8,7 @@
 % - The matrix is guaranteed to be orthonormal so long as O and A 
 %   are not parallel.
 % - The vectors O and A are parallel to the Y- and Z-axes of the coordinate
-%   frame.
+%   frame respectively.
 %
 % References::
 % - Robot manipulators: mathematics, programming and control

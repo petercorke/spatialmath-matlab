@@ -2,9 +2,14 @@
 %
 % D = TR2DELTA(T0, T1) is the differential motion (6x1) corresponding to 
 % infinitessimal motion (in the T0 frame) from pose T0 to T1 which are homogeneous 
-% transformations (4x4) or SE3 objects. D=(dx, dy, dz, dRx, dRy, dRz). 
+% transformations (4x4) or SE3 objects.
 %
-% D = TR2DELTA(T) as above but the motion is with respect to the world frame.
+% The vector D=(dx, dy, dz, dRx, dRy, dRz) represents infinitessimal translation
+% and rotation, and is an approximation to the instantaneous spatial velocity 
+% multiplied by time step.
+%
+% D = TR2DELTA(T) as above but the motion is from the world frame to the SE3
+% pose T.
 %
 % Notes::
 % - D is only an approximation to the motion T, and assumes
@@ -13,9 +18,9 @@
 %   a time interval, average spatial velocity multiplied by time.
 %
 % Reference::
-% - Robotics, Vision & Control 2nd Edition, p67
+% - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
 %
-% See also DELTA2TR, SKEW.
+% See also DELTA2TR, SKEW, SE3.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

@@ -1,16 +1,22 @@
 %PLOT_HOMLINE Draw a line in homogeneous form
 %
-% PLOT_HOMLINE(L, LS) draws a line in the current plot defined by L.X = 0 where L
-% (3x1).  The current axis limits are used to determine the endpoints of
-% the line.  MATLAB line specification LS can be set.  If L (3xN) then N
-% lines are drawn, one per column.
+% PLOT_HOMLINE(L) draws a 2D line in the current plot defined in homogenous
+% form ax + by + c = 0  where L (3x1) is L = [a b c].
+% The current axis limits are used to determine the endpoints of
+% the line.  If L (3xN) then N lines are drawn, one per column.
 %
-% H = PLOT_HOMLINE(L, LS) as above but returns a vector of graphics handles for the lines.
+% PLOT_HOMLINE(L, LS) as above but the MATLAB line specification LS is given.  
+%
+% H = PLOT_HOMLINE(...) as above but returns a vector of graphics handles for the lines.
 %
 % Notes::
 % - The line(s) is added to the current plot.
 % - The line(s) can be drawn in 3D axes but will always lie in the
 %   xy-plane.
+%
+% Example::
+%          L = homline([1 2]', [3 1]'); % homog line from (1,2) to (3,1)
+%          plot_homline(L, 'k--'); % plot dashed black line
 %
 % See also PLOT_BOX, PLOT_POLY, HOMLINE.
 
@@ -37,26 +43,6 @@
 %
 % https://github.com/petercorke/spatial-math
 
-
-
-% Copyright (C) 1993-2017, by Peter I. Corke
-%
-% This file is part of The Robotics Toolbox for MATLAB (RTB).
-% 
-% RTB is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-% 
-% RTB is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU Lesser General Public License for more details.
-% 
-% You should have received a copy of the GNU Leser General Public License
-% along with RTB.  If not, see <http://www.gnu.org/licenses/>.
-%
-% http://www.petercorke.com
 
 function handles = plot_homline(lines, varargin)
 

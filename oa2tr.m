@@ -7,9 +7,9 @@
 % Notes::
 % - The rotation submatrix is guaranteed to be orthonormal so long as O and A 
 %   are not parallel.
-% - The translational part is zero.
 % - The vectors O and A are parallel to the Y- and Z-axes of the coordinate
-%   frame.
+%   frame respectively.
+% - The translational part is zero.
 %
 % References::
 % - Robot manipulators: mathematics, programming and control

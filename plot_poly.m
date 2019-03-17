@@ -1,31 +1,23 @@
 %PLOT_POLY Draw a polygon
 %
-% PLOT_POLY(P, OPTIONS) adds a polygon defined by columns of P (2xN), in the current
-% plot with default line style.
+% plot_poly(P, OPTIONS) adds a closed polygon defined by vertices in the columns
+% of P (2xN), in the current plot.
 %
-% H = PLOT_POLY(P, OPTIONS) as above but processes additional options and
-% returns a graphics handle.
+% H = plot_poly(...) as above but returns a graphics handle.
 %
-% Animation::
-%
-% PLOT_POLY(H, T) sets the pose of the polygon with handle H to the pose
-% given by T (3x3 or 4x4).
-%
-% Create a polygon that can be animated, then alter it, eg.
-%
-%          H = PLOT_POLY(P, 'animate', 'r')
-%          PLOT_POLY(H, transl(2,1,0) );
+% plot_poly(H, )
 %
 % OPTIONS::
-%  'fillcolor',F  the color of the circle's interior, MATLAB color spec
-%  'alpha',A      transparency of the filled circle: 0=transparent, 1=solid.
-%  'edgecolor',E  edge color
-%  'animate'      the polygon can be animated
-%  'tag',T        the polygon is created with a handle graphics tag
-%  'axis',h        handle of axis or UIAxis to draw into (default is current axis)
+%  'fillcolor',F    the color of the circle's interior, MATLAB color spec
+%  'alpha',A        transparency of the filled circle: 0=transparent, 1=solid.
+%  'edgecolor',E    edge color
+%  'animate'        the polygon can be animated
+%  'tag',T          the polygon is created with a handle graphics tag
+%  'axis',h         handle of axis or UIAxis to draw into (default is current axis)
 %
-% - For an unfilled polygon any standard MATLAB LineStyle such as 'r' or 'b---'.
-% - For an unfilled polygon any MATLAB LineProperty options can be given such as 'LineWidth', 2.
+% - For an unfilled polygon:
+%   - any standard MATLAB LineStyle such as 'r' or 'b---'.
+%   - any MATLAB LineProperty options can be given such as 'LineWidth', 2.
 % - For a filled polygon any MATLAB PatchProperty options can be given.
 %
 % Notes::
@@ -35,6 +27,14 @@
 % - The 'animate' option creates an hgtransform object as a parent of the
 %   polygon, which can be animated by the last call signature above.
 % - The graphics are added to the current plot.
+%
+% Example::
+%
+%          POLY = [0 1 2; 0 1 0];
+%          H = plot_poly(POLY, 'animate', 'r'); % draw a red polygon
+%
+%          H = plot_poly(POLY, 'animate', 'r'); % draw a red polygon that can be animated
+%          plot_poly(H, transl(2,1,0) );  % transform its vertices by (2,1)
 %
 % See also PLOT_BOX, PLOT_CIRCLE, PATCH, Polygon.
 

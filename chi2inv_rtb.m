@@ -1,6 +1,6 @@
 %CHI2INV_RTB Inverse chi-squared function
 %
-% X = CHI2INV_RTB(P, N) is the inverse chi-squared cdf function of N-degrees of freedom.
+% X = CHI2INV_RTB(P, N) is the inverse chi-squared CDF function of N-degrees of freedom.
 %
 % Notes::
 % - only works for N=2

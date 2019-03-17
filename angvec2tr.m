@@ -4,8 +4,9 @@
 % rotation of THETA about the vector V.
 %
 % Note::
+% - Uses Rodrigues' formula
 % - The translational part is zero.
-% - If THETA == 0 then return identity matrix.
+% - If THETA == 0 then return identity matrix and ignore V.
 % - If THETA ~= 0 then V must have a finite length.
 %
 % See also angvec2r, eul2tr, rpy2tr, angvec2r, tr2angvec, trexp, SO3.angvec.

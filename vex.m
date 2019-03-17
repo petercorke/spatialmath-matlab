@@ -23,8 +23,7 @@
 %   each unique element of the matrix.
 %
 % References::
-% - Robotics, Vision & Control: Second Edition, Chap 2,
-%   P. Corke, Springer 2016.
+% - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p25+43.
 %
 % See also SKEW, VEXA.
 

@@ -12,8 +12,12 @@
 %
 % Notes::
 % - Used in the creation of an analytical Jacobian.
+% - Angles in radians, rates in radians/sec.
 %
-% See also EUL2JAC, SerialLink.JACOBE.
+% Reference::
+% - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p232-3.
+%
+% See also eul2jac, rpy2r, SerialLink.jacobe.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

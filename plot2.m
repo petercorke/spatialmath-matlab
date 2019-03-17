@@ -3,8 +3,7 @@
 % Convenience function for plotting 2D or 3D trajectory data stored in a
 % matrix with one row per time step.
 %
-% PLOT2(P) plots a line with coordinates taken from successive rows of P.  P
-% can be Nx2 or Nx3.
+% PLOT2(P) plots a line with coordinates taken from successive rows of P(Nx2 or Nx3).
 %
 % If P has three dimensions, ie. Nx2xM or Nx3xM then the M trajectories are
 % overlaid in the one plot.

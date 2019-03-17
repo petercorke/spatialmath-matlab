@@ -3,7 +3,7 @@
 % T3 = SE3(T2) returns a homogeneous transform (4x4) that represents
 % the same X,Y translation and Z rotation as does T2 (3x3).
 %
-% See also SE2, TRANSL, ROTX.
+% See also SE2, SE2.SE3, TRANSL, ROTX.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

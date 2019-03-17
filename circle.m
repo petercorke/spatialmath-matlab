@@ -4,11 +4,11 @@
 % axes.
 %
 % X = CIRCLE(C, R, OPTIONS) is a matrix (2xN) whose columns define the 
-% coordinates [x,y] of points around the circumferance of a circle 
+% coordinates [x,y] of points around the circumference of a circle 
 % centred at C (1x2) and of radius R.
 %
-% C is normally 2x1 but if 3x1 then the circle is embedded in 3D, and X is Nx3,
-% but the circle is always in the xy-plane with a z-coordinate of C(3).
+% C is normally 2x1 but if 3x1 then the circle is embedded in 3D, and X is Nx3.
+% The circle is always in the xy-plane with a z-coordinate of C(3).
 %
 % Options::
 %  'n',N   Specify the number of points (default 50)
