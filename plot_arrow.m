@@ -1,12 +1,25 @@
 %PLOT_ARROW Draw an arrow in 2D or 3D
 %
-% PLOT_ARROW(P1, P2, OPTIONS) draws an arrow from P1 to P2 (2x1 or 3x1).
+% PLOT_ARROW(P1, P2, OPTIONS) draws an arrow from P1 to P2 (2x1 or 3x1).  For 3D 
+% case the arrow head is a cone.
 %
-% PLOT_ARROW(P, OPTIONS) as above where the columns of P (2x2 or 3x2) define where P=[P1 P2].
+% PLOT_ARROW(P, OPTIONS) as above where the columns of P (2x2 or 3x2) define the 
+% start and end points, ie. P=[P1 P2].
+%
+% H = PLOT_ARROW(...) as above but returns the graphics handle of the arrow.
 %
 % Options::
 % - All options are passed through to arrow3.  
-% - MATLAB colorspec such as 'r' or 'b--'
+% - MATLAB LineSpec such as 'r' or 'b--'
+%
+% Example::
+%         plot_arrow([0 0 0]', [1 2 3]', 'r')  % a red arrow
+%         plot_arrow([0 0 0], [1 2 3], 'r--3', 4) % dashed red arrow big head
+%
+% Notes::
+% - Requires https://www.mathworks.com/matlabcentral/fileexchange/14056-arrow3
+% - ARROW3 attempts to preserve the appearance of existing axes.  In
+%   particular, ARROW3 will not change XYZLim, View, or CameraViewAngle.
 %
 % See also ARROW3.
 
@@ -33,21 +46,23 @@
 %
 % https://github.com/petercorke/spatial-math
 function plot_arrow(p1, varargin)
-    
-    if min(size(p1)) == 1
-        % p1 is a vector
-        p1 = p1(:);
-        p2 = varargin{1};
-        p2 = p2(:);
-        assert(numrows(p1) == numrows(p2), 'SMTB:plot_arrow', 'P1 and P2 must be the same length');
-        varargin = varargin{2:end};
+    if isvec(p1, 2) || isvec(p1, 3)
+        p1 = p1(:)';  % force row vector
     else
-        % p1 is a 2-column matrix
-        assert(numcols(p1) == 2, 'SMTB:plot_arrow', 'P1 must have 2 columns');
-        p2 = p1(:,2);
-        p1 = p1(:,1);
+        error('SMTB:plot_arrow', 'P1 must have 2 or 3 elements')
     end
-    
-    assert(any(numrows(p1) == [2 3]), 'SMTB:plot_arrow', '2D or 3D points only');
 
-    arrow3(p1', p2', varargin{:});
+    if nargin > 1
+        p2 = varargin{1};
+        if isnumeric(p2)
+            if isvec(p2, 2) || isvec(p2, 3)
+                p2 = p2(:)';  % force row vector
+                varargin = varargin(2:end);
+             else
+                error('SMTB:plot_arrow', 'P2 must have 2 or 3 elements')
+            end
+        end
+    end
+    assert(numcols(p1) == numcols(p2), 'SMTB:plot_arrow', 'P1 and P2 must be the same length');
+
+    arrow3(p1, p2, varargin{:});
