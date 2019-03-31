@@ -60,6 +60,7 @@
 %  T                convert to homogeneous transformation matrix
 %  UnitQuaternion   convert to UnitQuaternion object
 %  toangvec         convert to rotation about vector form
+%  todelta          convert to differential motion vector
 %  toeul            convert to Euler angles
 %  torpy            convert to roll-pitch-yaw angles
 %  t                translation column vector
@@ -464,7 +465,7 @@ classdef SE3 < SO3
                             rethrow(me);
                     end
                 end
-                T = SE3(T);
+                Ti = SE3(T);
             end
         end
         
