@@ -1,4 +1,4 @@
-%RPY2R Roll-pitch-yaw angles to rotation matrix
+%RPY2R Roll-pitch-yaw angles to SO(3) rotation matrix
 %
 % R = RPY2R(ROLL, PITCH, YAW, OPTIONS) is an SO(3) orthonornal rotation
 % matrix (3x3) equivalent to the specified roll, pitch, yaw angles angles.

@@ -7,17 +7,28 @@
 % that have an assigned value, boolean or enumeration types (string or
 % int).
 %
+% [OPTOUT,ARGS] = TB_OPTPARSE(OPT, ARGLIST) as above but returns all the
+% unassigned options, those that don't match anything in OPT, as a cell
+% array of all unassigned arguments in the order given in ARGLIST.
+%
+% [OPTOUT,ARGS,LS] = TB_OPTPARSE(OPT, ARGLIST) as above but if any
+% unmatched option looks like a MATLAB LineSpec (eg. 'r:') it is placed in LS rather
+% than in ARGS.
+%
+% [OBJOUT,ARGS,LS] = TB_OPTPARSE(OPT, ARGLIST, OBJ) as above but properties
+% of OBJ with matching names in OPT are set.
+%
 % The software pattern is:
 %
-%       function(a, b, c, varargin)
-%          opt.foo = false;
-%          opt.bar = true;
-%          opt.blah = [];
-%          opt.stuff = {};
-%          opt.choose = {'this', 'that', 'other'};
-%          opt.select = {'#no', '#yes'};
-%          opt.old = '@foo';
-%          opt = tb_optparse(opt, varargin);
+%         function myFunction(a, b, c, varargin)
+%            opt.foo = false;
+%            opt.bar = true;
+%            opt.blah = [];
+%            opt.stuff = {};
+%            opt.choose = {'this', 'that', 'other'};
+%            opt.select = {'#no', '#yes'};
+%            opt.old = '@foo';
+%            opt = tb_optparse(opt, varargin);
 %
 % Optional arguments to the function behave as follows:
 %   'foo'              sets opt.foo := true
@@ -25,28 +36,20 @@
 %   'blah', 3          sets opt.blah := 3
 %   'blah',{x,y}       sets opt.blah := {x,y}
 %   'that'             sets opt.choose := 'that'
-%   'yes'              sets opt.select := (the second element)
+%   'yes'              sets opt.select := 2 (the second element)
 %   'stuff', 5         sets opt.stuff to {5}
 %   'stuff', {'k',3}   sets opt.stuff to {'k',3}
-%   'old'              is the same as foo
+%   'old'              synonym, is the same as the option foo
 %
 % and can be given in any combination.
 %
 % If neither of 'this', 'that' or 'other' are specified then opt.choose := 'this'.
 % Alternatively if:
 %        opt.choose = {[], 'this', 'that', 'other'};
-% then if neither of 'this', 'that' or 'other' are specified then opt.choose := []
+% then if neither of 'this', 'that' or 'other' are specified then opt.choose := [].
 %
 % If neither of 'no' or 'yes' are specified then opt.select := 1.
 %
-% Note:
-% - That the enumerator names must be distinct from the field names.
-% - That only one value can be assigned to a field, if multiple values
-%   are required they must placed in a cell array.
-% - To match an option that starts with a digit, prefix it with 'd_', so
-%   the field 'd_3d' matches the option '3d'.
-% - OPT can be an object, rather than a structure, in which case the passed
-%   options are assigned to properties.
 %
 % The return structure is automatically populated with fields: verbose and
 % debug.  The following options are automatically parsed:
@@ -60,21 +63,16 @@
 %                   opt.foo is set to 4.
 %
 % The allowable options are specified by the names of the fields in the
-% structure opt.  By default if an option is given that is not a field of 
-% opt an error is declared.  
+% structure OPT.  By default if an option is given that is not a field of 
+% OPT an error is declared.  
 %
-% [OPTOUT,ARGS] = TB_OPTPARSE(OPT, ARGLIST) as above but returns all the
-% unassigned options, those that don't match anything in OPT, as a cell
-% array of all unassigned arguments in the order given in ARGLIST.
-%
-% [OPTOUT,ARGS,LS] = TB_OPTPARSE(OPT, ARGLIST) as above but if any
-% unmatched option looks like a MATLAB LineSpec (eg. 'r:') it is placed in LS rather
-% than in ARGS.
-%
-% [OBJOUT,ARGS,LS] = TB_OPTPARSE(OPT, ARGLIST, OBJ) as above but properties
-% of OBJ with matching names in OPT are set.
-%
-% Note::
+% Notes::
+% - That the enumerator names must be distinct from the field names.
+% - That only one value can be assigned to a field, if multiple values
+%   are required they must placed in a cell array.
+% - If the option is seen multiple times the last (rightmost) instance applies.
+% - To match an option that starts with a digit, prefix it with 'd_', so
+%   the field 'd_3d' matches the option '3d'.
 % - Any input argument or element of the opt struct can be a string instead
 %   of a char array.
 

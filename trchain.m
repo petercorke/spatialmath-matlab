@@ -1,10 +1,10 @@
-%TRCHAIN Chain 3D transforms from string
+%TRCHAIN Compound SE(3) transforms from string
 %
 % T = TRCHAIN(S, Q) is a homogeneous transform (4x4) that results from
 % compounding a number of elementary transformations defined by the string
 % S.  The string S comprises a number of tokens of the form X(ARG) where
 % X is one of Tx, Ty, Tz, Rx, Ry, or Rz.  ARG is the name of a variable in
-% MATLAB workspace or qJ where J is an integer in the range 1 to N that
+% MATLAB workspace or 'qJ' where J is an integer in the range 1 to N that
 % selects the variable from the Jth column of the vector Q (1xN).
 %
 % For example:

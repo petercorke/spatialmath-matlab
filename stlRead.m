@@ -1,11 +1,15 @@
-%STLREAD reads any STL file not depending on its format
+%STLREAD Reads STL file
 %
-% [v, f, n, name] = stlRead(fileName) reads the STL format file (ASCII or
-% binary) and returns vertices V, faces F, normals N and NAME is the name
-% of the STL object (NOT the name of the STL file).
+% [v, f, n, objname] = stlRead(fileName) reads the STL format file (ASCII or
+% binary) and returns: 
+%
+% V (Mx3)   each row is the 3D coordinate of a vertex
+% F (Nx3)   each row is a list of vertex indices that defines a triangular face 
+% N (Nx3)   each row is a unit-vector defining the face normal
+% OBJNAME   is the name of the STL object (NOT the name of the STL file).
 %
 % Authors::
-% - from MATLAB File Exchange by Pau Mico, https://au.mathworks.com/matlabcentral/fileexchange/51200-stltools
+% - From MATLAB File Exchange by Pau Mico, https://au.mathworks.com/matlabcentral/fileexchange/51200-stltools
 % - Copyright (c) 2015, Pau Mico
 % - Copyright (c) 2013, Adam H. Aitkenhead
 % - Copyright (c) 2011, Francis Esmonde-White

@@ -1,22 +1,27 @@
 %TRINTERP2 Interpolate SE(2) homogeneous transformations
 %
-% R = TRINTERP2(R0, R1, S) is a rotation matrix (2x2) interpolated
-% between R0 when S=0 and R1 when S=1.  R0 and R1 are both rotation matrices
-% (2x2).  If S (Nx1) then T (2x2xN) is a sequence of
-% rotation matrices corresponding to the interpolation values in S.
-%
-% R = TRINTERP2(R1, S) as above but interpolated between the identity matrix
-% when S=0 to T1 when S=1.
-%
-% T = TRINTERP2(T0, T1, S) is a homogeneous transform (3x3) interpolated
+% TRINTERP2(T0, T1, S) is a homogeneous transform (3x3) interpolated
 % between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
-% transforms (3x3).  If S (Nx1) then T (3x3xN) is a sequence of
+% transforms (4x4).  If S (Nx1) then T (3x3xN) is a sequence of
 % homogeneous transforms corresponding to the interpolation values in S.
 %
-% T = TRINTERP2(T1, S) as above but interpolated between the identity matrix
+% TRINTERP2(T1, S) as above but interpolated between the identity matrix
 % when S=0 to T1 when S=1.
 %
-% See also trinterp, SE3.interp, UnitQuaternion.
+% TRINTERP2(T0, T1, M) as above but M is a positive integer and return a
+% sequence (4x4xM) of homogeneous transforms linearly interpolating between 
+% T0 and T1 in M steps.
+%
+% TRINTERP2(T1, M) as above but return a sequence (4x4xM) of
+% homogeneous interpolating between identity matrix and T1 in M steps.
+%
+% Notes::
+% - T0 or T1 can also be an SO(2) rotation matrix (2x2).
+% - Rotation angle is linearly interpolated.
+% - To obtain smooth continuous motion S should also be smooth and continuous,
+%   such as computed by tpoly or lspb. 
+%
+% See also TRINTERP, SE3.interp, UnitQuaternion, TPOLY, LSPB.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

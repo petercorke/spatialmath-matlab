@@ -1,4 +1,4 @@
-%trotz Rotation about Z axis
+%trotz SE(3) rotation about Z axis
 %
 % T = trotz(THETA) is a homogeneous transformation (4x4) representing a rotation 
 % of THETA radians about the z-axis.

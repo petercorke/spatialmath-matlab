@@ -368,12 +368,12 @@ function miscellany_test(tc)
     
     verifyClass(tc, r.new, 'SO3');
     
-    verifyClass(tc, SO3.check(r), 'SO3');
-    verifyClass(tc, SO3.check( rotx(0.3) ), 'SO3');
-    z = SO3.check(r);
+    verifyClass(tc, SO3.convert(r), 'SO3');
+    verifyClass(tc, SO3.convert( rotx(0.3) ), 'SO3');
+    z = SO3.convert(r);
     tc.verifyEqual(double(z), double(r));
     
-    z = SO3.check(rotx(0.3));
+    z = SO3.convert(rotx(0.3));
     tc.verifyEqual(double(z), rotx(0.3));
     
     r = SO3;

@@ -1,4 +1,4 @@
-%TRANSL Create or unpack an SE(3) translational homogeneous transform
+%TRANSL SE(3) translational homogeneous transform
 %
 % Create a translational SE(3) matrix::
 %
@@ -6,15 +6,15 @@
 % a pure translation of X, Y and Z.
 %
 % T = TRANSL(P) is an SE(3) homogeneous transform (4x4) representing a
-% translation of P=[X,Y,Z]. If P (Mx3) it represents a sequence and T
+% translation of P=[X,Y,Z]. P (Mx3) represents a sequence and T
 % (4x4xM) is a sequence of homogeneous transforms such that T(:,:,i)
 % corresponds to the i'th row of P.
 %
 % Extract the translational part of an SE(3) matrix::
 %
 % P = TRANSL(T) is the translational part of a homogeneous transform T as a
-% 3-element column vector.  If T (4x4xM) is a homogeneous transform
-% sequence the rows of P (Mx3) are the translational component of the
+% 3-element column vector.  T (4x4xM) is a homogeneous transform
+% sequence and the rows of P (Mx3) are the translational component of the
 % corresponding transform in the sequence.
 %
 % [X,Y,Z] = TRANSL(T) is the translational part of a homogeneous transform
@@ -23,7 +23,7 @@
 % transform in the sequence.
 %
 % Notes::
-% - Somewhat unusually this function performs a function and its inverse.  An
+% - Somewhat unusually, this function performs a function and its inverse.  An
 %   historical anomaly.
 %
 % See also SE3.t, SE3.transl.

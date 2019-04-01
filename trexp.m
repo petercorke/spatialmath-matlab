@@ -1,4 +1,4 @@
-%TREXP matrix exponential for so(3) and se(3)
+%TREXP Matrix exponential for so(3) and se(3)
 %
 % For so(3)::
 %
@@ -17,11 +17,11 @@
 % T = TREXP(SIGMA) is the matrix exponential (4x4) of the se(3) element SIGMA that
 % yields a homogeneous transformation  matrix (4x4). 
 %
-% T = TREXP(TW) as above, but the se(3) value is expressed as a twist vector TW
-% (1x6). 
-%
 % T = TREXP(SIGMA, THETA) as above, but se(3) motion of SIGMA*THETA, the
 % rotation part of SIGMA (4x4) must be unit norm.
+%
+% T = TREXP(TW) as above, but the se(3) value is expressed as a twist vector TW
+% (1x6). 
 %
 % T = TREXP(TW, THETA) as above, but se(3) motion of TW*THETA, the
 % rotation part of TW (1x6) must be unit norm.
@@ -29,15 +29,13 @@
 % Notes::
 % - Efficient closed-form solution of the matrix exponential for arguments that are
 %   so(3) or se(3).
-% - If theta is given then the first argument must be a unit vector or a
+% - If THETA is given then the first argument must be a unit vector or a
 %   skew-symmetric matrix from a unit vector.
 % - Angle vector argument order is different to ANGVEC2R.
 %
 % References::
-% - Robotics, Vision & Control: Second Edition, Chap 2,
-%   P. Corke, Springer 2016.
-% - "Mechanics, planning and control"
-%   Park & Lynch, Cambridge, 2017.
+% - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p42-43.
+% - Mechanics, planning and control, Park & Lynch, Cambridge, 2017.
 %
 % See also ANGVEC2R, TRLOG, TREXP2, SKEW, SKEWA, Twist.
 

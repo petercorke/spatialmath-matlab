@@ -1,16 +1,16 @@
-%TRANIMATE Animate a coordinate frame
+%TRANIMATE Animate a 3D coordinate frame
 %
 % TRANIMATE(P1, P2, OPTIONS) animates a 3D coordinate frame moving from pose X1
 % to pose X2.  Poses X1 and X2 can be represented by:
-%   - homogeneous transformation matrices (4x4)
-%   - orthonormal rotation matrices (3x3)
+%   - SE(3) homogeneous transformation matrices (4x4)
+%   - SO(3) orthonormal rotation matrices (3x3)
 %
 % TRANIMATE(X, OPTIONS) animates a coordinate frame moving from the identity pose
 % to the pose X represented by any of the types listed above.
 %
 % TRANIMATE(XSEQ, OPTIONS) animates a trajectory, where XSEQ is any of
-%   - homogeneous transformation matrix sequence (4x4xN)
-%   - orthonormal rotation matrix sequence (3x3xN)
+%   - SE(3) homogeneous transformation matrix sequence (4x4xN)
+%   - SO(3) orthonormal rotation matrix sequence (3x3xN)
 %
 % Options::
 %  'fps', fps    Number of frames per second to display (default 10)

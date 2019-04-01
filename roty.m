@@ -1,11 +1,11 @@
-%ROTY Rotation about Y axis
+%ROTY SO(3) rotation about Y axis
 %
 % R = ROTY(THETA) is an SO(3) rotation matrix (3x3) representing a rotation of THETA 
 % radians about the y-axis.
 %
 % R = ROTY(THETA, 'deg') as above but THETA is in degrees.
 %
-% See also ROTX, ROTZ, ANGVEC2R, ROT2, SO3.Ry.
+% See also TROTY, ROTX, ROTZ, ANGVEC2R, ROT2, SO3.Ry.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

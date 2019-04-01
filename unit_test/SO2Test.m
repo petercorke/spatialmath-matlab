@@ -40,7 +40,6 @@ function constructor_test(tc)
     R = [];
     for theta = [-pi/2 0 pi/2 pi]
         R = cat(3, R, rot2(theta));
-
     end
     tc.verifyEqual(SO2(R).R, R, 'AbsTol', 1e-10);
     
@@ -182,16 +181,16 @@ function miscellany_test(tc)
     
     verifyClass(tc, r.new, 'SO2');
     
-    verifyClass(tc, SO2.check(r), 'SO2');
-    verifyClass(tc, SO2.check( rot2(0.3) ), 'SO2');
-    z = SO2.check(r);
+    verifyClass(tc, SO2.convert(r), 'SO2');
+    verifyClass(tc, SO2.convert( rot2(0.3) ), 'SO2');
+    z = SO2.convert(r);
     tc.verifyEqual(double(z), double(r));
     
-    z = SO2.check(rot2(0.3));
+    z = SO2.convert(rot2(0.3));
     tc.verifyEqual(double(z), rot2(0.3));
     
     T = r.SE2;
-    verifyClass(tc, SO2.check(T), 'SO2');
+    verifyClass(tc, SO2.convert(T), 'SO2');
 end
 
 function display_test(tc)

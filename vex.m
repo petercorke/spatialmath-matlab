@@ -3,17 +3,18 @@
 % V = VEX(S) is the vector which has the corresponding skew-symmetric 
 % matrix S.  
 %
+% In the case that S (2x2) =
 %
-% In the case that S (2x2) then V is 1x1
+%           | 0  -v |
+%           | v   0 |
 %
-%           S = | 0  -v |
-%               | v   0 |
+% then V = [v].  In the case that S (3x3) =
 %
-%In the case that S (3x3) then V is 3x1.
+%           |  0  -vz   vy |
+%           | vz    0  -vx |
+%           |-vy   vx    0 |
 %
-%               |  0  -vz   vy |
-%           S = | vz    0  -vx |
-%               |-vy   vx    0 |
+% then V = [vx; vy; vz].
 %
 % Notes::
 % - This is the inverse of the function SKEW().
@@ -21,6 +22,7 @@
 %   matrix is actually skew-symmetric.
 % - The function takes the mean of the two elements that correspond to 
 %   each unique element of the matrix.
+% - The matrices are the generator matrices for so(2) and so(3).
 %
 % References::
 % - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p25+43.

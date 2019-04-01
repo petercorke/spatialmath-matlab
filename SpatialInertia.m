@@ -4,25 +4,26 @@
 %
 % Methods::
 %  SpatialInertia   constructor 
-%
-%  plus             add spatial inertia
-%  double           convert to a 6xN double
-%
 %  char             convert to string
 %  display          display in human readable form
+%  double           convert to a 6xN double
+%
+% Operators::
+%  +          plus: add spatial inertia of connected bodies
+%  *          mtimes: compute force or momentum 
 %
 % Notes::
-% - Subclass of the MATLAB handle class which means that pass by reference semantics
-%   apply.
-% - Spatial inertias can be placed into arrays and indexed.
+%  - Subclass of the MATLAB handle class which means that pass by reference semantics
+%    apply.
+%  - Spatial inertias can be placed into arrays and indexed.
 %
 % References::
 %
-% - Robot Dynamics Algorithms, R. Featherstone, volume 22,
-%   Springer International Series in Engineering and Computer Science,
-%   Springer, 1987.
-% - A beginner?s guide to 6-d vectors (part 1), R. Featherstone, 
-%   IEEE Robotics Automation Magazine, 17(3):83?94, Sep. 2010.
+%  - Robot Dynamics Algorithms, R. Featherstone, volume 22,
+%    Springer International Series in Engineering and Computer Science,
+%    Springer, 1987.
+%  - A beginner's guide to 6-d vectors (part 1), R. Featherstone, 
+%    IEEE Robotics Automation Magazine, 17(3):83-94, Sep. 2010.
 %
 % See also SpatialM6, SpatialF6, SpatialVelocity, SpatialAcceleration, SpatialForce,
 % SpatialMomentum.
@@ -111,7 +112,7 @@ classdef SpatialInertia < handle
              % s = SI.char() is a string showing spatial inertia parameters in a 
              % compact format.
              % If SI is an array of spatial inertia objects return a string with the
-             % matrix values in a vertical list.
+             % inertia values in a vertical list.
              %
              % See also SpatialInertia.display.
 
@@ -138,7 +139,7 @@ classdef SpatialInertia < handle
         function v = plus(a,b)
             %SpatialInertia.plus Addition operator
             %
-            % SI1 + SI2 is the spatial inertia when two bodies of inertia SI1 and SI2
+            % SI1 + SI2 is the SpatialInertia of a composite body when bodies with SpatialInertia SI1 and SI2
             % are connected.
             %
             assert(isa(b, 'SpatialInertia'), 'spatial inertia can only be added to spatial inertia')
@@ -148,14 +149,13 @@ classdef SpatialInertia < handle
         function v = mtimes(a,b)
             %SpatialInertia.times Multiplication operator
             %
-            % SI * V is the product of a SpatialInertia and a SpatialVelocity object 
-            % which is an object of type SpatialMomemtum.
+            % SI * A is the SpatialForce required for a body with SpatialInertia SI to accelerate with 
+            % the SpatialAcceleration A.
             %
-            % SI * A is the product of a SpatialInertia and a SpatialAcceleraton object 
-            % which is an object of type SpatialForce.
+            % SI * V is the SpatialMomemtum of a body with SpatialInertia SI and SpatialVelocity V.
             %
             % Notes::
-            % - These products must be written in this order, A*SI is not defined.
+            % - These products must be written in this order, A*SI and V*SI are not defined.
 
             if isa(b, 'SpatialAcceleration')
                     v = SpatialForce(a.I * b.vw);   % F = ma

@@ -1,21 +1,28 @@
 %TRINTERP Interpolate SE(3) homogeneous transformations
 %
-% T = TRINTERP(T0, T1, S) is a homogeneous transform (4x4) interpolated
+% TRINTERP(T0, T1, S) is a homogeneous transform (4x4) interpolated
 % between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
-% transforms (4x4).  Rotation is interpolated using quaternion spherical
-% linear interpolation (slerp).  If S (Nx1) then T (4x4xN) is a sequence of
+% transforms (4x4).  If S (Nx1) then T (4x4xN) is a sequence of
 % homogeneous transforms corresponding to the interpolation values in S.
 %
-% T = TRINTERP(T0, T1, M) as above but return a sequence (4x4xM) of
-% homogeneous interpolating between T0 and T1 in M steps.
-%
-% T = TRINTERP(T1, S) as above but interpolated between the identity matrix
+% TRINTERP(T1, S) as above but interpolated between the identity matrix
 % when S=0 to T1 when S=1.
 %
-% T = TRINTERP(T1, M) as above but return a sequence (4x4xM) of
+% TRINTERP(T0, T1, M) as above but M is a positive integer and return a
+% sequence (4x4xM) of homogeneous transforms linearly interpolating between 
+% T0 and T1 in M steps.
+%
+% TRINTERP(T1, M) as above but return a sequence (4x4xM) of
 % homogeneous interpolating between identity matrix and T1 in M steps.
 %
-% See also CTRAJ, SE3.interp, UnitQuaternion, trinterp2.
+% Notes::
+% - T0 or T1 can also be an SO(3) rotation matrix (3x3) in which case the
+%   result is (3x3xN).
+% - Rotation is interpolated using quaternion spherical linear interpolation (slerp).
+% - To obtain smooth continuous motion S should also be smooth and continuous,
+%   such as computed by tpoly or lspb. 
+%
+% See also TRINTERP2, CTRAJ, SE3.interp, UnitQuaternion, TPOLY, LSPB.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %
@@ -64,7 +71,7 @@ function T = trinterp(A, B, C)
             T(:,:,i) = rt2tr(qr.R, pr);
         end
     elseif nargin == 2
-        %	TRINTERP(T, r)
+        %	TRINTERP(T, s)
         T0 = A; s = B(:)';
         
         if length(s) == 1 && s > 1 && (s == floor(s))

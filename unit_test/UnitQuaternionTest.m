@@ -283,7 +283,7 @@ function resulttype_test(tc)
     verifyClass(tc, conj(u), 'UnitQuaternion');
     verifyClass(tc, inv(u), 'UnitQuaternion');
     verifyClass(tc, unit(u), 'UnitQuaternion');
-    verifyClass(tc, unit(q), 'UnitQuaternion');
+    verifyClass(tc, unit(q), 'Quaternion');
     
     verifyClass(tc, conj(q), 'Quaternion');
     verifyClass(tc, inv(q), 'Quaternion');
@@ -560,12 +560,12 @@ function dot_test(tc)
     q = UnitQuaternion();
     omega = [1 2 3];
     
-    tc.verifyEqual(q.dot(omega), [0 omega/2]');
-    tc.verifyEqual(q.dotb(omega), [0 omega/2]');
+    tc.verifyEqual(q.dot(omega).double, [0 omega/2]);
+    tc.verifyEqual(q.dotb(omega).double, [0 omega/2]);
     
     q = UnitQuaternion.Rx(pi/2);
-    tc.verifyEqual(q.dot(omega), double(0.5*Quaternion.pure(omega)*q)', 'AbsTol', 1e-10 );
-    tc.verifyEqual(q.dotb(omega), double(0.5*q*Quaternion.pure(omega))', 'AbsTol', 1e-10 );
+    tc.verifyEqual(q.dot(omega),  0.5*Quaternion.pure(omega)*q, 'AbsTol', 1e-10 );
+    tc.verifyEqual(q.dotb(omega), 0.5*q*Quaternion.pure(omega), 'AbsTol', 1e-10 );
 
 end
 

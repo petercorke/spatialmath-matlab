@@ -3,7 +3,7 @@
 % ABOUT(X) displays a compact line that describes the class and dimensions of
 % X.
 %
-% ABOUT X  as above but this is the command rather than functional form
+% ABOUT X  as above but this is the command rather than functional form.
 %
 % Examples::
 %         >> a=1;

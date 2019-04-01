@@ -1,10 +1,10 @@
-%TRCHAIN2 Chain 2D transforms from string
+%TRCHAIN2 Compound SE(2) transforms from string
 %
 % T = TRCHAIN2(S, Q) is a homogeneous transform (3x3) that results from
 % compounding a number of elementary transformations defined by the string
 % S.  The string S comprises a number of tokens of the form X(ARG) where
 % X is one of Tx, Ty or R.  ARG is the name of a variable in
-% MATLAB workspace or qJ where J is an integer in the range 1 to N that
+% MATLAB workspace or 'qJ' where J is an integer in the range 1 to N that
 % selects the variable from the Jth column of the vector Q (1xN).
 %
 % For example:
@@ -14,6 +14,7 @@
 %        trot2(1) * transl2(a1,0) * trot2(2) * transl2(0,a3) * trot2(3)
 %
 % Notes::
+% - Variables list in the string must exist in the caller workspace.
 % - The string can contain spaces between elements or on either side of ARG.
 % - Works for symbolic variables in the workspace and/or passed in via the 
 %   vector Q.

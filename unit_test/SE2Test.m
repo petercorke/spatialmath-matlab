@@ -114,13 +114,6 @@ function inverse_test(tc)
     tc.verifyEqual(double(TT1.inv()*TT1), eye(3,3), 'AbsTol', 1e-10  );
 end
 
-function uminus_test(tc)
-    
-    TT1 = SE2.rand;
-
-    TM = - TT1;
-    tc.verifyEqual(TM.double, -(TT1.double), 'AbsTol', 1e-10  );
-end
 
 function Rt_test(tc)
    
@@ -245,12 +238,12 @@ function miscellany_test(tc)
     
     tc.verifyClass(TT.new, 'SE2');
 
-    tc.verifyClass(SE2.check(TT), 'SE2');
-    tc.verifyClass(SE2.check(TT.T), 'SE2');
-    z = SE2.check(TT);
+    tc.verifyClass(SE2.convert(TT), 'SE2');
+    tc.verifyClass(SE2.convert(TT.T), 'SE2');
+    z = SE2.convert(TT);
     tc.verifyEqual(double(z), double(TT));
     
-    z = SE2.check(TT.T);
+    z = SE2.convert(TT.T);
     tc.verifyEqual(double(z), TT.T);
     
 end

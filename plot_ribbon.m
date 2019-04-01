@@ -17,7 +17,7 @@
 % 'specular',S   specularity of surface (default 0.2)
 % 'diffuse',D    diffusivity of surface (default 0.8)
 %
-%  'nice'        adjust the phase for nicely phased arrow 
+% 'nice'         adjust the phase for nicely phased arrow 
 %
 % The parameters of the ribbon are:
 %
@@ -39,7 +39,7 @@
 %          shading interp
 %          camlight
 %
-% See also: plot_arrow, plot.
+% See also plot_arrow, plot.
 
 
 % Copyright (C) 1993-2019 Peter I. Corke

@@ -1,9 +1,14 @@
-%TRPLOT2 Plot a planar transformation
+%TRPLOT2 Plot a 2D coordinate frame
 %
 % TRPLOT2(T, OPTIONS) draws a 2D coordinate frame represented by the SE(2)
 % homogeneous transform T (3x3).
 %
 % H = TRPLOT2(T, OPTIONS) as above but returns a handle.
+%
+% TRPLOT(R, OPTIONS) as above but the coordinate frame is rotated about the
+% origin according to the orthonormal rotation matrix R (2x2).
+%
+% H = TRPLOT(R, OPTIONS) as above but returns a handle.
 %
 % H = TRPLOT2() creates a default frame EYE(2,2) at the origin and returns a
 % handle.
@@ -16,19 +21,23 @@
 % the SE(2) pose T (3x3).
 %
 % Options::
-% 'handle',h         Update the specified handle
-% 'axis',A           Set dimensions of the MATLAB axes to A=[xmin xmax ymin ymax]
-% 'color', c         The color to draw the axes, MATLAB colorspec
-% 'noaxes'           Don't display axes on the plot
-% 'frame',F          The frame is named {F} and the subscript on the axis labels is F.
-% 'framelabel',F     The coordinate frame is named {F}, axes have no subscripts.
-% 'text_opts', opt   A cell array of Matlab text properties
-% 'axhandle',A       Draw in the MATLAB axes specified by A
-% 'view',V           Set plot view parameters V=[az el] angles, or 'auto' 
-%                    for view toward origin of coordinate frame
-% 'length',s         Length of the coordinate frame arms (default 1)
-% 'arrow'            Use arrows rather than line segments for the axes
-% 'width', w         Width of arrow tips
+% 'handle',h             Update the specified handle
+% 'axhandle',A           Draw in the MATLAB axes specified by the axis handle A
+%
+% 'color', c             The color to draw the axes, MATLAB ColorSpec
+% 'axes'                 Show the MATLAB axes, box and ticks (default true)
+% 'axis',A               Set dimensions of the MATLAB axes to A=[xmin xmax ymin ymax]
+% 'frame',F              The frame is named {F} and the subscript on the axis labels is F.
+% 'framelabel',F         The coordinate frame is named {F}, axes have no subscripts.
+% 'framelabeloffset',O   Offset O=[DX DY] frame labels in units of text box height
+% 'text_opts', opt       A cell array of Matlab text properties
+% 'length',s             Length of the coordinate frame arms (default 1)
+% 'thick',t              Thickness of lines (default 0.5)
+% 'text'                 Enable display of X,Y,Z labels on the frame (default true)
+% 'labels',L             Label the X,Y,Z axes with the 1st and 2nd character of the string L
+% 'arrow'                Use arrows rather than line segments for the axes
+% 'width', w             Width of arrow tips
+% 'lefty'                Draw left-handed frame (dangerous)
 %
 % Examples::
 %
@@ -38,11 +47,8 @@
 %
 % Notes::
 % - Multiple frames can be added using the HOLD command
-% - The arrow option requires the third party package arrow3 from File
-%   Exchange.
-% - When using the form TRPLOT(H, ...) to animate a frame it is best to set 
-%   the axis bounds.
-% - The 'arrow' option requires arrow3 from FileExchange.
+% - When animating a coordinate frame it is best to set the axis bounds initially.
+% - The 'arrow' option requires https://www.mathworks.com/matlabcentral/fileexchange/14056-arrow3
 %
 % See also TRPLOT.
 
@@ -88,7 +94,6 @@ function hout = trplot2(T, varargin)
     opt.frame = [];
     opt.framelabel = [];
     opt.text_opts = [];
-    opt.view = [];
     opt.width = 1;
     opt.arrow = false;
     opt.handle = [];
@@ -97,6 +102,10 @@ function hout = trplot2(T, varargin)
     opt.lefty = false;
     opt.framelabeloffset = 0.2*[1 1];
     opt.handle = [];
+    opt.thick = 0.5;
+    opt.labels = 'XY';
+    opt.text = true;
+
 
     [opt,args] = tb_optparse(opt, varargin);
 
@@ -194,7 +203,9 @@ function hout = trplot2(T, varargin)
         end
     else
         for i=1:2
-            plot2([mstart(i,1:2); mend(i,1:2)], 'Color', opt.color, 'Parent', hg);
+            plot2([mstart(i,1:2); mend(i,1:2)], 'Color', opt.color, ...
+                'LineWidth', opt.thick, ...
+                'Parent', hg);
         end
     end
 
@@ -205,16 +216,19 @@ function hout = trplot2(T, varargin)
         fmt = sprintf('%%c_{%s}', opt.frame);
     end
     
-    % add the labels to each axis
-    h = text(x1(1), x1(2), sprintf(fmt, 'X'), 'Parent', hg);
-    if ~isempty(opt.text_opts)
-        set(h, opt.text_opts{:});
+    if opt.text
+        % add the labels to each axis
+        h = text(x1(1), x1(2), sprintf(fmt, opt.labels(1)), 'Parent', hg);
+        if ~isempty(opt.text_opts)
+            set(h, opt.text_opts{:});
+        end
     end
+
     if opt.arrow
         set(h, 'Parent', hg);
     end
 
-    h = text(y1(1), y1(2), sprintf(fmt, 'Y'), 'Parent', hg);
+    h = text(y1(1), y1(2), sprintf(fmt, opt.labels(2)), 'Parent', hg);
     if ~isempty(opt.text_opts)
         set(h, opt.text_opts{:});
     end

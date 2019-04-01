@@ -5,6 +5,10 @@
 % else it can be a 3-vector specifying scale in the x-, y- and
 % z-directions.
 %
+% Note::
+% - This matrix does not belong to SE(3) and should not be compounded with
+%   any SE(3) matrix.
+%
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

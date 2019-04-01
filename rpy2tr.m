@@ -1,4 +1,4 @@
-%RPY2TR Roll-pitch-yaw angles to homogeneous transform
+%RPY2TR Roll-pitch-yaw angles to SE(3) homogeneous transform
 %
 % T = RPY2TR(ROLL, PITCH, YAW, OPTIONS) is an SE(3) homogeneous
 % transformation matrix (4x4) with zero translation and rotation equivalent

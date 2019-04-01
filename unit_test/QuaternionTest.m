@@ -117,7 +117,7 @@ function resulttype_test(tc)
     
     verifyClass(tc, conj(q), 'Quaternion');
     verifyClass(tc, inv(q), 'Quaternion');
-    verifyClass(tc, unit(q), 'UnitQuaternion');
+    verifyClass(tc, unit(q), 'Quaternion');
     
     verifyClass(tc, q+q, 'Quaternion');
     verifyClass(tc, q-q, 'Quaternion');

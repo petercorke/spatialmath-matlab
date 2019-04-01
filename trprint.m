@@ -1,8 +1,10 @@
-%TRPRINT Compact display of homogeneous transformation
+%TRPRINT Compact display of SE(3) homogeneous transformation
 %
-% TRPRINT(T, OPTIONS) displays the homogoneous transform in a compact 
+% TRPRINT(T, OPTIONS) displays the homogoneous transform (4x4) in a compact 
 % single-line format.  If T is a homogeneous transform sequence then each 
 % element is printed on a separate line.
+%
+% TRPRINT(R, OPTIONS) as above but displays the SO(3) rotation matrix (3x3).
 %
 % S = TRPRINT(T, OPTIONS) as above but returns the string.
 %
@@ -27,7 +29,8 @@
 %
 % Notes::
 % - If the 'rpy' option is selected, then the particular angle sequence can be
-%   specified with the options 'xyz' or 'yxz'.  'zyx' is the default.
+%   specified with the options 'xyz' or 'yxz' which are passed through to TR2RPY.
+%  'zyx' is the default.
 %
 % See also TR2EUL, TR2RPY, TR2ANGVEC.
 

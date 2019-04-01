@@ -1,4 +1,4 @@
-%troty Rotation about Y axis
+%troty SE(3) rotation about Y axis
 %
 % T = troty(THETA) is a homogeneous transformation (4x4) representing a rotation 
 % of THETA radians about the y-axis.

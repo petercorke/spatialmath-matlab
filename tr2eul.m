@@ -1,4 +1,4 @@
-%TR2EUL Convert homogeneous transform to Euler angles
+%TR2EUL Convert SO(3) or SE(3) matrix to Euler angles
 %
 % EUL = TR2EUL(T, OPTIONS) are the ZYZ Euler angles (1x3) corresponding to
 % the rotational part of a homogeneous transform T (4x4). The 3 angles
@@ -51,7 +51,7 @@ function euler = tr2eul(RR, varargin)
     opt.flip = false;
     opt = tb_optparse(opt, varargin);
     
-    RR = SO3.check(RR);
+    RR = SO3.convert(RR);
     euler = zeros(length(RR),3);
     
     for i=1:length(RR)

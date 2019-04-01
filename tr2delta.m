@@ -1,4 +1,4 @@
-%TR2DELTA Convert homogeneous transform to differential motion
+%TR2DELTA Convert SE(3) homogeneous transform to differential motion
 %
 % D = TR2DELTA(T0, T1) is the differential motion (6x1) corresponding to 
 % infinitessimal motion (in the T0 frame) from pose T0 to T1 which are homogeneous 
@@ -14,13 +14,13 @@
 % Notes::
 % - D is only an approximation to the motion T, and assumes
 %   that T0 ~ T1 or T ~ eye(4,4).
-% - can be considered as an approximation to the effect of spatial velocity over a
+% - Can be considered as an approximation to the effect of spatial velocity over a
 %   a time interval, average spatial velocity multiplied by time.
 %
 % Reference::
 % - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
 %
-% See also DELTA2TR, SKEW, SE3.
+% See also DELTA2TR, SKEW, SE3.todelta.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

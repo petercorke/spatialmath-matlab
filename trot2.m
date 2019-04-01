@@ -1,4 +1,4 @@
-%TROT2 SE2 rotation matrix
+%TROT2 SE(2) rotation matrix
 %
 % T = TROT2(THETA) is a homogeneous transformation (3x3) representing a rotation 
 % of THETA radians.

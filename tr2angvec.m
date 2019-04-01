@@ -12,7 +12,7 @@
 % corresponding axes, one per row.
 %
 % Options::
-% 'deg'   Return angle in degrees
+% 'deg'   Return angle in degrees (default radians)
 %
 % Notes::
 % - For an identity rotation matrix both THETA and V are set to zero.

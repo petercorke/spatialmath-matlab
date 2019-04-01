@@ -1,4 +1,4 @@
-%DELTA2TR Convert differential motion  to a homogeneous transform
+%DELTA2TR Convert differential motion  to SE(3) homogeneous transform
 %
 % T = DELTA2TR(D) is a homogeneous transform (4x4) representing differential 
 % motion D (6x1). 

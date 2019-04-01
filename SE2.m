@@ -1,7 +1,8 @@
 %SE2 Representation of 2D rigid-body motion
 %
-% This subclasss of SO2 < RTBPose is an object that represents an SE(2)
-% rigid-body motion.
+% This subclasss of RTBPose is an object that represents rigid-body motion in 2D. 
+% Internally this is a 3x3 homogeneous transformation matrix (3x3) belonging to 
+% the group SE(2).
 %
 % Constructor methods::
 %  SE2          general constructor
@@ -9,48 +10,58 @@
 %  SE2.rand     random transformation
 %  new          new SE2 object
 %
-% Information and test methods::
-%  dim*         returns 2
-%  isSE*        returns true
-%  issym*       true if rotation matrix has symbolic elements
-%  isa          check if matrix is SE2
-%
 % Display and print methods::
-%  plot*        graphically display coordinate frame for pose
-%  animate*     graphically animate coordinate frame for pose
-%  print*       print the pose in single line format
-%  display*     print the pose in human readable matrix form
-%  char*        convert to human readable matrix as a string
+%  animate          ^graphically animate coordinate frame for pose
+%  display          ^print the pose in human readable matrix form
+%  plot             ^graphically display coordinate frame for pose
+%  print            ^print the pose in single line format
 %
-% Operation methods::
+% Group operations::
+%  *            ^mtimes: multiplication (group operator, transform point)
+%  /            ^mrdivide: multiply by inverse
+%  ^            ^mpower: exponentiate (integer only): 
+%  inv          inverse
+%  prod         ^product of elements
+%
+% Methods::
 %  det          determinant of matrix component
 %  eig          eigenvalues of matrix component
 %  log          logarithm of rotation matrix
 %  inv          inverse
 %  simplify*    apply symbolic simplication to all elements
 %  interp       interpolate between poses
+%  theta        rotation angle
+%
+% Information and test methods::
+%  dim          ^returns 2
+%  isSE         ^returns true
+%  issym        ^test if rotation matrix has symbolic elements
+%  SE2.isa      test if matrix is SE(2)
 %
 % Conversion methods::
-%  check        convert object or matrix to SE2 object
-%  theta        return rotation angle
-%  double       convert to rotation matrix
-%  R            convert to rotation matrix
-%  SE2          convert to SE2 object with zero translation
-%  T            convert to homogeneous transformation matrix
-%  t            translation column vector
+%  char*         convert to human readable matrix as a string
+%  SE2.convert   convert SE2 object or SE(2) matrix to SE2 object
+%  double        convert to rotation matrix
+%  R             convert to rotation matrix
+%  SE3           convert to SE3 object with zero translation
+%  SO2           convert rotational part to SO2 object
+%  T             convert to homogeneous transformation matrix
+%  Twist         convert to Twist object
+%  t             get.t: convert to translation column vector
 %
 % Compatibility methods::
-%  isrot2*      returns false
-%  ishomog2*    returns true
-%  tr2rt*       convert to rotation matrix and translation vector
-%  t2r*         convert to rotation matrix
-%  trprint2*    print single line representation
-%  trplot2*     plot coordinate frame
-%  tranimate2*  animate coordinate frame
-%  transl2      return translation as a row vector  
+%  isrot2       ^returns false
+%  ishomog2     ^returns true
+%  tr2rt        ^convert to rotation matrix and translation vector
+%  t2r          ^convert to rotation matrix
+%  transl2      ^translation as a row vector  
+%  trprint2     ^print single line representation
+%  trplot2      ^plot coordinate frame
+%  tranimate2   ^animate coordinate frame
 %
-% Static methods::
-%  check        convert object or matrix to SO2 object
+% ^ inherited from RTBPose class.
+%
+% See also SO2, SE3, RTBPose.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %
@@ -112,10 +123,9 @@ classdef SE2 < SO2
             % Constructs an SE(2) pose object that contains a 3x3 homogeneous transformation
             % matrix.
             %
-            % T = SE2() is a null relative motion
+            % T = SE2() is the identity element, a null motion.
             %
-            % T = SE2(X, Y) is an object representing pure translation defined by X and
-            % Y
+            % T = SE2(X, Y) is an object representing pure translation defined by X and Y.
             %
             % T = SE2(XY) is an object representing pure translation defined by XY
             % (2x1). If XY (Nx2) returns an array of SE2 objects, corresponding to
@@ -125,25 +135,24 @@ classdef SE2 < SO2
             % rotation, angle THETA.
             %
             % T = SE2(XY, THETA) is an object representing translation, XY (2x1), and
-            % rotation, angle THETA
+            % rotation, angle THETA.
             %
             % T = SE2(XYT) is an object representing translation, XYT(1) and XYT(2),
-            % and rotation, angle XYT(3). If XYT (Nx3) returns an array of SE2 objects, corresponding to
+            % and rotation angle XYT(3). If XYT (Nx3) returns an array of SE2 objects, corresponding to
             % the rows of XYT.
             %
+            % T = SE2(T) is an object representing translation and rotation defined by
+            % the SE(2) homogeneous transformation matrix T (3x3).  If T (3x3xN) returns an 
+            % array (1xN) of SE2 objects, corresponding to the third index of T.
+            %
             % T = SE2(R) is an object representing pure rotation defined by the
-            % orthonormal rotation matrix R (2x2)
+            % SO(2) rotation matrix R (2x2)
             %
             % T = SE2(R, XY) is an object representing rotation defined by the
             % orthonormal rotation matrix R (2x2) and position given by XY (2x1)
             %
-            % T = SE2(T) is an object representing translation and rotation defined by
-            % the homogeneous transformation matrix T (3x3).  If T (3x3xN) returns an array of SE2 objects, corresponding to
-            % the third index of T
-            %
-            % T = SE2(T) is an object representing translation and rotation defined by
-            % the SE2 object T, effectively cloning the object. If T (Nx1) returns an array of SE2 objects, corresponding to
-            % the index of T
+            % T = SE2(T) is a copy of the SE2 object T. If T (Nx1) returns an array of SE2 objects,
+            % corresponding to the index of T.
             %
             % Options::
             % 'deg'         Angle is specified in degrees
@@ -152,6 +161,7 @@ classdef SE2 < SO2
             % - Arguments can be symbolic
             % - The form SE2(XY) is ambiguous with SE2(R) if XY has 2 rows, the second form is assumed.
             % - The form SE2(XYT) is ambiguous with SE2(T) if XYT has 3 rows, the second form is assumed.
+            % - R and T are checked to be valid SO(2) or SE(2) matrices.
             
             opt.deg = false;
             
@@ -262,7 +272,7 @@ classdef SE2 < SO2
             %
             % Notes::
             % - If P is a vector the result is a MATLAB comma separated list, in this
-            % case use P.transl().
+            %   case use P.transl().
             %
             % See also SE2.transl.
             t = obj.data(1:2,3);
@@ -276,7 +286,7 @@ classdef SE2 < SO2
             %
             % Notes::
             % - TV can be a row or column vector.
-            % - If TV contains a symbolic value then the entire matrix is converted to
+            % - If TV contains a symbolic value then the entire matrix becomes
             %   symbolic.
             
             if isa(t, 'sym') && ~isa(obj.data, 'sym')
@@ -285,6 +295,23 @@ classdef SE2 < SO2
             obj.data(1:2,3) = t;
             o = obj;
         end
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%  conversion methods
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+        function v = xyt(obj)
+            %SE2.xyt  Extract configuration
+            %
+            % XYT = P.xyt() is a column vector (3x1) comprising the minimum three
+            % configuration parameters of this rigid-body motion: translation (x,y)
+            % and rotation theta.
+
+            
+            % TODO VECTORISE
+            v = obj.t;
+            v(3) = atan2(obj.data(2,1), obj.data(1,1));
+        end        
         
         function [tx,ty] = transl(obj)
             %SE2.t  Get translational component
@@ -307,7 +334,7 @@ classdef SE2 < SO2
             %
             % T = P.T() is the homogeneous transformation matrix (3x3) associated with the
             % SE2 object P, and has zero translational component.  If P is a vector
-            % (1xN) then T (3x3xN) is a stack of rotation matrices, with the third
+            % (1xN) then T (3x3xN) is a stack of homogeneous transformation matrices, with the third
             % dimension corresponding to the index of P.
             %
             % See also SO2.T.
@@ -321,7 +348,7 @@ classdef SE2 < SO2
             %
             % Q = P.SE3() is an SE3 object formed by lifting the rigid-body motion
             % described by the SE2 object P from 2D to 3D.  The rotation is about the
-            % z-axis, and the translational is within the xy-plane.
+            % z-axis, and the translation is within the xy-plane.
             %
             % See also SE3.
             t = SE3();
@@ -340,9 +367,17 @@ classdef SE2 < SO2
             out = SO2( obj.R );
         end
         
-             
+        function tw = Twist(obj)
+            %SE2.Twist  Convert to Twist object
+            %
+            % TW = P.Twist() is the equivalent Twist object.  The elements of the twist are the unique
+            % elements of the Lie algebra of the SE2 object P.
+            %
+            % See also SE2.log, Twist.
+            tw = Twist( obj.log );
+        end
         
-  
+       
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%  SE(2) OPERATIONS
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -350,43 +385,31 @@ classdef SE2 < SO2
         function it = inv(obj)
             %SE2.inv  Inverse of SE2 object
             %
-            % Q = inv(P) is the inverse of the SE2 object P.  P*Q will be the identity
-            % matrix.
+            % Q = inv(P) is the inverse of the SE2 object P.
             %
             % Notes::
-            % - This is formed explicitly, no matrix inverse required.   
-            it = SE2( obj.R', -obj.R'*obj.t);
-        end
+            %  - This is formed explicitly, no matrix inverse required.
+            %  - This is a group operator: input and output in the SE(2) group. 
+            %  - P*Q will be the identity group element (zero motion, identity matrix).
  
-        
-        function v = xyt(obj)
-            %SE2.xyt  Construct SE2 object from Lie algebra
-            %
-            % XYT = P.xyt() is a column vector (3x1) comprising the minimum three
-            % parameters of this rigid-body motion [x; y; theta] with translation (x,y)
-            % and rotation theta.
-
-            
-            % TODO VECTORISE
-            v = obj.t;
-            v(3) = atan2(obj.data(2,1), obj.data(1,1));
+            it = SE2( obj.R', -obj.R'*obj.t);
         end
 
         function S = log(obj)
             %SE2.log  Lie algebra
             %
-            % se2 = P.log() is the Lie algebra augmented skew-symmetric matrix (3x3)
-            % corresponding to the SE2 object P.
+            % se2 = P.log() is the Lie algebra corresponding to the SE2 object P. It is
+            % an augmented skew-symmetric matrix (3x3).
             %
-            % See also SE2.Twist, logm.
+            % See also SE2.Twist, logm, skewa, vexa.
             S = logm(obj.data);
         end
         
         function Ti = interp(obj1, varargin)
             %SE2.interp Interpolate between SO2 objects
             %
-            % P1.interp(P2, s) is an SE2 object representing interpolation
-            % between rotations represented by SE3 objects P1 and P2.  s varies from 0
+            % P1.interp(P2, s) is an SE2 object which is an interpolation
+            % between poses represented by SE2 objects P1 and P2.  s varies from 0
             % (P1) to 1 (P2). If s is a vector (1xN) then the result will be a vector
             % of SE2 objects.
             %
@@ -425,17 +448,7 @@ classdef SE2 < SO2
             
         end
 
-        function tw = Twist(obj)
-            %SE2.Twist  Convert to Twist object
-            %
-            % TW = P.Twist() is the equivalent Twist object.  The elements of the twist are the unique
-            % elements of the Lie algebra of the SE2 object P.
-            %
-            % See also SE2.log, Twist.
-            tw = Twist( obj.log );
-        end
-        
-         
+  
         function print(obj, varargin)
             for T=obj
                 theta = atan2(T.data(2,1), T.data(1,1)) * 180/pi;
@@ -452,10 +465,10 @@ classdef SE2 < SO2
             % P2 = P.new() as above but defines a null motion.
             %
             % Notes::
-            % - Serves as a dynamic constructor.
-            % - This method is polymorphic across all RTBPose derived classes, and
-            %   allows easy creation of a new object of the same class as an existing
-            %   one.
+            %  - Serves as a dynamic constructor.
+            %  - This method is polymorphic across all RTBPose derived classes, and
+            %    allows easy creation of a new object of the same class as an existing
+            %    one without needing to explicitly determine its type.
             %
             % See also SE3.new, SO3.new, SO2.new.
             
@@ -468,20 +481,33 @@ classdef SE2 < SO2
         % Static factory methods for constructors from exotic representations
         
         function obj = exp(s)
-            %SE2.exp  Construct SE2 object from Lie algebra
+            %SE2.exp  Construct SE2 from Lie algebra
             %
-            % P = SE2.exp(se2) creates an SE2 object by exponentiating the se(2)
-            % argument (3x3).
+            % SE2.exp(SIGMA) is the SE2 rigid-body motion corresponding to the se(2) 
+            % Lie algebra element SIGMA (3x3).
+            %
+            % SE3.exp(TW) as above but the Lie algebra is represented
+            % as a twist vector TW (1x1).
+            %
+            % Notes::
+            %  - TW is the non-zero elements of X.
+            %
+            % Reference::
+            % - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p25-31.
+            %
+            %
+            % See also trexp2, skewa.
+
             obj = SE2( trexp2(s) );
         end
         
 
         
-        function T = check(tr)
+        function T = convert(tr)
             %SE2.check  Convert to SE2
             %
-            % Q = SE2.check(X) is an SE2 object where X is SE2 or 3x3
-            % homogeneous transformation matrix.
+            % Q = SE2.convert(X) is an SE2 object equivalent to X where X is either
+            % an SE2 object, or an SE(2) homogeneous transformation matrix (3x3).
             if isa(tr, 'SE2')
                 T = tr;
             elseif SE2.isa(tr)
@@ -494,15 +520,16 @@ classdef SE2 < SO2
         function h = isa(tr, rtest)
             %SE2.ISA Test if matrix is SE(2)
             %
-            % SE2.ISA(T) is true (1) if the argument T is of dimension 3x3 or 3x3xN, else
+            % SE2.isa(T) is true (1) if the argument T is of dimension 3x3 or 3x3xN, else
             % false (0).
             %
-            % SE2.ISA(T, true') as above, but also checks the validity of the rotation
+            % SE2.isa(T, true) as above, but also checks the validity of the rotation
             % sub-matrix.
             %
             % Notes::
-            % - The first form is a fast, but incomplete, test for a transform in SE(3).
-            % - There is ambiguity in the dimensions of SE2 and SO3 in matrix form.
+            %  - This is a class method.
+            %  - The first form is a fast, but incomplete, test for a transform in SE(3).
+            %  - There is ambiguity in the dimensions of SE2 and SO3 in matrix form.
             %
             % See also SO3.ISA, SE2.ISA, SO2.ISA, ishomog2.
             
@@ -510,8 +537,9 @@ classdef SE2 < SO2
             if ndims(tr) >= 2
                 h =  all(d(1:2) == [3 3]);
                 
-                if h && nargin > 1
+                if h && nargin > 1 && ~isa(tr, 'sym')
                     h = SO3.isa( tr(1:2,1:2) );
+                    h = h && all(tr(4,:) == [0 0 0 1]);  % test the bottom row
                 end
             else
                 h = false;
@@ -522,11 +550,11 @@ classdef SE2 < SO2
             %SE2.rand Construct a random SE(2) object
             %
             % SE2.rand() is an SE2 object with a uniform random translation and a
-            % uniform random orientation.  Random numbers are in the interval 0 to
-            % 1.
+            % uniform random orientation.  Random numbers are in the interval [-1 1] 
+            % and rotations in the interval [-pi pi].
             %
             % See also RAND.
-            T = SE2(rand(1,3));
+            T = SE2(rand(1,3)*diag([2 2 2*pi]) + [-1 -1 -pi]);
         end
     end
 end

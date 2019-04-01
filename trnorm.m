@@ -1,22 +1,23 @@
-%TRNORM Normalize a rotation matrix
+%TRNORM Normalize an SO(3) or SE(3) matrix
 %
-% RN = TRNORM(R) is guaranteed to be a proper orthogonal matrix rotation
-% matrix (3x3) which is "close" to the non-orthogonal matrix R (3x3). If R
+% TRNORM(R) is guaranteed to be a proper orthogonal matrix rotation
+% matrix (3x3) which is "close" to the input matrix R (3x3). If R
 % = [N,O,A] the O and A vectors are made unit length and the normal vector
 % is formed from N = O x A, and then we ensure that O and A are orthogonal
 % by O = A x N.
 %
-% TN = TRNORM(T) as above but the rotational submatrix of the homogeneous
+% TRNORM(T) as above but the rotational submatrix of the homogeneous
 % transformation T (4x4) is normalised while the translational part is
-% passed unchanged.
+% unchanged.
 %
-% If R (3x3xK) or T (4x4xK) represent a sequence then RN and TN have the
-% same dimension and normalisation is performed on each plane.
+% If R (3x3xK) or T (4x4xK) representing a sequence then the normalisation
+% is performed on each of the K planes.
 %
 % Notes::
 % - Only the direction of A (the z-axis) is unchanged.
 % - Used to prevent finite word length arithmetic causing transforms to 
 %   become `unnormalized'.
+% - There is no Toolbox function for SO(2) or SE(2).
 %
 % See also OA2TR, SO3.trnorm, SE3.trnorm.
 

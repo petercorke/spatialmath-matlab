@@ -356,12 +356,12 @@ function miscellany_test(tc)
     
     verifyClass(tc, TT.new, 'SE3');
 
-    verifyClass(tc, SE3.check(TT), 'SE3');
-    verifyClass(tc, SE3.check(T), 'SE3');
-    z = SE3.check(TT);
+    verifyClass(tc, SE3.convert(TT), 'SE3');
+    verifyClass(tc, SE3.convert(T), 'SE3');
+    z = SE3.convert(TT);
     tc.verifyEqual(double(z), double(TT));
     
-    z = SE3.check(T);
+    z = SE3.convert(T);
     tc.verifyEqual(double(z), T);
     
 end

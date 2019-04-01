@@ -17,7 +17,6 @@
 %
 % Methods::
 %  SpatialV6     constructor invoked by subclasses
-%  new           construct new concrete class of same type
 %  double        convert to a 6xN double
 %  char          convert to string
 %  display       display in human readable form
@@ -35,11 +34,11 @@
 %
 % References::
 %
-% - Robot Dynamics Algorithms, R. Featherstone, volume 22,
-%   Springer International Series in Engineering and Computer Science,
-%   Springer, 1987.
-% - A beginner?s guide to 6-d vectors (part 1), R. Featherstone, 
-%   IEEE Robotics Automation Magazine, 17(3):83?94, Sep. 2010.
+%  - Robot Dynamics Algorithms, R. Featherstone, volume 22,
+%    Springer International Series in Engineering and Computer Science,
+%    Springer, 1987.
+%  - A beginner's guide to 6-d vectors (part 1), R. Featherstone, 
+%    IEEE Robotics Automation Magazine, 17(3):83-94, Sep. 2010.
 %
 % See also SpatialM6, SpatialF6, SpatialVelocity, SpatialAcceleration, SpatialForce,
 % SpatialMomentum, SpatialInertia.

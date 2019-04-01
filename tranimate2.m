@@ -1,16 +1,16 @@
-%TRANIMATE2 Animate a coordinate frame
+%TRANIMATE2 Animate a 2D coordinate frame
 %
 % TRANIMATE2(P1, P2, OPTIONS) animates a 3D coordinate frame moving from pose X1
 % to pose X2.  Poses X1 and X2 can be represented by:
-%   - homogeneous transformation matrices (4x4)
-%   - orthonormal rotation matrices (3x3)
+%   - SE(2) homogeneous transformation matrices (3x3)
+%   - SO(2) orthonormal rotation matrices (2x2)
 %
 % TRANIMATE2(X, OPTIONS) animates a coordinate frame moving from the identity pose
 % to the pose X represented by any of the types listed above.
 %
 % TRANIMATE2(XSEQ, OPTIONS) animates a trajectory, where XSEQ is any of
-%   - homogeneous transformation matrix sequence (4x4xN)
-%   - orthonormal rotation matrix sequence (3x3xN)
+%   - SE(2) homogeneous transformation matrix sequence (3x3xN)
+%   - SO(2) orthonormal rotation matrix sequence (2x2xN)
 %
 % Options::
 %  'fps', fps    Number of frames per second to display (default 10)
@@ -21,7 +21,7 @@
 %  'noxyz'       Don't label the axes
 %  'rgb'         Color the axes in the order x=red, y=green, z=blue
 %  'retain'      Retain frames, don't animate
-%  Additional options are passed through to TRPLOT.
+%  Additional options are passed through to TRPLOT2.
 %
 % Notes::
 % - Uses the Animate helper class to record the frames.

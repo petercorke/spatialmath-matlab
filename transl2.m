@@ -1,4 +1,4 @@
-%TRANSL2 Create or unpack an SE(2) translational homogeneous transform
+%TRANSL2 SE(2) translational homogeneous transform
 %
 % Create a translational SE(2) matrix::
 %
@@ -6,19 +6,19 @@
 % pure translation.
 %
 % T = TRANSL2(P) is a homogeneous transform representing a translation or
-% point P=[X,Y]. If P (Mx2) it represents a sequence and T (3x3xM) is a
+% point P=[X,Y]. P (Mx2) represents a sequence and T (3x3xM) is a
 % sequence of homogenous transforms such that T(:,:,i) corresponds to the
 % i'th row of P.
 %
 % Extract the translational part of an SE(2) matrix::
 %
 % P = TRANSL2(T) is the translational part of a homogeneous transform as a
-% 2-element column vector.  If T (3x3xM) is a homogeneous transform
-% sequence the rows of P (Mx2) are the translational component of the
+% 2-element column vector.  T (3x3xM) is a homogeneous transform
+% sequence and the rows of P (Mx2) are the translational component of the
 % corresponding transform in the sequence.
 %
 % Notes::
-% - Somewhat unusually this function performs a function and its inverse.  An
+% - Somewhat unusually, this function performs a function and its inverse.  An
 %   historical anomaly.
 %
 % See also SE2.t, ROT2, ISHOMOG2, TRPLOT2, TRANSL.

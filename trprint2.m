@@ -1,12 +1,14 @@
-%TRPRINT2 Compact display of SE2 homogeneous transformation
+%TRPRINT2 Compact display of SE(2) homogeneous transformation
 %
-% TRPRINT2(T, OPTIONS) displays the homogoneous transform in a compact 
+% TRPRINT2(T, OPTIONS) displays the homogoneous transform (3x3) in a compact 
 % single-line format.  If T is a homogeneous transform sequence then each 
 % element is printed on a separate line.
 %
+% TRPRINT2(R, OPTIONS) as above but displays the SO(2) rotation matrix (3x3).
+%
 % S = TRPRINT2(T, OPTIONS) as above but returns the string.
 %
-% TRPRINT T  is the command line form of above, and displays in RPY format.
+% TRPRINT2 T  is the command line form of above, and displays in RPY format.
 %
 % Options::
 % 'radian'     display angle in radians (default is degrees)

@@ -1,9 +1,9 @@
-%TR2RPY Convert a homogeneous transform to roll-pitch-yaw angles
+%TR2RPY Convert SO(3) or SE(3) matrix to roll-pitch-yaw angles
 %
 % RPY = TR2RPY(T, options) are the roll-pitch-yaw angles (1x3)
 % corresponding to the rotation part of a homogeneous transform T. The 3
-% angles RPY=[R,P,Y] correspond to sequential rotations about the Z, Y and
-% X axes respectively. Roll and yaw angles in [-pi,pi) while pitch angle
+% angles RPY=[ROLL,PITCH,YAW] correspond to sequential rotations about the Z, Y and
+% X axes respectively. Roll and yaw angles are in [-pi,pi) while pitch angle is
 % in [-pi/2,pi/2).
 %
 % RPY = TR2RPY(R, options) as above but the input is an orthonormal
@@ -14,16 +14,16 @@
 %
 % Options::
 %  'deg'   Compute angles in degrees (radians default)
-%  'xyz'      Return solution for sequential rotations about X, Y, Z axes
-%  'zyx'      Return solution for sequential rotations about Z, Y, X axes (default)
-%  'yxz'      Return solution for sequential rotations about Y, X, Z axes
-%  'arm'      Return solution for sequential rotations about X, Y, Z axes
-%  'vehicle'  Return solution for sequential rotations about Z, Y, X axes
-%  'camera'   Return solution for sequential rotations about Y, X, Z axes
+%  'xyz'       Return solution for sequential rotations about X, Y, Z axes
+%  'zyx'       Return solution for sequential rotations about Z, Y, X axes (default)
+%  'yxz'       Return solution for sequential rotations about Y, X, Z axes
+%  'arm'       Return solution for sequential rotations about X, Y, Z axes
+%  'vehicle'   Return solution for sequential rotations about Z, Y, X axes
+%  'camera'    Return solution for sequential rotations about Y, X, Z axes
 %
 % Notes::
-% - There is a singularity for the case where P=pi/2 in which case R is arbitrarily
-%   set to zero and Y is the sum (R+Y).
+% - There is a singularity for the case where PITCH=pi/2 in which case ROLL is arbitrarily
+%   set to zero and YAW is the sum (ROLL+YAW).
 % - Translation component is ignored.
 % - Toolbox rel 8-9 has XYZ angle sequence as default.
 % - 'arm', 'vehicle', 'camera' are synonyms for 'xyz', 'zyx' and 'yxz'
