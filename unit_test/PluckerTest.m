@@ -25,17 +25,16 @@ function constructor1_test(tc)
     tc.verifyEqual(L2.v, [1 2 3]','absTol',1e-10);
     tc.verifyEqual(L2.w, [4 5 6]','absTol',1e-10);
     
-    % construct from 2 3-vectors
-    L = Plucker('wv', [1 2 3], [4 5 6]);
-    tc.verifyEqual(L.w, [1 2 3]','absTol',1e-10);
-    tc.verifyEqual(L.v, [4 5 6]','absTol',1e-10);
-    tc.verifyEqual(L.uw, unit([1 2 3])','absTol',1e-10);
+    % construct from point and direction
+    L = Plucker.pointdir([1 2 3], [4 5 6]);
+    tc.verifyTrue(L.contains([1 2 3]'));
+    tc.verifyEqual(L.uw, unit([4 5 6])', 'absTol', 1e-10);
 end
 
 function double_test(tc)
     % verify double
-    L = Plucker('wv', [1 2 3], [4 5 6]);
-    tc.verifyEqual(double(L), [4 5 6 1 2 3]','absTol',1e-10);
+    L = Plucker([1 2 3 4 5 6]);
+    tc.verifyEqual(double(L), [1 2 3 4 5 6]', 'absTol', 1e-10);
 end
 
 function constructor2_test(tc)
@@ -52,18 +51,18 @@ function constructor2_test(tc)
     tc.verifyEqual(double(L2), double(L), 'absTol',1e-10);
     L2 = Plucker(P', Q');
     tc.verifyEqual(double(L2), double(L), 'absTol',1e-10);
-    L2 = Plucker('points', P, Q);
+    L2 = Plucker(P, Q);
     tc.verifyEqual(double(L2), double(L), 'absTol',1e-10);
     
     % planes constructor
     P = [10 11 12]'; w = [1 2 3];
-    L = Plucker('Pw', P, w);
+    L = Plucker.pointdir(P, w);
     tc.verifyEqual(double(L), [cross(w,P) w]','absTol',1e-10); %FAIL
-    L2 = Plucker('Pw', P', w);
+    L2 = Plucker.pointdir(P', w);
     tc.verifyEqual(double(L2), double(L), 'absTol',1e-10);
-    L2 = Plucker('Pw', P, w');
+    L2 = Plucker.pointdir(P, w');
     tc.verifyEqual(double(L2), double(L), 'absTol',1e-10);
-    L2 = Plucker('Pw', P', w');
+    L2 = Plucker.pointdir(P', w');
     tc.verifyEqual(double(L2), double(L), 'absTol',1e-10);
 end
 
@@ -181,9 +180,9 @@ end
 
 function parallel_test(tc)
     
-    L1 = Plucker('Pw', [4 5 6], [1 2 3]);
-    L2 = Plucker('Pw', [5 5 6], [1 2 3]);
-    L3 = Plucker('Pw', [4 5 6], [3 2 1]);
+    L1 = Plucker.pointdir([4 5 6], [1 2 3]);
+    L2 = Plucker.pointdir([5 5 6], [1 2 3]);
+    L3 = Plucker.pointdir([4 5 6], [3 2 1]);
     
     % L1 || L2 but doesnt intersect
     % L1 intersects L3
@@ -202,10 +201,10 @@ end
 function intersect_test(tc)
 
     
-    L1 = Plucker('Pw', [4 5 6], [1 2 3]);
-    L2 = Plucker('Pw', [5 5 6], [1 2 3]);
-    L3 = Plucker('Pw', [4 5 6], [0 0 1]);
-    L4 = Plucker('Pw', [5 5 6], [1 0 0]);
+    L1 = Plucker.pointdir([4 5 6], [1 2 3]);
+    L2 = Plucker.pointdir([5 5 6], [1 2 3]);
+    L3 = Plucker.pointdir( [4 5 6], [0 0 1]);
+    L4 = Plucker.pointdir([5 5 6], [1 0 0]);
     
     % L1 || L2 but doesnt intersect
     % L3 intersects L4
@@ -216,8 +215,8 @@ function intersect_test(tc)
 end
 
 function commonperp_test(tc)
-    L1 = Plucker('Pw', [4 5 6], [0 0 1]);
-    L2 = Plucker('Pw', [6 5 6], [0 1 0]);
+    L1 = Plucker.pointdir([4 5 6], [0 0 1]);
+    L2 = Plucker.pointdir([6 5 6], [0 1 0]);
     
     tc.verifyFalse( L1|L2 );
     tc.verifyFalse( L1^L2 );
@@ -272,7 +271,7 @@ function plane_test(tc)
     
     xyplane = [0 0 1 0];
     xzplane = [0 1 0 0];
-    L = Plucker('planes', xyplane, xzplane); % x axis
+    L = Plucker.planes(xyplane, xzplane); % x axis
     tc.verifyEqual(double(L), [0 0 0 -1 0 0]','absTol',1e-10);
     
     L = Plucker([-1 2 3], [1 2 3]);  %line at y=2,z=3
@@ -285,7 +284,7 @@ function plane_test(tc)
     
     x6s.n = [1 0 0];
     x6s.p = [6 0 0];
-    [p,lambda] = L.intersect_plane(x6s)
+    [p,lambda] = L.intersect_plane(x6s);
     tc.verifyEqual(p, [6 2 3]','absTol',1e-10);
     tc.verifyEqual(L.point(lambda), [6 2 3]','absTol',1e-10);
 end
