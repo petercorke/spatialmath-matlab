@@ -581,7 +581,7 @@ classdef (Abstract) RTBPose
             end  
         end
         
-        function trplot(obj, varargin)
+        function varargout = trplot(obj, varargin)
             %TRPLOT Draw a 3D coordinate frame (compatibility)
             %
             % trplot(P, OPTIONS) draws a 3D coordinate frame represented by RTBPose
@@ -592,10 +592,10 @@ classdef (Abstract) RTBPose
             %  - P can be instances of SO3 or SE3.
             %
             % See also RTBPose.plot, trplot.
-            obj.plot(varargin{:});
+            [varargout{1:nargout}] = obj.plot(varargin{:});
         end
         
-        function trplot2(obj, varargin)
+        function varargout = trplot2(obj, varargin)
             %TRPLOT2 Draw a 2D coordinate frame (compatibility)
             %
             % trplot2(P, OPTIONS) draws a 2D coordinate frame represented by RTBPose
@@ -606,7 +606,7 @@ classdef (Abstract) RTBPose
             %  - P can be instances of SO2 or SE2.
             %
             % See also RTBPose.plot, trplot2.
-            obj.plot(varargin{:});
+            [varargout{1:nargout}] = obj.plot(varargin{:});
         end
         
         function tranimate(obj, varargin)
