@@ -21,7 +21,10 @@
 %  +       elementwise sum of quaternion elements 
 %  -       elementwise difference of quaternion elements
 %  conj    conjugate
+%  exp     exponential
+%  log     logarithm
 %  inv     inverse
+%  prod    product of elements
 %  unit    unitized quaternion
 %
 % Methods::
@@ -288,7 +291,48 @@ classdef Quaternion
             
             n = double(q1)*double(q2)';
         end
+        
+        function out = log(q)
+            %Quaternion.log Logarithm of quaternion
+            %
+            % Q.log() is the logarithm of the Quaternion Q.
+            %
+            % See also Quaternion.exp.
+            
+            assert(norm(q.v) > 20*eps, 'SMTB:Quaternion:log:badarg', 'Can''t compute log of Quaternion with zero length vector component');
+            out = Quaternion( log(norm(q)), unit(q.v) * acos(q.s/norm(q)) );
+        end
+        
+        function out = exp(q)
+            %Quaternion.log Exponential of quaternion
+            %
+            % Q.log() is the logarithm of the Quaternion Q.
+            %
+            % See also Quaternion.exp.
+           
+            assert(norm(q.v) > 20*eps, 'SMTB:Quaternion:exp:badarg', 'Can''t compute exp of Quaternion with zero length vector component');
+            out = exp(q.s) * Quaternion( cos(norm(q.v)), unit(q.v)*sin(norm(q.v)) );
+        end
+        
+        function out = prod(q)
+            %Quaternion.prod Product of quaternions
+            %
+            % prod(Q) is the product of the elements of the vector of Quaternion objects Q.
+            %
+            % See also Quaternion.mtimes, RTBPose.prod.
+            out = q(1);
+            for qq = q(2:end)
+                out = out * qq;
+            end
+        end
        
+        function out = spositive(q)
+            out = q;
+            if q.s < 0
+                out.s = -out.s;
+                out.v = -out.v;
+            end
+        end
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% ARITHMETIC OPERATORS

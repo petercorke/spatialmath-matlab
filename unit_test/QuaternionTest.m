@@ -48,6 +48,27 @@ function constructor_test(tc)
     
 end
 
+function prod_test(tc)
+    q1 = Quaternion([1 2 3 4]);
+    q2 = Quaternion([4 3 2 1]);
+    q3 = Quaternion([-1 2 -3 4]);
+    
+    tc.verifyEqual(prod([q1 q2 q3 q1 q2 q3]), q1*q2*q3*q1*q2*q3);
+end
+
+function log_exp_test(tc)
+    
+    q1 = Quaternion([4 3 2 1]);
+    q2 = Quaternion([-1 2 -3 4]);
+    
+    tc.verifyEqual(exp(log(q1)), q1);
+    tc.verifyEqual(exp(log(q2)), q2);
+    
+    %tc.verifyEqual(log(exp(q1)), q1);
+    %tc.verifyEqual(log(exp(q2)), q2);
+
+end
+
 
 function char_test(tc)
     

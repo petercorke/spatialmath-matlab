@@ -32,7 +32,10 @@
 %  /       ^multiply by inverse
 %  ./      multiply by inverse and renormalize
 %  ^       ^exponentiate (integer only)
+%  exp     ^exponential
 %  inv     ^inverse
+%  log     ^logarithm
+%  prod    product of elements
 %
 % Methods::
 %  angle                   angle between two quaternions
@@ -421,8 +424,21 @@ classdef UnitQuaternion < Quaternion
             qd = 0.5 * Quaternion(-q.v*omega, E*omega);
         end
  
- 
-
+         function out = prod(q)
+            %UnitQuaternion.prod Product of unit quaternions
+            %
+            % prod(Q) is the product of the elements of the vector of UnitQuaternion objects Q.
+            %
+            % Note::
+            % - Multiplication is performed with the .* operator, ie. the product is 
+            %   renormalized at every step.
+            %
+            % See also UnitQuaternion.times, RTBPose.prod.
+            out = q(1);
+            for qq = q(2:end)
+                out = out * qq;
+            end
+        end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% ARITHMETIC OPERATORS
