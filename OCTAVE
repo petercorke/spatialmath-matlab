@@ -1,0 +1,71 @@
+> a=SO3.rand
+Illegal instruction
+
+> a=UnitQuaternion
+Illegal instruction
+
+
+---------------------------------------
+
+octave:5> a
+
+a = 
+         1         0         0
+         0         1         0
+         0         0         1
+
+octave:6> b(1) = a;
+octave:7> b(2) = a;
+octave:8> z=b(2);
+octave:9> a
+
+a = 
+         1         0         0
+         0         1         0
+         0         0         1
+octave:10> b
+error: can't perform indexing operation on array of SO3 objects
+error: called from
+    display at line 729 column 13
+octave:10> z
+
+z = 
+         1         0         0
+         0         1         0
+         0         0         1
+
+
+---------------------------------------
+
+Color printing to terminal
+
+octave:7> printf([char(27), '[94mHello world', char(27), '[0m\n']);
+Hello world
+octave:8> 
+octave:8> printf([char(27), '[31mHello world', char(27), '[0m\n']);
+Hello world
+octave:9> 
+
+---------------------------------------
+
+octave:11> inv(a)
+error: mark_as_constructed: invalid object
+error: called from
+    inv at line 375 column 16
+
+---------------------------------------
+
+tb_optparse uses verLessThan() which is not provided
+
+---------------------------------------
+
+octave:16> a*a
+error: octave_base_value::reshape (): wrong type argument 'object'
+error: called from
+    repmat at line 111 column 9
+    mtimes at line 327 column 21
+octave:16> a^2
+error: mark_as_constructed: invalid object
+error: called from
+    new at line 583 column 15
+    mpower at line 260 column 15
