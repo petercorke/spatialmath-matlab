@@ -113,7 +113,7 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
     
     assert(iscell(argv), 'SMTB:tboptparse:badargs', 'input must be a cell array');
     
-    if ~verLessThan('matlab', '9.1')
+    if ~isoctave && ~verLessThan('matlab', '9.1')
         % strings only appeared in 2016b
         
         % handle new style string inputs

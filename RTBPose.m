@@ -876,12 +876,13 @@ classdef (Abstract) RTBPose
             if isa(obj(1).data, 'sym')
                 % use MATLAB default disp() function for symbolic object
                 disp(obj.data);
+                11
             else
                 % else render the elements with specified format and color
                 fmtR = '%10.4f';
                 fmtt = '%10.4g';
                 fmt0 = '%10.0f';
-                if exist('cprintf')
+                if ~isoctave() && exist('cprintf')
                     print = @(color, fmt, value) cprintf(color, fmt, value);
                 else
                     print = @(color, fmt, value) fprintf(fmt, value);
