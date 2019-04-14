@@ -5,4 +5,10 @@
 *.log
 *.aux
 *.idx
-*.asv
+*.toc
+*.out
+*.xml
+*anaconda.asv
+*.synctex.gz
+doc/mkdocs
+doc/test
