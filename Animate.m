@@ -228,7 +228,15 @@ classdef Animate < handle
                     im = im(1:h,1:w,:);
                     
                     % add the frame to the movie
+                    try
                     writeVideo(a.video, im)
+                    catch ME
+                        if (strcmp(ME.identifier,'MATLAB:audiovideo:VideoWriter:invalidDimensions'))
+                            error('SMTB:Animate.add:resize', 'You cannot resize the plot window while saving an animation to a file');
+                        else
+                            rethrow(ME)
+                        end
+                    end
             end
             a.frame = a.frame + 1;
         end
