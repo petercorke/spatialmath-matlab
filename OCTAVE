@@ -69,3 +69,31 @@ error: mark_as_constructed: invalid object
 error: called from
     new at line 583 column 15
     mpower at line 260 column 15
+
+
+ ---------------------------------------
+ r = SO3
+ isa(r, 'SO3')
+
+ is false!
+
+ OK, it's using the static method
+
+ Maybe it doesnt know about static methods
+ ---------------------------------------
+
+ cd test
+
+ a = class1(1)
+ isa(a, 'class1')
+ is true
+
+
+ can't create a subclass of class1
+ ---------------------------------------
+ LIMITATION
+
+ doesn't know static methods from instance methods
+ constructor can't do arrays
+ method(obj), obj.method, obj.method() all give diferent results
+ 

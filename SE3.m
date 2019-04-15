@@ -215,9 +215,14 @@ classdef SE3 < SO3
                         end
                     elseif isa(a, 'SE3')
                         % (T)
-                        for i=1:length(a)
-                            obj(i).data = a(i).data;
-                        end                        
+                        % HACK
+                        if length(a) > 1
+                            error('constructor fails, can only handle scalar now');
+                        end
+                        %for i=1:length(a)
+                            %obj(i).data = a(i).data;
+                        %end                        
+                        obj.data = a.data;
                     elseif numcols(a) == 3
                         % SE3( xyz )
                         for i=1:length(a)
@@ -587,7 +592,8 @@ classdef SE3 < SO3
             %    set to zero and PSI is the sum (PHI+PSI).
             %
             % See also SO3.toeul, SE3.torpy, EUL2TR, TR2RPY.
-            out = obj.SO3.toeul(varargin{:});
+            out = SO3(obj).toeul(varargin{:});
+            %out = obj.SO3.toeul(varargin{:});
         end
         
         function out = torpy(obj, varargin)

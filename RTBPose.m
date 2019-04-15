@@ -726,7 +726,8 @@ classdef (Abstract) RTBPose
                 disp(' ');
             end
             
-            obj.render(inputname(1));  % the hard work done in render
+            %obj.render(inputname(1));  % the hard work done in render
+            render(obj, inputname(1));  % the hard work done in render
         end
         
         function disp(obj)

@@ -151,11 +151,12 @@ classdef SO3 < RTBPose
                 end
             elseif SE3.isa(a)
                 % from homogeneous transformation matrix, rotational part
-                for i=1:size(a, 3)
-                    x = a(1:3,1:3,i);
-                    assert(SO3.isa(x, 'valid'), 'SMTB:SO3.SO3:badarg', 'rotation submatrix is not in SO(3)');
-                    obj(i).data = x;
-                end
+                %for i=1:size(a, 3)
+                    %x = a(1:3,1:3,i);
+                    %assert(SO3.isa(x, 'valid'), 'SMTB:SO3.SO3:badarg', 'rotation submatrix is not in SO(3)');
+                    %obj(i).data = x;
+                %end
+                obj.data = a(1:3,1:3);
             end
         end
        
@@ -809,6 +810,7 @@ classdef SO3 < RTBPose
             %  - The first form is a fast, but incomplete, test for a rotation in SO(3).
             %
             % See also SE3.ISA, SE2.ISA, SO2.ISA.
+            fprintf('in SO3.isa\n');
             d = size(r);
             if ndims(r) >= 2
                 h = all(d(1:2) == [3 3]);
