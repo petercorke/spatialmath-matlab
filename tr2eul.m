@@ -47,6 +47,8 @@
 
 function euler = tr2eul(RR, varargin)
     
+    assert(isrot(RR) || ishomog(RR), 'SMTB:tr2eul:badarg', 'argument must be a 3x3 or 4x4 matrix');
+
     opt.deg = false;
     opt.flip = false;
     opt = tb_optparse(opt, varargin);

@@ -589,7 +589,7 @@ function tr2eul_test(tc)
     tc.verifyEqual(eul2r( tr2eul(R, 'deg'), 'deg'), R,'absTol',1e-10);
     
     %test for scalar input
-    verifyError(tc, @()tr2eul(1),'SMTB:SO3:convert:badarg');
+    verifyError(tc, @()tr2eul(1),'SMTB:tr2eul:badarg');
 
     % test flip
     eul = [-0.1 0.2 0.3];
