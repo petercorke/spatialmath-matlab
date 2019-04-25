@@ -51,12 +51,11 @@ function euler = tr2eul(RR, varargin)
     opt.flip = false;
     opt = tb_optparse(opt, varargin);
     
-    RR = SO3.convert(RR);
-    euler = zeros(length(RR),3);
+    euler = zeros(size(RR,3),3);
     
-    for i=1:length(RR)
+    for i=1:size(RR,3)
         
-        R = RR(i).R;
+        R = RR(:,:,i);
         
         % Method as per Paul, p 69.
         % euler = [phi theta psi]
