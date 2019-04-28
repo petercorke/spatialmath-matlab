@@ -396,7 +396,7 @@ classdef Twist
         
                 % V = -tw.v - tw.pitch * tw.w;
                 for i=1:length(tw)
-                    L(i) = Plucker('wv', tw(i).w, -tw(i).v - tw(i).pitch * tw(i).w);
+                    L(i) = Plucker([ -tw(i).v - tw(i).pitch * tw(i).w; tw(i).w] );
                 end
         end
         
