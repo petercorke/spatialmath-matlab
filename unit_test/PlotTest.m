@@ -202,3 +202,20 @@ function xyzlabel_test(tc)
     plot3(1, 2, 3)
     xyzlabel()
 end
+
+function plotvol_test(tc)
+    
+    % 2D cases
+    plotvol([2 3])
+    tc.verifyEqual(axis, [-2 2 -3 3]);
+    plotvol([2 3 4 5])
+    tc.verifyEqual(axis, [2 3 4 5]);
+    
+    % 3D cases
+    plotvol(3)
+    tc.verifyEqual(axis, 3*[-1 1 -1 1 -1 1]);
+    plotvol([1 2 3]);
+    tc.verifyEqual(axis, [-1 1 -2 2 -3 3]);
+    plotvol([1 2 3 4 5 6]);
+    tc.verifyEqual(axis, [1 2 3 4 5 6]);
+end
