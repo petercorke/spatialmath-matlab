@@ -34,7 +34,7 @@
 
 function f = chi2inv_rtb(confidence, n)
  
- assert(n == 2, 'chi2inv_rtb: only valid for 2DOF');
+ assert(n == 2, 'RTB:chi2inv_rtb:badarg', 'only valid for 2DOF');
  
  c = linspace(0,1,101);
 
