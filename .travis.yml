@@ -6,7 +6,7 @@ tex-config:
  - tex-scheme=small
  - push-type=none
  - build-pattern=doc/manual/spatialmath.tex
- - packages=times,graphicx,wrapfig,pdfpages,fancyhdr,textpos,mathptmx,anyfontsize,longtable,amsfonts,t1enc,booktabs,longtable,hyperref,color,sectsty,textcomp,parskip,titlesec,multicol,fancyvrb
+ - packages=times,graphicx,wrapfig,pdfpages,fancyhdr,textpos,mathptmx,anyfontsize,longtable,amsfonts,t1enc,booktabs,longtable,hyperref,color,sectsty,textcomp,parskip,titlesec,multicol,fancyvrb,etoolbox
 
 # install help2doc converter
 before_install:
@@ -20,7 +20,7 @@ script:
 after_success:
  # send to codecov
  - bash <(curl -s https://codecov.io/bash)
- - ls -R $(HOME)
+ - ls -R $HOME
  # create the LaTeX doco
  - help2doc -l --include *.m
  - mv all.tex doc/manual
