@@ -6,20 +6,23 @@ before_install:
   - mkdir bin
   - git clone https://github.com/petercorke/help2doc $HOME/bin
   - export PATH="$(dirname "$HOME/bin"):$PATH"
-# install tex docker
-tex-config:
-- tex-scheme=small
-- push-type=none
-- build-pattern=doc/manual/spatialmath.tex
-- packages=times,graphicx,wrapfig,pdfpages,fancyhdr,textpos,mathptmx,anyfontsize,longtable,amsfonts,t1enc,booktabs,longtable,hyperref,color,sectsty,textcomp,parskip,titlesec,multicol,fancyvrb
-install: source /dev/stdin <<< "$(curl -sL https://ssd.mathworks.com/supportfiles/matlab-runner/install)"
+
+
+install:
+ # install MATLAB unit test runner
+ - source /dev/stdin <<< "$(curl -sL https://ssd.mathworks.com/supportfiles/matlab-runner/install)"
+ # install tex docker
+ - tex-scheme=small
+ - push-type=none
+ - build-pattern=doc/manual/spatialmath.tex
+ - packages=times,graphicx,wrapfig,pdfpages,fancyhdr,textpos,mathptmx,anyfontsize,longtable,amsfonts,t1enc,booktabs,longtable,hyperref,color,sectsty,textcomp,parskip,titlesec,multicol,fancyvrb
 script:
  - matlab-runner -xi .git -xi doc -sd unit_test "addpath ..; RunAllTests"
 after_success:
+ # send to codecov
  - bash <(curl -s https://codecov.io/bash)
- build_texfiles:
+ # create the LaTeX doco
  - help2doc -l --include *.m
  - mv all.tex doc/manual
- build_doco:
  - docker pull strauman/travis-latexbuild:small # select small texlive scheme
-- docker run --mount src=$TRAVIS_BUILD_DIR/,target=/repo,type=bind strauman/travis-latexbuild:small # also it here
+ - docker run --mount src=$TRAVIS_BUILD_DIR/,target=/repo,type=bind strauman/travis-latexbuild:small # also it here
