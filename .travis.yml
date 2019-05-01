@@ -3,7 +3,7 @@ services: docker
 language: java
 
 tex-config:
- - tex-scheme=small
+ - tex-scheme=full
  - push-type=none
  - build-pattern=doc/manual/spatialmath.tex
  - packages=times,graphicx,wrapfig,pdfpages,fancyhdr,textpos,mathptmx,anyfontsize,longtable,amsfonts,t1enc,booktabs,longtable,hyperref,color,sectsty,textcomp,parskip,titlesec,multicol,fancyvrb,etoolbox
