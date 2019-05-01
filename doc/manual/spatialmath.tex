@@ -1,6 +1,9 @@
 \documentclass[a4paper,twoside]{report}
 
-\newcommand{\rtbyear}{2018}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\rtbyear}{2019}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \usepackage{times}
 \usepackage{graphicx}
@@ -56,7 +59,11 @@
 \titlespacing{\subsection}{0pt}{*0}{*0}
 \titlespacing{\subsubsection}{0pt}{*0}{*0}
 
-\input{release.tex}
+\renewcommand{\today}{\number\day \space%
+\ifcase \month \or January\or February\or March\or April\or May%
+\or June\or July\or August\or September\or October\or November\or December\fi, \number \year}
+\def\release{\input{../../RELEASE}}
+\def\reldate{\today}
 
 %\usepackage{multind}
 \usepackage{multicol}
@@ -94,7 +101,7 @@
 \textbf{Spatial Math}\\[5pt]
 \fontsize{45}{50}\selectfont
 \textbf{Toolbox} for MATLAB\textsuperscript{\textregistered}\\[12pt]
-Release 1
+Release \release
 
 \vspace*{18cm}
 \hfill\textbf{Peter Corke}\\[5pt]
