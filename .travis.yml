@@ -15,6 +15,7 @@ script:
  - help2doc -l --include *.m
  - mv all.tex doc/manual
    # Compiling only main.tex:
+ - docker run --mount src=$TRAVIS_BUILD_DIR/doc/manual,target=/usr/src/tex,type=bind dxjoke/tectonic-docker /bin/sh -c "tectonic -V"
  - docker run --mount src=$TRAVIS_BUILD_DIR/doc/manual,target=/usr/src/tex,type=bind dxjoke/tectonic-docker /bin/sh -c "tectonic spatialmath.tex"
  - mv manual/doc/spatialmath.pdf .
   # run the unit tests
