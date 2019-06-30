@@ -1,0 +1,274 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="1720030649" file="/Users/corkep/code/spatial-math/ToolboxPackagingConfiguration.prj" location="/Users/corkep/code/spatial-math" name="ToolboxPackagingConfiguration" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>Spatial Math Toolbox for MATLAB</param.appname>
+    <param.authnamewatermark>Peter Corke</param.authnamewatermark>
+    <param.email>rvc@petercorke.com</param.email>
+    <param.company />
+    <param.summary>Provide 2D and 3D spatial math primitives for MATLAB.</param.summary>
+    <param.description>This Toolbox contains functions and classes to represent orientation and pose in 2D and 3D (SO(2), SE(2), SO(3), SE(3)) as orthogonal and homogeneous transformation matrices, quaternions, twists, triple angles, and matrix exponentials. The Toolbox also provides functions for manipulating these datatypes, converting between them, composing them, transforming points and graphically displaying them.</param.description>
+    <param.screenshot>${PROJECT_ROOT}/doc/figs/icon.png</param.screenshot>
+    <param.version>1.0</param.version>
+    <param.output>${PROJECT_ROOT}/Spatial Math Toolbox for MATLAB.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.guid>cf2b1a79-17b4-4ce4-a6af-d2caf41ed3c2</param.guid>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+%
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+%
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+%
+resources/project/*
+.SimulinkProject/*
+_SimulinkProject/*
+resources/.Project/*
+resources/_Project/*
+**/*.prj
+**/.git
+.DS_Store
+.SO3.m.swp
+DHFactor.java
+SpatialMath.html
+ToolboxPackagingConfiguration.prj
+all.aux
+all.log
+all.out
+all.pdf
+all.tex
+anim2.gif
+anim2.mp4
+coverage.xml
+jacobdot.m
+jdotqdot.m
+
+zz.m
+*.tif
+.travis.yml
+.gitignore
+
+% folders
+resources
+test
+doc
+unit_test
+.travis</param.exclude.filters>
+    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
+    <param.examples />
+    <param.demosxml />
+    <param.apps>
+      <file>${PROJECT_ROOT}/Apps/Polynomialspirals.mlappinstall</file>
+      <file>${PROJECT_ROOT}/Apps/Triple angle visualizer.mlappinstall</file>
+    </param.apps>
+    <param.registered.apps />
+    <param.docs>${PROJECT_ROOT}/doc/info.xml</param.docs>
+    <param.getting.started.guide />
+    <param.matlabpath.excludes />
+    <param.javaclasspath.excludes />
+    <param.exported.on.package>false</param.exported.on.package>
+    <param.required.addons />
+    <param.matlab.project.id>eb5e8901-14c8-4511-b28c-c0acbff8ce77</param.matlab.project.id>
+    <param.matlab.project.name>Spatial Math Toolbox for MATLAB</param.matlab.project.name>
+    <param.release.start />
+    <param.release.end />
+    <param.release.current.only>false</param.release.current.only>
+    <param.compatiblity.windows>true</param.compatiblity.windows>
+    <param.compatiblity.macos>true</param.compatiblity.macos>
+    <param.compatiblity.linux>true</param.compatiblity.linux>
+    <param.compatiblity.matlabonline>true</param.compatiblity.matlabonline>
+    <param.installation.map />
+    <param.additional.sw.names />
+    <param.additional.sw.licenses />
+    <param.additional.sw.win.url />
+    <param.additional.sw.mac.url />
+    <param.additional.sw.linux.url />
+    <unset>
+      <param.company />
+      <param.version />
+      <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.exclude.pcodedmfiles />
+      <param.examples />
+      <param.demosxml />
+      <param.registered.apps />
+      <param.getting.started.guide />
+      <param.matlabpath.excludes />
+      <param.javaclasspath.excludes />
+      <param.exported.on.package />
+      <param.required.addons />
+      <param.release.start />
+      <param.release.end />
+      <param.release.current.only />
+      <param.compatiblity.windows />
+      <param.compatiblity.macos />
+      <param.compatiblity.linux />
+      <param.compatiblity.matlabonline />
+      <param.installation.map />
+      <param.additional.sw.names />
+      <param.additional.sw.licenses />
+      <param.additional.sw.win.url />
+      <param.additional.sw.mac.url />
+      <param.additional.sw.linux.url />
+    </unset>
+    <fileset.rootdir>
+      <file>${PROJECT_ROOT}</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}/Animate.m</file>
+      <file>${PROJECT_ROOT}/Apps</file>
+      <file>${PROJECT_ROOT}/CITATION</file>
+      <file>${PROJECT_ROOT}/CONTRIB</file>
+      <file>${PROJECT_ROOT}/DEPENDENCIES</file>
+      <file>${PROJECT_ROOT}/LICENSE</file>
+      <file>${PROJECT_ROOT}/PGraph.m</file>
+      <file>${PROJECT_ROOT}/Plucker.m</file>
+      <file>${PROJECT_ROOT}/Quaternion.m</file>
+      <file>${PROJECT_ROOT}/README.md</file>
+      <file>${PROJECT_ROOT}/RELEASE</file>
+      <file>${PROJECT_ROOT}/RTBPose.m</file>
+      <file>${PROJECT_ROOT}/SE2.m</file>
+      <file>${PROJECT_ROOT}/SE3.m</file>
+      <file>${PROJECT_ROOT}/SO2.m</file>
+      <file>${PROJECT_ROOT}/SO3.m</file>
+      <file>${PROJECT_ROOT}/SpatialAcceleration.m</file>
+      <file>${PROJECT_ROOT}/SpatialF6.m</file>
+      <file>${PROJECT_ROOT}/SpatialForce.m</file>
+      <file>${PROJECT_ROOT}/SpatialInertia.m</file>
+      <file>${PROJECT_ROOT}/SpatialM6.m</file>
+      <file>${PROJECT_ROOT}/SpatialMomentum.m</file>
+      <file>${PROJECT_ROOT}/SpatialVec6.m</file>
+      <file>${PROJECT_ROOT}/SpatialVelocity.m</file>
+      <file>${PROJECT_ROOT}/Twist.m</file>
+      <file>${PROJECT_ROOT}/UnitQuaternion.m</file>
+      <file>${PROJECT_ROOT}/about.m</file>
+      <file>${PROJECT_ROOT}/angdiff.m</file>
+      <file>${PROJECT_ROOT}/angvec2r.m</file>
+      <file>${PROJECT_ROOT}/angvec2tr.m</file>
+      <file>${PROJECT_ROOT}/arrow3.m</file>
+      <file>${PROJECT_ROOT}/chi2inv_rtb.m</file>
+      <file>${PROJECT_ROOT}/circle.m</file>
+      <file>${PROJECT_ROOT}/colnorm.m</file>
+      <file>${PROJECT_ROOT}/delta2tr.m</file>
+      <file>${PROJECT_ROOT}/e2h.m</file>
+      <file>${PROJECT_ROOT}/eul2jac.m</file>
+      <file>${PROJECT_ROOT}/eul2r.m</file>
+      <file>${PROJECT_ROOT}/eul2tr.m</file>
+      <file>${PROJECT_ROOT}/h2e.m</file>
+      <file>${PROJECT_ROOT}/helpinfo.xml</file>
+      <file>${PROJECT_ROOT}/homline.m</file>
+      <file>${PROJECT_ROOT}/homtrans.m</file>
+      <file>${PROJECT_ROOT}/ishomog.m</file>
+      <file>${PROJECT_ROOT}/ishomog2.m</file>
+      <file>${PROJECT_ROOT}/isrot.m</file>
+      <file>${PROJECT_ROOT}/isrot2.m</file>
+      <file>${PROJECT_ROOT}/isunit.m</file>
+      <file>${PROJECT_ROOT}/isvec.m</file>
+      <file>${PROJECT_ROOT}/lift23.m</file>
+      <file>${PROJECT_ROOT}/numcols.m</file>
+      <file>${PROJECT_ROOT}/numrows.m</file>
+      <file>${PROJECT_ROOT}/oa2r.m</file>
+      <file>${PROJECT_ROOT}/oa2tr.m</file>
+      <file>${PROJECT_ROOT}/plot2.m</file>
+      <file>${PROJECT_ROOT}/plot_arrow.m</file>
+      <file>${PROJECT_ROOT}/plot_box.m</file>
+      <file>${PROJECT_ROOT}/plot_circle.m</file>
+      <file>${PROJECT_ROOT}/plot_ellipse.m</file>
+      <file>${PROJECT_ROOT}/plot_homline.m</file>
+      <file>${PROJECT_ROOT}/plot_point.m</file>
+      <file>${PROJECT_ROOT}/plot_poly.m</file>
+      <file>${PROJECT_ROOT}/plot_ribbon.m</file>
+      <file>${PROJECT_ROOT}/plot_sphere.m</file>
+      <file>${PROJECT_ROOT}/plotvol.m</file>
+      <file>${PROJECT_ROOT}/r2t.m</file>
+      <file>${PROJECT_ROOT}/randinit.m</file>
+      <file>${PROJECT_ROOT}/rot2.m</file>
+      <file>${PROJECT_ROOT}/rotx.m</file>
+      <file>${PROJECT_ROOT}/roty.m</file>
+      <file>${PROJECT_ROOT}/rotz.m</file>
+      <file>${PROJECT_ROOT}/rpy2jac.m</file>
+      <file>${PROJECT_ROOT}/rpy2r.m</file>
+      <file>${PROJECT_ROOT}/rpy2tr.m</file>
+      <file>${PROJECT_ROOT}/rt2tr.m</file>
+      <file>${PROJECT_ROOT}/rvccheck.m</file>
+      <file>${PROJECT_ROOT}/skew.m</file>
+      <file>${PROJECT_ROOT}/skewa.m</file>
+      <file>${PROJECT_ROOT}/stlRead.m</file>
+      <file>${PROJECT_ROOT}/t2r.m</file>
+      <file>${PROJECT_ROOT}/tb_optparse.m</file>
+      <file>${PROJECT_ROOT}/tr2angvec.m</file>
+      <file>${PROJECT_ROOT}/tr2delta.m</file>
+      <file>${PROJECT_ROOT}/tr2eul.m</file>
+      <file>${PROJECT_ROOT}/tr2jac.m</file>
+      <file>${PROJECT_ROOT}/tr2rpy.m</file>
+      <file>${PROJECT_ROOT}/tr2rt.m</file>
+      <file>${PROJECT_ROOT}/tranimate.m</file>
+      <file>${PROJECT_ROOT}/tranimate2.m</file>
+      <file>${PROJECT_ROOT}/transl.m</file>
+      <file>${PROJECT_ROOT}/transl2.m</file>
+      <file>${PROJECT_ROOT}/trchain.m</file>
+      <file>${PROJECT_ROOT}/trchain2.m</file>
+      <file>${PROJECT_ROOT}/trexp.m</file>
+      <file>${PROJECT_ROOT}/trexp2.m</file>
+      <file>${PROJECT_ROOT}/trinterp.m</file>
+      <file>${PROJECT_ROOT}/trinterp2.m</file>
+      <file>${PROJECT_ROOT}/trlog.m</file>
+      <file>${PROJECT_ROOT}/trnorm.m</file>
+      <file>${PROJECT_ROOT}/trot2.m</file>
+      <file>${PROJECT_ROOT}/trotx.m</file>
+      <file>${PROJECT_ROOT}/troty.m</file>
+      <file>${PROJECT_ROOT}/trotz.m</file>
+      <file>${PROJECT_ROOT}/trplot.m</file>
+      <file>${PROJECT_ROOT}/trplot2.m</file>
+      <file>${PROJECT_ROOT}/trprint.m</file>
+      <file>${PROJECT_ROOT}/trprint2.m</file>
+      <file>${PROJECT_ROOT}/trscale.m</file>
+      <file>${PROJECT_ROOT}/unit.m</file>
+      <file>${PROJECT_ROOT}/vex.m</file>
+      <file>${PROJECT_ROOT}/vexa.m</file>
+      <file>${PROJECT_ROOT}/xyzlabel.m</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded />
+    <fileset.package />
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}" name="Spatial Math Toolbox for MATLAB.mltbx" optional="false">/Users/corkep/code/spatial-math/Spatial Math Toolbox for MATLAB.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2019a.app</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.14.4</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
