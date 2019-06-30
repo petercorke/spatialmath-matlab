@@ -748,6 +748,9 @@ function trchain_test(tc)
     
     syms q1 q2 q3 a1 a2 a3
     tc.verifyEqual( trchain('Rx(q1) Tx(a1) Ry(q2) Ty(a2) Rz(q3) Tz(a3)', [q1 q2 q3]), trotx(q1)*transl(a1,0,0)*troty(q2)*transl(0,a2,0)*trotz(q3)*transl(0,0,a3) );
+
+    syms q1(t) q2(t) q3(t) t a1 a2 a3
+    tc.verifyEqual( trchain('Rx(q1) Tx(a1) Ry(q2) Ty(a2) Rz(q3) Tz(a3)', [q1 q2 q3]), formula(trotx(q1)*transl(a1,0,0)*troty(q2)*transl(0,a2,0)*trotz(q3)*transl(0,0,a3)) );
 end
 
 
