@@ -18,5 +18,5 @@ results = runner.run(suite);
 assert(all(~[results.Failed]));
 
 % build an installable toolbox file
-cd ..
-matlab.addons.toolbox.packageToolbox('ToolboxPackagingConfiguration.prj')
+%cd ..
+%matlab.addons.toolbox.packageToolbox('ToolboxPackagingConfiguration.prj')

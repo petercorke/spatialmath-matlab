@@ -35,6 +35,6 @@ deploy:
   api_key: $GITRELEASE
   file:
     - robot.pdf
-    - "Spatial Math Toolbox for MATLAB.mltbx"
+#    - "Spatial Math Toolbox for MATLAB.mltbx"
   skip_cleanup: true
   draft: true 
