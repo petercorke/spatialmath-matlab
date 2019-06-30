@@ -2,26 +2,28 @@ sudo: required
 services: docker
 language: java
 
-
-# install help2doc converter
-before_install:
-  - git clone https://github.com/petercorke/help2doc $HOME/bin
-  - export PATH="$(dirname "$HOME/bin"):$PATH"
 install:
+ # install help2doc converter
+ - git clone https://github.com/petercorke/help2doc $HOME/bin
+ - export PATH="$(dirname "$HOME/bin"):$PATH"
  # install MATLAB unit test runner
  - source /dev/stdin <<< "$(curl -sL https://ssd.mathworks.com/supportfiles/matlab-runner/install)"
+
 script:
-  # create the PDF doco, put into top level folder
- - help2doc -l --include *.m
- - mv all.tex doc/manual
-   # Compiling only main.tex:
- - docker run --mount src=$TRAVIS_BUILD_DIR/doc/manual,target=/usr/src/tex,type=bind dxjoke/tectonic-docker /bin/sh -c "tectonic -V"
- - docker run --mount src=$TRAVIS_BUILD_DIR/doc/manual,target=/usr/src/tex,type=bind dxjoke/tectonic-docker /bin/sh -c "tectonic spatialmath.tex"
- - mv manual/doc/spatialmath.pdf .
-  # run the unit tests
+ # run the unit tests
  - matlab-runner -xi .git -xi doc -sd unit_test "addpath ..; RunAllTests"
+
 after_success:
  # send to codecov
  - bash <(curl -s https://codecov.io/bash)
- - ls -R $HOME
+ # create the LaTeX code
+ - help2doc -l --include *.m
+ - mv all.tex doc/manual
+ # create the release file
+ - printf '\\def\\release{%s}\n' `cat ../../../RELEASE` > release.tex
+ - printf '\\def\\reldate{%s}\n' "`date '+%B %Y'`" >> release.tex
+ - mv release.tex doc/manual
+ # Compiling only main.tex:
+ - docker run --mount src=$TRAVIS_BUILD_DIR/doc/manual,target=/usr/src/tex,type=bind dxjoke/tectonic-docker /bin/sh -c "tectonic spatialmath.tex"
+ - mv manual/doc/spatialmath.pdf .
  
