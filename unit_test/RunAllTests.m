@@ -16,3 +16,7 @@ results = runner.run(suite);
 
 % Assert no tests failed.
 assert(all(~[results.Failed]));
+
+% build an installable toolbox file
+cd ..
+matlab.addons.toolbox.packageToolbox('ToolboxPackagingConfiguration.prj')
