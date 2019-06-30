@@ -13,15 +13,14 @@ before_script:
 ## build the doco PDF and place it in the src folder so it gets shipped to MATLAB cloud
  # create the LaTeX code
  - help2doc -l --include *.m
- - mv all.tex doc/manual
  # create the release file
  - printf '\\def\\release{%s}\n' `cat ../../../RELEASE` > release.tex
  - printf '\\def\\reldate{%s}\n' "`date '+%B %Y'`" >> release.tex
- - mv release.tex doc/manual
+ - mv all.tex release.tex doc/manual
  # Compile all the LaTex code
  - docker run --mount src=$TRAVIS_BUILD_DIR/doc/manual,target=/usr/src/tex,type=bind dxjoke/tectonic-docker /bin/sh -c "tectonic spatialmath.tex"
  # copy to src folder
- - mv manual/doc/spatialmath.pdf .
+ - mv doc/manual/spatialmath.pdf .
 
 script:
  # run the unit tests on MATLAB cloud
