@@ -62,8 +62,10 @@
 \renewcommand{\today}{\number\day \space%
 \ifcase \month \or January\or February\or March\or April\or May%
 \or June\or July\or August\or September\or October\or November\or December\fi, \number \year}
-\def\release{\input{../../RELEASE}}
-\def\reldate{\today}
+\IfFileExists{../../RELEASE}{\def\release{\input{../../RELEASE}}
+\def\reldate{\today}}{\input{release.tex}}
+
+
 
 %\usepackage{multind}
 \usepackage{multicol}
@@ -91,6 +93,7 @@
 \def\Mlab{MATLAB}
 
 \begin{document}
+\typeout{**Starting}
 \setlength{\TPHorizModule}{1cm}
 \setlength{\TPVertModule}{1cm}
 
@@ -109,6 +112,7 @@ Release \release
 \thispagestyle{empty}
 \newpage
 %%%%%%%%%%%%%%%%% INSIDE FRONT COVER
+\typeout{**Inside front cover}
 \vspace*{\fill}
 \begin{tabular}{ll}
 Release & \release \\
@@ -124,6 +128,7 @@ peter.i.corke$@$gmail.com\\
 \url{http://www.petercorke.com}
 \vspace*{\fill}
 \setlength{\fboxsep}{10pt}%
+\typeout{done}
 
 %%%%%%%%%%%%%%%% CONTENT
 \pagestyle{headings}        % Gives page headings at top of page
@@ -133,6 +138,7 @@ peter.i.corke$@$gmail.com\\
 \setcounter{section}{0}
 \addcontentsline{toc}{section}{Preface}
 \chapter*{Preface}
+\typeout{**Preface front cover}
 \pagestyle{fancyplain}
 \begin{wrapfigure}{l}{4cm}
 \vspace{-2ex}\includegraphics[width=3.5cm]{figs/frontcover.pdf}
@@ -323,7 +329,9 @@ toolbox.  You will, of course, be suitably acknowledged.
 %\settocdepth{section}
 \newpage
 \chapter{Functions and classes}
+\typeout{**Before include}
 \IfFileExists{all.tex}{\input{all}}{} 
+\typeout{**After include}
 
 \bibliographystyle{ieeetr}
 \bibliography{strings,robot,control,dynamics,kinematics,force,grind,publist,software}
