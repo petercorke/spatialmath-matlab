@@ -76,6 +76,7 @@ q2 =
 
 ## Online resources:
 
+* [Tutorial style exampes](https://github.com/petercorke/spatial-math/wiki)
 * [Home page](http://www.petercorke.com)
 * [Robotics, Vision & Control (book)](http://petercorke.com/wordpress/rvc)
 * [Discussion group](http://groups.google.com/group/robotics-tool-box?hl=en)
