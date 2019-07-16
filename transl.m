@@ -74,7 +74,7 @@ function [t1,t2,t3] = transl(x, y, z)
                 end
                     
             end
-        elseif length(x) == 3
+        elseif numel(x) == 3
             % transl(P) -> T
             t = x(:);
             t1 =    [eye(3)          t(:);
