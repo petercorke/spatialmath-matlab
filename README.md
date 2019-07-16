@@ -69,7 +69,7 @@ q2 =
 
 ## What's new
 
-* Continuous integration using [Travis CI](travis-ci.com) and [codecov](codecov.io)
+* Continuous integration using [Travis CI](https://travis-ci.com/petercorke/spatial-math) and [codecov](https://codecov.io/gh/petercorke/spatial-math)
 * Support for spatial vector notation (Featherstone's 6D vectors)
 * `prod()` method for all `RTBPose` subclasses and `Twist`
 * Factored out of the [Robotics Toolbox for MATLAB](https://github.com/petercorke/robotics-toolbox-matlab).  RTB now contains only robotics specific code, eg. for manipulator arms and mobile robots.
