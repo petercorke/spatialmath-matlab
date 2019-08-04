@@ -261,7 +261,7 @@ function ellipse2d_test(tc)
     plot_ellipse(E, [0 8 0.5], 'edgecolor', 'r', 'fillcolor', 'c', 'alpha', 0.5, 'LineWidth', 3);
     plot_ellipse(E, [4 8], 'b--', 'LineWidth', 3);
     plot_ellipse(E, 'confidence', 0.5);
-
+    
     h = plot_ellipse(E);
     plot_ellipse(E, [1 1], 'alter', h);
     tc.verifyError(@() plot_ellipse(E, 'alter', 7), 'SMTB:plot_ellipse:badarg');

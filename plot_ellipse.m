@@ -37,10 +37,11 @@
 % - The ellipse is added to the current plot irrespective of hold status.
 % - Shadow option only valid for ellipsoids.
 % - If a confidence interval is given then E is interpretted as a covariance
-%   matrix and the ellipse size is computed using an approximate inverse 
-%   chi-squared function.
+%   matrix and the ellipse size is computed using an inverse chi-squared function.
+%   This requires CHI2INV in the Statistics and Machine Learning Toolbox or
+%   CHI2INV_RTB from the Robotics Toolbox for MATLAB.
 %
-% See also PLOT_ELLIPSE_INV, PLOT_CIRCLE, PLOT_BOX, PLOT_POLY, CH2INV_RTB.
+% See also PLOT_ELLIPSE_INV, PLOT_CIRCLE, PLOT_BOX, PLOT_POLY, CH2INV.
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %
@@ -89,8 +90,14 @@ function handles = plot_ellipse(E, varargin)
     % process the probability
     if isempty(opt.confidence)
         s = 1;
-    else 
-        s = sqrt(chi2inv_rtb(opt.confidence, 2));
+    else
+        if exist('chi2inv') == 2
+            s = sqrt(chi2inv(opt.confidence, 2));
+        elseif exist('chi2inv_rtb') == 2
+            s = sqrt(chi2inv_rtb(opt.confidence, 2));
+        else
+            error('SMTB:missingfunc', 'Requires Stats Toolbox or RTB to be installed');
+        end
     end
     
     if length(arglist) > 0 && isnumeric(arglist{1})
