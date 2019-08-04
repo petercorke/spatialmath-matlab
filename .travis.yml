@@ -1,13 +1,14 @@
 sudo: required
 services: docker
 language: java
+dist: xenial
 
 install:
  # install help2doc converter
  - git clone https://github.com/petercorke/help2doc $HOME/bin
  - export PATH="$(dirname "$HOME/bin"):$PATH"
  # install MATLAB unit test runner
- - source /dev/stdin <<< "$(curl -sL https://ssd.mathworks.com/supportfiles/matlab-runner/install)"
+ - curl -sL https://storage.googleapis.com/matlabimagesus/public/install.sh | sudo -E bash
 
 before_script:
 ## build the doco PDF and place it in the src folder so it gets shipped to MATLAB cloud
@@ -24,7 +25,7 @@ before_script:
 
 script:
  # run the unit tests on MATLAB cloud
- - matlab-runner -xi .git -xi doc -sd unit_test "addpath ..; RunAllTests"
+ - matlab -sd unit_test -batch "RunAllTests"
 
 after_success:
  # send to codecov
