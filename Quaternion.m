@@ -124,6 +124,8 @@ classdef Quaternion
                 s = s(:).';
                 q.s = s(1);
                 q.v = s(2:4);
+            elseif isrot(s) || isa(s, 'SO3')
+                error('SMTB:Quaternion:badarg', 'regular Quaternion is not equivalent to a rotation, use UnitQuaternion instead')
             else
                 error ('SMTB:Quaternion:badarg', 'bad argument to quaternion constructor');
             end
