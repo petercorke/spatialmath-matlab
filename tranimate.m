@@ -173,7 +173,7 @@ function tranimate(P2, varargin)
     end
     delete(t)
         if opt.cleanup
-            delete(hg);
+            delete(ud.hg);
         end
 end
 

@@ -169,7 +169,7 @@ function tranimate2(P2, varargin)
         ud.anim.close()
     end
     if opt.cleanup
-        delete(hg);
+        delete(ud.hg);
     end
 end
 
