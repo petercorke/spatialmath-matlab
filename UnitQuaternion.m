@@ -573,7 +573,7 @@ classdef UnitQuaternion < Quaternion
                 
                 qq = q1 * inv(q2);
             else
-                nerror('SMTB:UnitQuaternion:badarg', 'quaternion divide /: incorrect RH operands');
+                error('SMTB:UnitQuaternion:badarg', 'quaternion divide /: incorrect RH operands');
             end
         end
 
