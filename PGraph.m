@@ -210,16 +210,16 @@ classdef PGraph < matlab.mixin.Copyable
         %%%% GRAPH MAINTENANCE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        
         function v = add_node(g, coord, varargin)
             %PGraph.add_node Add a node
             %
-            % V = G.add_node(X) adds a node/vertex with coordinate X (Dx1) and
+            % V = G.add_node(X, OPTIONS) adds a node/vertex with coordinate X (Dx1) and
             % returns the integer node id V.
             %
-            % V = G.add_node(X, VFROM) as above but connected by a directed edge from vertex VFROM with cost equal to the distance between the vertices.
-            %
-            % V = G.add_node(X, V2, C) as above but the added edge has cost C.
+            % Options:
+            % 'name',N    Assign a string name N to this vertex
+            % 'from',V    Create a directed edge from vertex V with cost equal to the distance between the vertices.
+            % 'cost',C    If an edge is created use cost C
             %
             % Notes::
             % - Distance is computed according to the metric specified in the
@@ -233,6 +233,7 @@ classdef PGraph < matlab.mixin.Copyable
             
             opt.from = [];
             opt.name = [];
+            opt.cost = NaN;
             
             opt = tb_optparse(opt, varargin);
             
@@ -248,7 +249,10 @@ classdef PGraph < matlab.mixin.Copyable
             
             % optionally add an edge
             if ~isempty(opt.from)
-                g.add_edge(vfrom, v, opt.from);
+                if isnan(opt.cost)
+                    opt.cost = g.distance(v, opt.from);
+                end
+                g.add_edge(opt.from, v, opt.cost);
             end
             
             if ~isempty(opt.name)
