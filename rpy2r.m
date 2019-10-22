@@ -83,7 +83,7 @@ function R = rpy2r(roll, varargin)
         case {'xyz', 'arm'}
             % XYZ order
             if numrows(roll) == 1
-                R = rotx(yaw) * roty(pitch) * rotz(roll);
+                R = rotx(roll) * roty(pitch) * rotz(yaw);
             else
                 R = zeros(3,3,numrows(roll));
                 for i=1:numrows(roll)
