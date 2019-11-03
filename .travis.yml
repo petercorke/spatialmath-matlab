@@ -1,3 +1,10 @@
+## build Spatial Math Toolbox for MATLAB
+#  ____              _   _       _ __  __       _   _       _____           _ _               
+# / ___| _ __   __ _| |_(_) __ _| |  \/  | __ _| |_| |__   |_   _|__   ___ | | |__   _____  __
+# \___ \| '_ \ / _` | __| |/ _` | | |\/| |/ _` | __| '_ \    | |/ _ \ / _ \| | '_ \ / _ \ \/ /
+#  ___) | |_) | (_| | |_| | (_| | | |  | | (_| | |_| | | |   | | (_) | (_) | | |_) | (_) >  < 
+# |____/| .__/ \__,_|\__|_|\__,_|_|_|  |_|\__,_|\__|_| |_|   |_|\___/ \___/|_|_.__/ \___/_/\_\
+
 sudo: required
 services: docker
 language: java
@@ -15,16 +22,17 @@ before_script:
  # create the LaTeX code
  - help2doc -l --include *.m
  # create the release file
- - printf '\\def\\release{%s}\n' `cat ../../../RELEASE` > release.tex
+ - printf '\\def\\release{%s}\n' `cat ./RELEASE` > release.tex
  - printf '\\def\\reldate{%s}\n' "`date '+%B %Y'`" >> release.tex
  - mv all.tex release.tex doc/manual
  # Compile all the LaTex code
+ # see https://hub.docker.com/r/dxjoke/tectonic-docker
  - docker run --mount src=$TRAVIS_BUILD_DIR/doc/manual,target=/usr/src/tex,type=bind dxjoke/tectonic-docker /bin/sh -c "tectonic spatialmath.tex"
  # copy to src folder
- - mv doc/manual/spatialmath.pdf .
+ - mv doc/manual/spatialmath.pdf spatialmath-`cat ./RELEASE`.pdf
 
 script:
- # run the unit tests on MATLAB cloud
+ # run the unit tests with MATLAB on Travis cloud
  - matlab -sd unit_test -batch "RunAllTests"
 
 after_success:
@@ -35,7 +43,7 @@ deploy:
   provider: releases
   api_key: $GITRELEASE
   file:
-    - spatialmath.pdf
+    - spatialmath-`cat ./RELEASE`.pdf
 #    - "Spatial Math Toolbox for MATLAB.mltbx"
   skip_cleanup: true
   draft: true 
