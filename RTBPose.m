@@ -555,10 +555,12 @@ classdef (Abstract) RTBPose
             %  - P can be instances of SO3 or SE3.
             %
             % See also RTBPose.print, trprint.
+            args = {varargin{:}, 'label', inputname(1)};
+            
             if nargout == 0
-                print(obj, varargin{:});
+                print(obj, args{:});
             else
-                out = print(obj, varargin{:});
+                out = print(obj, args{:});
             end
         end
         
@@ -763,15 +765,20 @@ classdef (Abstract) RTBPose
             %   type.
             %
             % See also trprint, trprint2.
+            if isa(obj, 'SO2') || isa(obj, 'SE2')
+                printfn = @trprint2;
+            else
+                printfn = @trprint;
+            end
             if nargout == 0
                 for T=obj
-                    trprint(T.T, varargin{:});
+                    printfn(double(T), varargin{:});
                 end
             else
                 out = '';
                 
                 for T=obj
-                    out = strvcat(out, trprint(T.T, varargin{:}));
+                    out = strvcat(out, printfn(double(T), varargin{:}));
                 end
             end
         end

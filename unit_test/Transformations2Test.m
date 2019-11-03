@@ -323,7 +323,7 @@ function trprint2_test(tc)
     tc.verifyTrue(isa(s, 'char') );
     tc.verifyEqual(size(s,1), 1);
     
-    s = trprint(a);
+    s = trprint2(a);
     tc.verifyClass(s, 'char');
     tc.verifyEqual(size(s,1), 1);
     
@@ -334,7 +334,7 @@ function trprint2_test(tc)
     a = cat(3, a, a, a);
     trprint2(a);
     
-    s = evalc( 'trprint(a)' );
+    s = evalc( 'trprint2(a)' );
     tc.verifyTrue(isa(s, 'char') );
     tc.verifyEqual(size(s,1), 1);
     

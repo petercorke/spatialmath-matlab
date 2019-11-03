@@ -957,6 +957,18 @@ function trprint_test(tc)
     trprint(a, 'angvec', 'radian');
     trprint(a, 'angvec', 'radian', 'fmt', '%g');
     trprint(a, 'angvec', 'radian', 'fmt', '%g', 'label', 'bob');
+    
+    % write to a file
+    f = fopen('test.txt', 'w');
+    trprint(a, 'fid', f);
+    fclose(f);
+    % read it back
+    f = fopen('test.txt', 'r');
+    s2 = fread(f, '*char');
+    fclose(f);
+    delete 'test.txt';
+    tc.verifyTrue( all(s(:) == s2) );
+    
 end
 
 

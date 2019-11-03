@@ -198,10 +198,10 @@ function display_test(tc)
     R = SO2( 0.3 );
     
     R.print
-    trprint(R)   % old style syntax
+    trprint2(R)   % old style syntax
     
     R.plot
-    trplot(R)   % old style syntax
+    trplot2(R)   % old style syntax
     
     R2 = SO2(0.6);
     R.animate

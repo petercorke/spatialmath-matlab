@@ -8,7 +8,8 @@
 %
 % S = TRPRINT(T, OPTIONS) as above but returns the string.
 %
-% TRPRINT T  is the command line form of above, and displays in RPY format.
+% TRPRINT T OPTIONS is the command line form of above.
+
 %
 % Options::
 % 'rpy'        display with rotation in ZYX roll/pitch/yaw angles (default)
@@ -19,6 +20,7 @@
 % 'radian'     display angle in radians (default is degrees)
 % 'fmt', f     use format string f for all numbers, (default %g)
 % 'label',l    display the text before the transform
+% 'fid',F      send text to the file with file identifier F
 %
 % Examples::
 %        >> trprint(T2)
@@ -26,6 +28,9 @@
 %
 %        >> trprint(T1, 'label', 'A')
 %               A:t = (0,0,0), RPY/zyx = (-0,0,-0) deg
+%
+%       >> trprint B euler
+%       t = (0.629, 0.812, -0.746), EUL = (125, 71.5, 85.7) deg
 %
 % Notes::
 % - If the 'rpy' option is selected, then the particular angle sequence can be
@@ -59,18 +64,24 @@
 
 function out = trprint(T, varargin)
     
-    if ischar(T)
-        % command form: trprint T
-        trprint( evalin('caller', T) );
-        return;
-    end
-
     opt.fmt = [];
     opt.mode = {'rpy', 'euler', 'angvec'};
     opt.radian = false;
-    opt.label = '';
+    opt.label = [];
+    opt.fid = 1;
 
     [opt,args] = tb_optparse(opt, varargin);
+    
+    if ischar(T)
+        % command form: trprint T args
+        opt.label = T;
+        trprint( double(evalin('caller', T)), 'setopt', opt );
+        return;
+    end
+    
+    if isempty(opt.label)
+        opt.label = inputname(1);
+    end
 
     s = '';
 
@@ -92,7 +103,9 @@ function out = trprint(T, varargin)
 
     % if no output provided then display it
     if nargout == 0
-        disp(s);
+        for row=s'
+            fprintf(opt.fid, '%s\n', row);
+        end
     else
         out = s;
     end
@@ -106,7 +119,7 @@ function s = tr2s(T, opt, varargin)
         s = '';
     end
     if ~isrot(T)
-        s = strcat(s, sprintf('t = (%s),', vec2s(opt.fmt, transl(T)')));
+        s = [s, sprintf('t = (%s),', vec2s(opt.fmt, transl(T)'))];
     end
 
     % print the angular part in various representations
