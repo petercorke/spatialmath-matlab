@@ -10,6 +10,7 @@
 % - Differs from MATLAB builtin function ISVECTOR which returns true
 %   for the case of a scalar, ISVEC does not.
 % - Gives same result for row- or column-vector, ie. 3x1 or 1x3 gives true.
+% - Works for a symbolic math symfun.
 %
 % See also ISHOMOG, ISROT.
 
@@ -40,6 +41,11 @@ function h = isvec(v, l)
     if nargin == 1
             l = 3;
     end
-    d = size(v);
-    h = logical( length(d) == 2 && min(d) == 1 && numel(v) == l );
+    if isa(v, 'symfun')
+        h = logical( length(formula(v)) == l);
+    else
+        d = size(v);
+        h = logical( length(d) == 2 && min(d) == 1 && numel(v) == l );
+    end
+end
 
