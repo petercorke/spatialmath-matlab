@@ -52,6 +52,8 @@
 %
 % See also TRPLOT.
 
+%## 2d homogeneous graphics
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

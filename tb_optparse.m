@@ -76,6 +76,8 @@
 % - Any input argument or element of the opt struct can be a string instead
 %   of a char array.
 
+%## utility
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

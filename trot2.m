@@ -10,6 +10,8 @@
 %
 % See also rot2, transl2, ishomog2, trplot2, trotx, troty, trotz, SE2.
 
+%## 2d homogeneous rotation
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

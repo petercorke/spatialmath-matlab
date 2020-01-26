@@ -17,6 +17,8 @@
 %
 % See also RT2TR, R2T, T2R.
 
+%## 2d 3d homogeneous rotation translation
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

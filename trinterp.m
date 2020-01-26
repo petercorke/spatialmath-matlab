@@ -24,6 +24,8 @@
 %
 % See also TRINTERP2, CTRAJ, SE3.interp, UnitQuaternion, TPOLY, LSPB.
 
+%## 3d homogeneous trajectory
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

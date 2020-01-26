@@ -10,6 +10,8 @@
 %
 % See also rotx, troty, trotz, trot2, SE3.Rx.
 
+%## 3d rotation
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

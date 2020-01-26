@@ -70,6 +70,8 @@
 %   'thick', 5.
 % - The 'arrow' option requires https://www.mathworks.com/matlabcentral/fileexchange/14056-arrow3
 
+%## 3d homogeneous graphics
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

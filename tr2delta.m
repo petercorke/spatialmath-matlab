@@ -22,6 +22,8 @@
 %
 % See also DELTA2TR, SKEW, SE3.todelta.
 
+%## 3d differential homogeneous
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

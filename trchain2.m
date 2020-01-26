@@ -40,6 +40,8 @@
 %
 % See also trchain2, trotx, troty, trotz, transl, SerialLink.trchain, ETS.
 
+%## 2d homogeneous 
+
 
 % Copyright (C) 1993-2017, by Peter I. Corke
 %

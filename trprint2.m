@@ -22,6 +22,9 @@
 %
 % See also TRPRINT.
 
+%## 2d homogeneous 
+
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

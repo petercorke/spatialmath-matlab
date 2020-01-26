@@ -39,6 +39,9 @@
 %
 % See also ANGVEC2R, TRLOG, TREXP2, SKEW, SKEWA, Twist.
 
+%## 3d homogeneous differential
+
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

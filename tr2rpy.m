@@ -32,6 +32,8 @@
 %
 % See also  rpy2tr, tr2eul.
 
+%## 3d rotation homogeneous
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

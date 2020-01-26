@@ -23,6 +23,9 @@
 %
 % See also TRINTERP, SE3.interp, UnitQuaternion, TPOLY, LSPB.
 
+%## 2d homogeneous trajectory
+
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).

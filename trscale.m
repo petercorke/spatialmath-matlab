@@ -6,9 +6,11 @@
 % z-directions.
 %
 % Note::
-% - This matrix does not belong to SE(3) and should not be compounded with
-%   any SE(3) matrix.
+% - This matrix does not belong to SE(3) and if compounded with
+%   any SE(3) matrix the result will not be in SE(3).
 %
+
+%## 3d homogeneous 
 
 % Copyright (C) 1993-2019 Peter I. Corke
 %

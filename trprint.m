@@ -39,6 +39,8 @@
 %
 % See also TR2EUL, TR2RPY, TR2ANGVEC.
 
+%## 3d homogeneous 
+
 % Copyright (C) 1993-2019 Peter I. Corke
 %
 % This file is part of The Spatial Math Toolbox for MATLAB (SMTB).
