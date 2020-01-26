@@ -44,6 +44,6 @@ deploy:
   api_key: $GITRELEASE
   file:
     - spatialmath-`cat ./RELEASE`.pdf
-#    - "Spatial Math Toolbox for MATLAB.mltbx"
+    - "Spatial Math Toolbox for MATLAB.mltbx"
   skip_cleanup: true
-  draft: true 
+  overwrite: true

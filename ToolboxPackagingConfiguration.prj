@@ -1,12 +1,12 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="1720030649" file="/Users/corkep/code/spatial-math/ToolboxPackagingConfiguration.prj" location="/Users/corkep/code/spatial-math" name="ToolboxPackagingConfiguration" target="target.toolbox" target-name="Package Toolbox">
+  <configuration file="/Users/corkep/code/spatial-math/ToolboxPackagingConfiguration.prj" location="/Users/corkep/code/spatial-math" name="ToolboxPackagingConfiguration" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Spatial Math Toolbox for MATLAB</param.appname>
-    <param.authnamewatermark>Peter Corke</param.authnamewatermark>
-    <param.email>rvc@petercorke.com</param.email>
+    <param.authnamewatermark />
+    <param.email />
     <param.company />
-    <param.summary>Provide 2D and 3D spatial math primitives for MATLAB.</param.summary>
-    <param.description>This Toolbox contains functions and classes to represent orientation and pose in 2D and 3D (SO(2), SE(2), SO(3), SE(3)) as orthogonal and homogeneous transformation matrices, quaternions, twists, triple angles, and matrix exponentials. The Toolbox also provides functions for manipulating these datatypes, converting between them, composing them, transforming points and graphically displaying them.</param.description>
-    <param.screenshot>${PROJECT_ROOT}/doc/figs/icon.png</param.screenshot>
+    <param.summary />
+    <param.description>blah blab</param.description>
+    <param.screenshot />
     <param.version>1.0</param.version>
     <param.output>${PROJECT_ROOT}/Spatial Math Toolbox for MATLAB.mltbx</param.output>
     <param.products.name />
@@ -42,9 +42,15 @@ resources/_Project/*
 **/.git
 .DS_Store
 .SO3.m.swp
+.gitignore
+.travis
+.travis.yml
+.travis/tex-config.ini
 DHFactor.java
+PGraph.m~
+SMPackage.prj
+Spatial Math Toolbox for MATLAB.mltbx
 SpatialMath.html
-ToolboxPackagingConfiguration.prj
 all.aux
 all.log
 all.out
@@ -53,29 +59,457 @@ all.tex
 anim2.gif
 anim2.mp4
 coverage.xml
+doc
+doc/.DS_Store
+doc/RELEASE
+doc/figs
+doc/figs/icon.png
+doc/figs/tranimate.gif
+doc/info
+doc/info/acknowledgements.html
+doc/info/icons
+doc/info/icons/bullet_orange.gif
+doc/info/icons/more_arrows.gif
+doc/info/introduction.html
+doc/info/license.html
+doc/info/release.html
+doc/info/robot_product_page.html
+doc/info/style.css
+doc/manual
+doc/manual/.DS_Store
+doc/manual/Makefile
+doc/manual/all.tex
+doc/manual/figs
+doc/manual/figs/CT-02-02-eps-converted-to.pdf
+doc/manual/figs/CT-02-02.eps
+doc/manual/figs/CT-02-03-eps-converted-to.pdf
+doc/manual/figs/CT-02-03.eps
+doc/manual/figs/frontcover.pdf
+doc/manual/figs/frontcover1.pdf
+doc/manual/figs/plot3d.pdf
+doc/manual/frontcover.eps
+doc/manual/frontcover.m
+doc/manual/frontcover.pdf
+doc/manual/right.ist
+doc/manual/spatialmath.aux
+doc/manual/spatialmath.log
+doc/manual/spatialmath.out
+doc/manual/spatialmath.pdf
+doc/manual/spatialmath.tex
+doc/manual/spatialmath.toc
+doc/manual/texput.log
+doc/manual/titlepage.pdf
+doc/mkdocs
+doc/mkdocs/.DS_Store
+doc/mkdocs/docs
+doc/mkdocs/docs/SE3.md
+doc/mkdocs/docs/UnitQuaternion.md
+doc/mkdocs/docs/about.md
+doc/mkdocs/docs/anim2.gif
+doc/mkdocs/docs/anim3d-1.gif
+doc/mkdocs/docs/api.md
+doc/mkdocs/docs/class.md
+doc/mkdocs/docs/frame2d-1.png
+doc/mkdocs/docs/frame2d-2.png
+doc/mkdocs/docs/frame2d-3.png
+doc/mkdocs/docs/frame2d-4.png
+doc/mkdocs/docs/frame2d-5.png
+doc/mkdocs/docs/frame3d-1.png
+doc/mkdocs/docs/index.md
+doc/mkdocs/docs/matrix.md
+doc/mkdocs/docs/other.md
+doc/mkdocs/docs/tr2angvec.md
+doc/mkdocs/docs/tr2delta.md
+doc/mkdocs/docs/tr2eul.md
+doc/mkdocs/docs/tr2jac.md
+doc/mkdocs/docs/tr2rpy.md
+doc/mkdocs/docs/tr2rt.md
+doc/mkdocs/docs/tranimate.md
+doc/mkdocs/docs/tranimate2.md
+doc/mkdocs/docs/transl.md
+doc/mkdocs/docs/transl2.md
+doc/mkdocs/docs/trchain.md
+doc/mkdocs/docs/trchain2.md
+doc/mkdocs/docs/trexp.md
+doc/mkdocs/docs/trexp2.md
+doc/mkdocs/docs/trinterp.md
+doc/mkdocs/docs/trinterp2.md
+doc/mkdocs/docs/trlog.md
+doc/mkdocs/docs/trnorm.md
+doc/mkdocs/docs/trot2.md
+doc/mkdocs/docs/trotx.md
+doc/mkdocs/docs/troty.md
+doc/mkdocs/docs/trotz.md
+doc/mkdocs/docs/trplot.md
+doc/mkdocs/docs/trplot2.md
+doc/mkdocs/docs/trprint.md
+doc/mkdocs/docs/trprint2.md
+doc/mkdocs/docs/trscale.md
+doc/mkdocs/docs/zz.gif
+doc/mkdocs/docs/zz.mp4
+doc/mkdocs/mkdocs.yml
+doc/mkdocs/site
+doc/mkdocs/site/.DS_Store
+doc/mkdocs/site/404.html
+doc/mkdocs/site/SE3
+doc/mkdocs/site/SE3/index.html
+doc/mkdocs/site/UnitQuaternion
+doc/mkdocs/site/UnitQuaternion/index.html
+doc/mkdocs/site/about
+doc/mkdocs/site/about/index.html
+doc/mkdocs/site/anim2.gif
+doc/mkdocs/site/api
+doc/mkdocs/site/api/index.html
+doc/mkdocs/site/class
+doc/mkdocs/site/class/index.html
+doc/mkdocs/site/css
+doc/mkdocs/site/css/theme.css
+doc/mkdocs/site/css/theme_extra.css
+doc/mkdocs/site/fonts
+doc/mkdocs/site/fonts/fontawesome-webfont.eot
+doc/mkdocs/site/fonts/fontawesome-webfont.svg
+doc/mkdocs/site/fonts/fontawesome-webfont.ttf
+doc/mkdocs/site/fonts/fontawesome-webfont.woff
+doc/mkdocs/site/img
+doc/mkdocs/site/img/favicon.ico
+doc/mkdocs/site/index.html
+doc/mkdocs/site/js
+doc/mkdocs/site/js/jquery-2.1.1.min.js
+doc/mkdocs/site/js/modernizr-2.8.3.min.js
+doc/mkdocs/site/js/theme.js
+doc/mkdocs/site/matrix
+doc/mkdocs/site/matrix/index.html
+doc/mkdocs/site/other
+doc/mkdocs/site/other/index.html
+doc/mkdocs/site/search
+doc/mkdocs/site/search.html
+doc/mkdocs/site/search/lunr.js
+doc/mkdocs/site/search/main.js
+doc/mkdocs/site/search/search_index.json
+doc/mkdocs/site/search/worker.js
+doc/mkdocs/site/sitemap.xml
+doc/mkdocs/site/sitemap.xml.gz
+doc/mkdocs/site/tr2angvec
+doc/mkdocs/site/tr2angvec/index.html
+doc/mkdocs/site/tr2delta
+doc/mkdocs/site/tr2delta/index.html
+doc/mkdocs/site/tr2eul
+doc/mkdocs/site/tr2eul/index.html
+doc/mkdocs/site/tr2jac
+doc/mkdocs/site/tr2jac/index.html
+doc/mkdocs/site/tr2rpy
+doc/mkdocs/site/tr2rpy/index.html
+doc/mkdocs/site/tr2rt
+doc/mkdocs/site/tr2rt/index.html
+doc/mkdocs/site/tranimate
+doc/mkdocs/site/tranimate/index.html
+doc/mkdocs/site/tranimate2
+doc/mkdocs/site/tranimate2/index.html
+doc/mkdocs/site/transl
+doc/mkdocs/site/transl/index.html
+doc/mkdocs/site/transl2
+doc/mkdocs/site/transl2/index.html
+doc/mkdocs/site/trchain
+doc/mkdocs/site/trchain/index.html
+doc/mkdocs/site/trchain2
+doc/mkdocs/site/trchain2/index.html
+doc/mkdocs/site/trexp
+doc/mkdocs/site/trexp/index.html
+doc/mkdocs/site/trexp2
+doc/mkdocs/site/trexp2/index.html
+doc/mkdocs/site/trinterp
+doc/mkdocs/site/trinterp/index.html
+doc/mkdocs/site/trinterp2
+doc/mkdocs/site/trinterp2/index.html
+doc/mkdocs/site/trlog
+doc/mkdocs/site/trlog/index.html
+doc/mkdocs/site/trnorm
+doc/mkdocs/site/trnorm/index.html
+doc/mkdocs/site/trot2
+doc/mkdocs/site/trot2/index.html
+doc/mkdocs/site/trotx
+doc/mkdocs/site/trotx/index.html
+doc/mkdocs/site/troty
+doc/mkdocs/site/troty/index.html
+doc/mkdocs/site/trotz
+doc/mkdocs/site/trotz/index.html
+doc/mkdocs/site/trplot
+doc/mkdocs/site/trplot/index.html
+doc/mkdocs/site/trplot2
+doc/mkdocs/site/trplot2/index.html
+doc/mkdocs/site/trprint
+doc/mkdocs/site/trprint/index.html
+doc/mkdocs/site/trprint2
+doc/mkdocs/site/trprint2/index.html
+doc/mkdocs/site/trscale
+doc/mkdocs/site/trscale/index.html
+doc/mkdocs/src
+doc/mkdocs/src/SE3.m
+doc/mkdocs/src/SE3.md
+doc/mkdocs/src/UnitQuaternion.m
+doc/mkdocs/src/UnitQuaternion.md
+doc/mkdocs/src/all.tex
+doc/mkdocs/src/test1.py
+doc/mkdocs/src/tr2angvec.m
+doc/mkdocs/src/tr2angvec.md
+doc/mkdocs/src/tr2delta.m
+doc/mkdocs/src/tr2delta.md
+doc/mkdocs/src/tr2eul.m
+doc/mkdocs/src/tr2eul.md
+doc/mkdocs/src/tr2jac.m
+doc/mkdocs/src/tr2jac.md
+doc/mkdocs/src/tr2rpy.m
+doc/mkdocs/src/tr2rpy.md
+doc/mkdocs/src/tr2rt.m
+doc/mkdocs/src/tr2rt.md
+doc/mkdocs/src/tranimate.m
+doc/mkdocs/src/tranimate.md
+doc/mkdocs/src/tranimate2.m
+doc/mkdocs/src/tranimate2.md
+doc/mkdocs/src/transl.m
+doc/mkdocs/src/transl.md
+doc/mkdocs/src/transl2.m
+doc/mkdocs/src/transl2.md
+doc/mkdocs/src/trchain.m
+doc/mkdocs/src/trchain.md
+doc/mkdocs/src/trchain2.m
+doc/mkdocs/src/trchain2.md
+doc/mkdocs/src/trexp.m
+doc/mkdocs/src/trexp.md
+doc/mkdocs/src/trexp2.m
+doc/mkdocs/src/trexp2.md
+doc/mkdocs/src/trinterp.m
+doc/mkdocs/src/trinterp.md
+doc/mkdocs/src/trinterp2.m
+doc/mkdocs/src/trinterp2.md
+doc/mkdocs/src/trlog.m
+doc/mkdocs/src/trlog.md
+doc/mkdocs/src/trnorm.m
+doc/mkdocs/src/trnorm.md
+doc/mkdocs/src/trot2.m
+doc/mkdocs/src/trot2.md
+doc/mkdocs/src/trotx.m
+doc/mkdocs/src/trotx.md
+doc/mkdocs/src/troty.m
+doc/mkdocs/src/troty.md
+doc/mkdocs/src/trotz.m
+doc/mkdocs/src/trotz.md
+doc/mkdocs/src/trplot.m
+doc/mkdocs/src/trplot.md
+doc/mkdocs/src/trplot2.m
+doc/mkdocs/src/trplot2.md
+doc/mkdocs/src/trprint.m
+doc/mkdocs/src/trprint.md
+doc/mkdocs/src/trprint2.m
+doc/mkdocs/src/trprint2.md
+doc/mkdocs/src/trscale.m
+doc/mkdocs/src/trscale.md
+doc/mkdocs/src/z
+doc/test
+doc/test/Animate.m
+doc/test/PGraph.m
+doc/test/Plucker.m
+doc/test/Quaternion.m
+doc/test/RTBPose.m
+doc/test/SE2.m
+doc/test/SE3.m
+doc/test/SO2.m
+doc/test/SO3.m
+doc/test/SpatialAcceleration.m
+doc/test/SpatialF6.m
+doc/test/SpatialForce.m
+doc/test/SpatialInertia.m
+doc/test/SpatialM6.m
+doc/test/SpatialMomentum.m
+doc/test/SpatialVec6.m
+doc/test/SpatialVelocity.m
+doc/test/Twist.m
+doc/test/UnitQuaternion.m
+doc/test/about.m
+doc/test/all.aux
+doc/test/all.log
+doc/test/all.out
+doc/test/all.pdf
+doc/test/all.tex
+doc/test/angdiff.m
+doc/test/angvec2r.m
+doc/test/angvec2tr.m
+doc/test/arrow3.m
+doc/test/chi2inv_rtb.m
+doc/test/circle.m
+doc/test/colnorm.m
+doc/test/delta2tr.m
+doc/test/e2h.m
+doc/test/eul2jac.m
+doc/test/eul2r.m
+doc/test/eul2tr.m
+doc/test/h2e.m
+doc/test/homline.m
+doc/test/homtrans.m
+doc/test/ishomog.m
+doc/test/ishomog2.m
+doc/test/isrot.m
+doc/test/isrot2.m
+doc/test/isunit.m
+doc/test/isvec.m
+doc/test/lift23.m
+doc/test/numcols.m
+doc/test/numrows.m
+doc/test/oa2r.m
+doc/test/oa2tr.m
+doc/test/plot2.m
+doc/test/plot_arrow.m
+doc/test/plot_box.m
+doc/test/plot_circle.m
+doc/test/plot_ellipse.m
+doc/test/plot_homline.m
+doc/test/plot_point.m
+doc/test/plot_poly.m
+doc/test/plot_ribbon.m
+doc/test/plot_sphere.m
+doc/test/plotvol.m
+doc/test/r2t.m
+doc/test/randinit.m
+doc/test/rot2.m
+doc/test/rotx.m
+doc/test/roty.m
+doc/test/rotz.m
+doc/test/rpy2jac.m
+doc/test/rpy2r.m
+doc/test/rpy2tr.m
+doc/test/rr.m
+doc/test/rt2tr.m
+doc/test/rvccheck.m
+doc/test/skew.m
+doc/test/skewa.m
+doc/test/stlRead.m
+doc/test/t2r.m
+doc/test/tb_optparse.m
+doc/test/test
+doc/test/test.m
+doc/test/test.md
+doc/test/test/Animate.m
+doc/test/test/RTBPose.m
+doc/test/test/all.aux
+doc/test/test/all.log
+doc/test/test/all.out
+doc/test/test/all.pdf
+doc/test/test/all.tex
+doc/test/test/angdiff.m
+doc/test/test/e2h.m
+doc/test/test/h2e.m
+doc/test/test/homtrans.m
+doc/test/test/plot_poly.m
+doc/test/tr2angvec.m
+doc/test/tr2delta.m
+doc/test/tr2eul.m
+doc/test/tr2jac.m
+doc/test/tr2rpy.m
+doc/test/tr2rt.m
+doc/test/tranimate.m
+doc/test/tranimate2.m
+doc/test/transl.m
+doc/test/transl2.m
+doc/test/trchain.m
+doc/test/trchain2.m
+doc/test/trexp.m
+doc/test/trexp2.m
+doc/test/trinterp.m
+doc/test/trinterp2.m
+doc/test/trlog.m
+doc/test/trnorm.m
+doc/test/trot2.m
+doc/test/trotx.m
+doc/test/troty.m
+doc/test/trotz.m
+doc/test/trplot.m
+doc/test/trplot2.m
+doc/test/trprint.m
+doc/test/trprint2.m
+doc/test/trscale.m
+doc/test/unit.m
+doc/test/vex.m
+doc/test/vexa.m
+doc/test/xyzlabel.m
 jacobdot.m
 jdotqdot.m
-
-zz.m
-*.tif
-.travis.yml
-.gitignore
-
-% folders
-resources
 test
-doc
+test/RTBPose.m
+test/SE3.m
+test/SO3.m
+test/class2.m
+test/class3.m
+tranimate2.m~
 unit_test
-.travis</param.exclude.filters>
+unit_test/.DS_Store
+unit_test/CoverageResults.xml
+unit_test/DifferentialMotionTest.m
+unit_test/PGraphTest.m
+unit_test/PlotTest.m
+unit_test/PluckerTest.m
+unit_test/QuaternionTest.m
+unit_test/README.txt
+unit_test/RTBPoseTest.m
+unit_test/RunAllTests.m
+unit_test/SE2Test.m
+unit_test/SE3Test.m
+unit_test/SO2Test.m
+unit_test/SO3Test.m
+unit_test/SpatialTest.m
+unit_test/TODO
+unit_test/TrajectoryTest.m
+unit_test/Transformations2Test.m
+unit_test/TransformationsTest.m
+unit_test/TwistTest.m
+unit_test/UnitQuaternionTest.m
+unit_test/UtilityTest.m
+unit_test/data
+unit_test/data/20mm_cube_ascii.stl
+unit_test/data/20mm_cube_binary.stl
+unit_test/failedtests.m
+unit_test/featherstone_test
+unit_test/featherstone_test/ID.m
+unit_test/featherstone_test/ID2.m~
+unit_test/featherstone_test/README.md
+unit_test/featherstone_test/compare.m
+unit_test/featherstone_test/idyn_roy.m
+unit_test/featherstone_test/idyn_rtb.m
+unit_test/featherstone_test/test_roy.m
+unit_test/featherstone_test/twist_test.m
+unit_test/old
+unit_test/old/arange.m
+unit_test/old/class_pgraph.m
+unit_test/old/dynamics.m
+unit_test/old/jacobian.m
+unit_test/old/kinematics.m
+unit_test/old/leg.m
+unit_test/old/loc_dr.m
+unit_test/old/loc_ekf.m
+unit_test/old/loc_map.m
+unit_test/old/loc_map2.m
+unit_test/old/loc_pf.m
+unit_test/old/loc_slam.m
+unit_test/old/mat.m
+unit_test/old/nav_bug2.m
+unit_test/old/nav_dstar.m
+unit_test/old/nav_dxform.m
+unit_test/old/nav_prm.m
+unit_test/old/nav_rrt.m
+unit_test/old/nav_rrt2.m
+unit_test/old/plots.m
+unit_test/old/quaternion.m
+unit_test/old/test.m
+unit_test/old/trajectory.m
+unit_test/old/transform.m
+unit_test/plotXTest.m
+unit_test/tboptparseTest.m
+zz.m</param.exclude.filters>
     <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
     <param.examples />
     <param.demosxml />
-    <param.apps>
-      <file>${PROJECT_ROOT}/Apps/Polynomialspirals.mlappinstall</file>
-      <file>${PROJECT_ROOT}/Apps/Triple angle visualizer.mlappinstall</file>
-    </param.apps>
+    <param.apps />
     <param.registered.apps />
-    <param.docs>${PROJECT_ROOT}/doc/info.xml</param.docs>
+    <param.docs />
     <param.getting.started.guide />
     <param.matlabpath.excludes />
     <param.javaclasspath.excludes />
@@ -97,7 +531,11 @@ unit_test
     <param.additional.sw.mac.url />
     <param.additional.sw.linux.url />
     <unset>
+      <param.authnamewatermark />
+      <param.email />
       <param.company />
+      <param.summary />
+      <param.screenshot />
       <param.version />
       <param.output />
       <param.products.name />
@@ -107,7 +545,9 @@ unit_test
       <param.exclude.pcodedmfiles />
       <param.examples />
       <param.demosxml />
+      <param.apps />
       <param.registered.apps />
+      <param.docs />
       <param.getting.started.guide />
       <param.matlabpath.excludes />
       <param.javaclasspath.excludes />
@@ -131,13 +571,21 @@ unit_test
       <file>${PROJECT_ROOT}</file>
     </fileset.rootdir>
     <fileset.rootfiles>
+      <file>${PROJECT_ROOT}/.DS_Store</file>
+      <file>${PROJECT_ROOT}/.SO3.m.swp</file>
+      <file>${PROJECT_ROOT}/.git</file>
+      <file>${PROJECT_ROOT}/.gitignore</file>
+      <file>${PROJECT_ROOT}/.travis</file>
+      <file>${PROJECT_ROOT}/.travis.yml</file>
       <file>${PROJECT_ROOT}/Animate.m</file>
       <file>${PROJECT_ROOT}/Apps</file>
       <file>${PROJECT_ROOT}/CITATION</file>
       <file>${PROJECT_ROOT}/CONTRIB</file>
       <file>${PROJECT_ROOT}/DEPENDENCIES</file>
+      <file>${PROJECT_ROOT}/DHFactor.java</file>
       <file>${PROJECT_ROOT}/LICENSE</file>
       <file>${PROJECT_ROOT}/PGraph.m</file>
+      <file>${PROJECT_ROOT}/PGraph.m~</file>
       <file>${PROJECT_ROOT}/Plucker.m</file>
       <file>${PROJECT_ROOT}/Quaternion.m</file>
       <file>${PROJECT_ROOT}/README.md</file>
@@ -145,27 +593,40 @@ unit_test
       <file>${PROJECT_ROOT}/RTBPose.m</file>
       <file>${PROJECT_ROOT}/SE2.m</file>
       <file>${PROJECT_ROOT}/SE3.m</file>
+      <file>${PROJECT_ROOT}/SMPackage.prj</file>
       <file>${PROJECT_ROOT}/SO2.m</file>
       <file>${PROJECT_ROOT}/SO3.m</file>
+      <file>${PROJECT_ROOT}/Spatial Math Toolbox for MATLAB.mltbx</file>
       <file>${PROJECT_ROOT}/SpatialAcceleration.m</file>
       <file>${PROJECT_ROOT}/SpatialF6.m</file>
       <file>${PROJECT_ROOT}/SpatialForce.m</file>
       <file>${PROJECT_ROOT}/SpatialInertia.m</file>
       <file>${PROJECT_ROOT}/SpatialM6.m</file>
+      <file>${PROJECT_ROOT}/SpatialMath.html</file>
+      <file>${PROJECT_ROOT}/SpatialMath.prj</file>
       <file>${PROJECT_ROOT}/SpatialMomentum.m</file>
       <file>${PROJECT_ROOT}/SpatialVec6.m</file>
       <file>${PROJECT_ROOT}/SpatialVelocity.m</file>
+      <file>${PROJECT_ROOT}/ToolboxPackagingConfiguration.prj</file>
       <file>${PROJECT_ROOT}/Twist.m</file>
       <file>${PROJECT_ROOT}/UnitQuaternion.m</file>
       <file>${PROJECT_ROOT}/about.m</file>
+      <file>${PROJECT_ROOT}/all.aux</file>
+      <file>${PROJECT_ROOT}/all.log</file>
+      <file>${PROJECT_ROOT}/all.out</file>
+      <file>${PROJECT_ROOT}/all.pdf</file>
+      <file>${PROJECT_ROOT}/all.tex</file>
       <file>${PROJECT_ROOT}/angdiff.m</file>
       <file>${PROJECT_ROOT}/angvec2r.m</file>
       <file>${PROJECT_ROOT}/angvec2tr.m</file>
+      <file>${PROJECT_ROOT}/anim2.gif</file>
+      <file>${PROJECT_ROOT}/anim2.mp4</file>
       <file>${PROJECT_ROOT}/arrow3.m</file>
-      <file>${PROJECT_ROOT}/chi2inv_rtb.m</file>
       <file>${PROJECT_ROOT}/circle.m</file>
       <file>${PROJECT_ROOT}/colnorm.m</file>
+      <file>${PROJECT_ROOT}/coverage.xml</file>
       <file>${PROJECT_ROOT}/delta2tr.m</file>
+      <file>${PROJECT_ROOT}/doc</file>
       <file>${PROJECT_ROOT}/e2h.m</file>
       <file>${PROJECT_ROOT}/eul2jac.m</file>
       <file>${PROJECT_ROOT}/eul2r.m</file>
@@ -180,6 +641,8 @@ unit_test
       <file>${PROJECT_ROOT}/isrot2.m</file>
       <file>${PROJECT_ROOT}/isunit.m</file>
       <file>${PROJECT_ROOT}/isvec.m</file>
+      <file>${PROJECT_ROOT}/jacobdot.m</file>
+      <file>${PROJECT_ROOT}/jdotqdot.m</file>
       <file>${PROJECT_ROOT}/lift23.m</file>
       <file>${PROJECT_ROOT}/numcols.m</file>
       <file>${PROJECT_ROOT}/numrows.m</file>
@@ -198,6 +661,7 @@ unit_test
       <file>${PROJECT_ROOT}/plotvol.m</file>
       <file>${PROJECT_ROOT}/r2t.m</file>
       <file>${PROJECT_ROOT}/randinit.m</file>
+      <file>${PROJECT_ROOT}/resources</file>
       <file>${PROJECT_ROOT}/rot2.m</file>
       <file>${PROJECT_ROOT}/rotx.m</file>
       <file>${PROJECT_ROOT}/roty.m</file>
@@ -212,6 +676,7 @@ unit_test
       <file>${PROJECT_ROOT}/stlRead.m</file>
       <file>${PROJECT_ROOT}/t2r.m</file>
       <file>${PROJECT_ROOT}/tb_optparse.m</file>
+      <file>${PROJECT_ROOT}/test</file>
       <file>${PROJECT_ROOT}/tr2angvec.m</file>
       <file>${PROJECT_ROOT}/tr2delta.m</file>
       <file>${PROJECT_ROOT}/tr2eul.m</file>
@@ -220,6 +685,7 @@ unit_test
       <file>${PROJECT_ROOT}/tr2rt.m</file>
       <file>${PROJECT_ROOT}/tranimate.m</file>
       <file>${PROJECT_ROOT}/tranimate2.m</file>
+      <file>${PROJECT_ROOT}/tranimate2.m~</file>
       <file>${PROJECT_ROOT}/transl.m</file>
       <file>${PROJECT_ROOT}/transl2.m</file>
       <file>${PROJECT_ROOT}/trchain.m</file>
@@ -240,9 +706,11 @@ unit_test
       <file>${PROJECT_ROOT}/trprint2.m</file>
       <file>${PROJECT_ROOT}/trscale.m</file>
       <file>${PROJECT_ROOT}/unit.m</file>
+      <file>${PROJECT_ROOT}/unit_test</file>
       <file>${PROJECT_ROOT}/vex.m</file>
       <file>${PROJECT_ROOT}/vexa.m</file>
       <file>${PROJECT_ROOT}/xyzlabel.m</file>
+      <file>${PROJECT_ROOT}/zz.m</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded />
@@ -252,7 +720,7 @@ unit_test
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/Applications/MATLAB_R2019a.app</root>
+      <root>/Applications/MATLAB_R2019b.app</root>
       <toolboxes />
     </matlab>
     <platform>

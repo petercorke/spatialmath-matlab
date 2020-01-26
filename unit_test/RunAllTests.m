@@ -23,3 +23,8 @@ results = runner.run(suite);
 
 % Assert no tests failed.
 assert(all(~[results.Failed]));
+
+%% Build the toolbox distribution file
+fprintf('---------------------------------- Build the MLTBX file ------------------------------------\n')
+cd ..
+matlab.addons.toolbox.packageToolbox('PackageToolbox.prj')
