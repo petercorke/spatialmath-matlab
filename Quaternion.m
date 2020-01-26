@@ -146,10 +146,14 @@ classdef Quaternion
             %Quaternion.set.v Set vector component
             %
             % Q.v = V sets the vector part of the Quaternion object to V (1x3).
-            assert(isvec(v,3), 'SMTB:Quaternion:badarg', 'v must be a real 3-vector');
-            
             qo = q;
-            qo.v = v(:).';
+            if isa(v, 'symfun')
+                qo.v = v;
+            else
+                assert(isvec(v,3), 'SMTB:Quaternion:badarg', 'v must be a real 3-vector');
+                
+                qo.v = v(:).';
+            end
         end
         
 %         function s = get.s(q)

@@ -191,6 +191,9 @@ classdef UnitQuaternion < Quaternion
                 end
             elseif nargin == 2 && isscalar(s) && isvec(v,3)
                 % ensure its a unit quaternion
+                if isa(v, 'symfun')
+                    v = formula(v);
+                end
                 n = norm([s; v(:)]);
                 uq.s = s/n;
                 uq.v = v/n;
