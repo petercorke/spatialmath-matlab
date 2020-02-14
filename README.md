@@ -1,4 +1,4 @@
-
+[![View Spatial Math Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/70373-spatial-math-toolbox)
 [![Build Status](https://travis-ci.com/petercorke/spatial-math.svg?branch=master)](https://travis-ci.com/petercorke/spatial-math)
 ![Coverage](https://codecov.io/gh/petercorke/spatial-math/branch/master/graph/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
