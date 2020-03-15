@@ -133,6 +133,7 @@ unit_test
     <fileset.rootfiles>
       <file>${PROJECT_ROOT}/Animate.m</file>
       <file>${PROJECT_ROOT}/Apps</file>
+      <file>${PROJECT_ROOT}/Contents.m</file>
       <file>${PROJECT_ROOT}/CITATION</file>
       <file>${PROJECT_ROOT}/CONTRIB</file>
       <file>${PROJECT_ROOT}/DEPENDENCIES</file>
