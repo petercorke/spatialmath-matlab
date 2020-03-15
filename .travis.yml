@@ -30,6 +30,9 @@ before_script:
  - docker run --mount src=$TRAVIS_BUILD_DIR/doc/manual,target=/usr/src/tex,type=bind dxjoke/tectonic-docker /bin/sh -c "tectonic spatialmath.tex"
  # copy to src folder
  - mv doc/manual/spatialmath.pdf spatialmath-`cat ./RELEASE`.pdf
+## build a minimalist Contents.m file
+echo "% Spatial Math Toolbox for MATLAB" > Contents.m
+echo "% Version " `cat RELEASE` `date "+%e-%b-%G"`  >> Contents.m
 
 script:
  # run the unit tests with MATLAB on Travis cloud
