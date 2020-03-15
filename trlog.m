@@ -55,6 +55,10 @@
 
 function [o1,o2] = trlog(T)
     
+    if isa(T, 'symfun')
+        T = formula(T);
+    end
+    
     if isrot(T)
         % deal with rotation matrix
         
@@ -65,13 +69,13 @@ function [o1,o2] = trlog(T)
         
         R = T;
         
-        if abs(trace(R) - 3) < 100*eps
+        if ~isa(R, 'sym') && abs(trace(R) - 3) < 100*eps
             % matrix is identity
             
             w = [0 0 0]';
             theta = 0;
             
-        elseif abs(trace(R) + 1) < 100*eps
+        elseif ~isa(R, 'sym') && abs(trace(R) + 1) < 100*eps
             % tr R = -1
             % rotation by +/- pi, +/- 3pi etc
             
@@ -106,7 +110,7 @@ function [o1,o2] = trlog(T)
         
         [R,t] = tr2rt(T);
         
-        if abs(trace(R) - 3) < 100*eps
+        if ~isa(R, 'sym') && abs(trace(R) - 3) < 100*eps
             % rotation matrix is identity, theta=0
             w = [0 0 0]';
             v = t;
