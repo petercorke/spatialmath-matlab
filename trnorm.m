@@ -52,15 +52,15 @@ function TR = trnorm(T)
     
     if ndims(T) == 3
         % recurse for transform sequence
-        nd = size(T, 3);
-        r = zeros(4,4,nd);
-        for i=1:nd
+        n = size(T);
+        TR = zeros(n);
+        for i=1:n(3)
             TR(:,:,i) = trnorm(T(:,:,i));
         end
         return
     end
     
-    n = T(1:3,1); o = T(1:3,2); a = T(1:3,3);
+    o = T(1:3,2); a = T(1:3,3);
     n = cross(o, a);         % N = O x A
     o = cross(a, n);         % O = A x N
     R = [unit(n) unit(o) unit(a)];
