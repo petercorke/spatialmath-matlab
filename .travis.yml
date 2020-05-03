@@ -31,8 +31,8 @@ before_script:
  # copy to src folder
  - mv doc/manual/spatialmath.pdf spatialmath-`cat ./RELEASE`.pdf
 ## build a minimalist Contents.m file
-echo "% Spatial Math Toolbox for MATLAB" > Contents.m
-echo "% Version " `cat RELEASE` `date "+%e-%b-%G"`  >> Contents.m
+ - echo "% Spatial Math Toolbox for MATLAB" > Contents.m
+ - echo "% Version " `cat RELEASE` `date "+%e-%b-%G"`  >> Contents.m
 
 script:
  # run the unit tests with MATLAB on Travis cloud
