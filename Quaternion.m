@@ -689,7 +689,7 @@ classdef Quaternion
             if length(q) > 1
                 s = '';
                 for qq = q;
-                    s = strvcat(s, char(qq));
+                    s = char(s, char(qq));
                 end
                 return
             end

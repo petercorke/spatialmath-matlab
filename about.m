@@ -41,7 +41,7 @@
 function about(varargin)
     for i=1:nargin
         var = varargin{i};
-    if isstr(var)
+    if ischar(var)
         % invoked without parentheses
         w = evalin('caller', sprintf('whos(''%s'')', var));
         varname = var;

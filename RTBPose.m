@@ -778,7 +778,7 @@ classdef (Abstract) RTBPose
                 out = '';
                 
                 for T=obj
-                    out = strvcat(out, printfn(double(T), varargin{:}));
+                    out = char(out, printfn(double(T), varargin{:}));
                 end
             end
         end

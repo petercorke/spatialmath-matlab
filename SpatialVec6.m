@@ -131,7 +131,7 @@ classdef (Abstract) SpatialVec6 < handle
                 s = char( obj(1) );
                 indent = repmat(' ', 1, length(class(obj)));
                 for i = 2:numel(obj)
-                    s = strvcat(s, sprintf('%s  [ %g %g %g | %g %g %g ]', indent, obj(i).vw));
+                    s = char(s, sprintf('%s  [ %g %g %g | %g %g %g ]', indent, obj(i).vw));
                 end
             end
         end

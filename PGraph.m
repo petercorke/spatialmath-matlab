@@ -772,10 +772,10 @@ classdef PGraph < matlab.mixin.Copyable
             % state of the graph including the number of vertices, edges and components.
             
             s = '';
-            s = strvcat(s, sprintf('  %d dimensions', g.ndims));
-            s = strvcat(s, sprintf('  %d vertices', g.n));
-            s = strvcat(s, sprintf('  %d edges', numcols(g.edgelist)));
-            s = strvcat(s, sprintf('  %d components', g.nc));
+            s = char(s, sprintf('  %d dimensions', g.ndims));
+            s = char(s, sprintf('  %d vertices', g.n));
+            s = char(s, sprintf('  %d edges', numcols(g.edgelist)));
+            s = char(s, sprintf('  %d components', g.nc));
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

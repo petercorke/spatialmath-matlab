@@ -303,7 +303,7 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
             if nargout >= 2
                 arglist = [arglist argv(argc)];
             else
-                if isstr(argv{argc})
+                if ischar(argv{argc})
                     error(['unknown options: ' argv{argc}]);
                 end
             end

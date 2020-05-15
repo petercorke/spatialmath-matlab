@@ -124,14 +124,14 @@ classdef SpatialInertia < handle
                  end
                  m = num2str(obj.I);
                  for line = m'
-                     s = strvcat(s, ['    ' line']);
+                     s = char(s, ['    ' line']);
                  end
              else
                  s = char( obj(1) );
                  
                  for i = 2:numel(obj)
-                     s = strvcat(s, ' ');
-                     s = strvcat(s, char(obj(i), 0) );
+                     s = char(s, ' ');
+                     s = char(s, char(obj(i), 0) );
                  end
              end
         end
