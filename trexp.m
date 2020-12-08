@@ -105,7 +105,7 @@ function T = trexp(S, theta)
         end
         
         % for a zero so(3) return unit matrix, theta not relevant
-        if norm(w) < 10*eps
+        if ~isa(w, 'sym') && norm(w) < 10*eps
             T = eye(3,3);
             return;
         end
