@@ -1,9 +1,9 @@
 [![View Spatial Math Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/70373-spatial-math-toolbox)
-[![Build Status](https://travis-ci.com/petercorke/spatial-math.svg?branch=master)](https://travis-ci.com/petercorke/spatial-math)
+[![Build Status](https://travis-ci.com/petercorke/spatialmath-matlab.svg?branch=master)](https://travis-ci.com/petercorke/spatial-math)
 ![Coverage](https://codecov.io/gh/petercorke/spatial-math/branch/master/graph/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/petercorke/robotics-toolbox-matlab/graphs/commit-activity)
-[![GitHub stars](https://img.shields.io/github/stars/petercorke/spatial-math.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/petercorke/robotics-toolbox-matlab/stargazers/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/petercorke/spatialmath-matlab/graphs/commit-activity)
+[![GitHub stars](https://img.shields.io/github/stars/petercorke/spatialmath-matlab.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/petercorke/robotics-toolbox-matlab/stargazers/)
  
 # Spatial Math Toolbox for MATLAB&reg;
 
@@ -18,10 +18,12 @@ Advantages of the Toolbox are that:
   * the code is mature and provides a point of comparison for other implementations of the same algorithms;
   * the routines are generally written in a straightforward manner which allows for easy understanding, perhaps at the expense of computational efficiency. If you feel strongly about computational efficiency then you can always rewrite the function to be more efficient, compile the M-file using the MATLAB compiler, or create a MEX version;
   * source code is available for the benefit for understanding and teaching.
+
+There is now a Python version of this Toolbox on [GitHub](https://github.com/petercorke/spatialmath-python) and [PyPI](https://pypi.org/project/spatialmath-python).
   
 ## Manual
 
-Comprehensive detail of all functions is provided in the [PDF-format manual (~200 pages)](https://github.com/petercorke/spatial-math/releases/download/untagged-a2f9c8b2bd21cca9fe39/spatialmath.pdf).
+Comprehensive detail of all functions is provided in the [PDF-format manual (~200 pages)](https://github.com/petercorke/spatialmath-matlab/releases/download/untagged-a2f9c8b2bd21cca9fe39/spatialmath.pdf).
 
 ## Installation
 
