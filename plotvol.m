@@ -80,6 +80,9 @@ function plotvol(bounds)
     end
     
     axis(bounds)
+    if length(bounds) == 6
+        view(3)
+    end
     
     % common code
     grid on;
