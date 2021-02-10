@@ -195,6 +195,11 @@ classdef UnitQuaternion < Quaternion
                     v = formula(v);
                 end
                 n = norm([s; v(:)]);
+                if s < 0
+                    % enforce non-negative scalar
+                    s = -s;
+                    v = -v;
+                end
                 uq.s = s/n;
                 uq.v = v/n;
             elseif isvec(s,4)
@@ -202,6 +207,10 @@ classdef UnitQuaternion < Quaternion
                 % normalize it
                 if ~isa(s, 'sym')
                     s = unit(s);
+                end
+                if s(1) < 0
+                    % enforce non-negative scalar
+                    s = -s;
                 end
                 uq.s = s(1);
                 uq.v = s(2:4);
@@ -1189,6 +1198,7 @@ classdef UnitQuaternion < Quaternion
             uq = UnitQuaternion(s, qv);
         end
         
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% OTHER STATIC METHODS, ALTERNATIVE CONSTRUCTORS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
