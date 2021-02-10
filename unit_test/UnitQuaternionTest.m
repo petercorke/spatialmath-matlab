@@ -23,7 +23,7 @@ function constructor_test(tc)
     tc.verifyEqual(UnitQuaternion([0 0 0 1]).double, [0 0 0 1]);
  
     tc.verifyEqual(UnitQuaternion([2 0 0 0]).double, [1 0 0 0]);
-    tc.verifyEqual(UnitQuaternion([-2 0 0 0]).double, [-1 0 0 0]);
+    tc.verifyEqual(UnitQuaternion([-2 0 0 0]).double, [1 0 0 0]);
 
     %% from [S,V]
     tc.verifyEqual(UnitQuaternion(1, [0 0 0]).double, [1 0 0 0]);
@@ -32,7 +32,7 @@ function constructor_test(tc)
     tc.verifyEqual(UnitQuaternion(0, [0 0 1]).double, [0 0 0 1]);
  
     tc.verifyEqual(UnitQuaternion(2, [0 0 0]).double, [1 0 0 0]);
-    tc.verifyEqual(UnitQuaternion(-2, [0 0 0]).double, [-1 0 0 0]);
+    tc.verifyEqual(UnitQuaternion(-2, [0 0 0]).double, [1 0 0 0]);
     
     %% from R
     
