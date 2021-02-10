@@ -116,7 +116,7 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
     assert(iscell(argv), 'SMTB:tboptparse:badargs', 'input must be a cell array');
     
     if ~verLessThan('matlab', '9.1')
-        % strings only appeared in 2016b
+        % is only appeared in 2016b
         
         % handle new style string inputs
         % quick and dirty solution is to convert any string to a char array and
@@ -124,7 +124,7 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
         
         % convert any passed strings to character arrays
         for i=1:length(argv)
-            if isstring(argv{i})
+            if isstring(argv{i}) && length(argv{i}) == 1
                 argv{i} = char(argv{i});
             end
         end
