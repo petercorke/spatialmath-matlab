@@ -17,7 +17,7 @@
 %
 % Firstly, create a plot and keep the the handle as per above.
 %
-% TRPLOT(H, T) moves the coordinate frame described by the handle H to
+% TRPLOT(T, 'handle', H) moves the coordinate frame described by the handle H to
 % the pose T (4x4).
 %
 % Options::
