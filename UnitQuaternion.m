@@ -698,9 +698,13 @@ classdef UnitQuaternion < Quaternion
             % See also Quaternion.char.
             
             if length(q) > 1
-                s = '';
-                for qq = q(:)'
-                    s = char(s, char(qq));
+                s = [];
+                for qq = q;
+                    if isempty(s)
+                        s = char(qq);
+                    else
+                        s = char(s, char(qq));
+                    end
                 end
                 return
             end
