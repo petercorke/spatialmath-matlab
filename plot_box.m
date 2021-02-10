@@ -131,7 +131,7 @@ function h = plot_box(varargin)
     
     if isempty(opt.fillcolor)
         % outline only
-        hh = plot(x, y, args{:})
+        hh = plot(x, y, args{:});
     else
         % filled shape
         hh = patch(x, y, 0*y, 'FaceColor', opt.fillcolor, ...
