@@ -534,6 +534,34 @@ classdef SO3 < RTBPose
             [varargout{1:nargout}] = tr2angvec(obj.R, varargin{:});
         end
         
+        
+        function d = angdist(R1, R2, method)
+            %SO3.angdist Distance metric
+            %
+            % R1.angdist(R2) is a distance metric between two SO(3) rotation
+            % matrices.
+            %
+            % R1.angdist(R2, M) as above but uses the method specified by M
+            %
+            % M = 1 (default): || I - R1 R2' ||  in [0,2]
+            % M = 2:           || log R1 R2' ||  in [0,pi]
+            %
+            %
+            % See also: trlog, UnitQuaternion.angdist
+            if ~isa(R2, 'SO3')
+                error('SMTB:SO3:badarg', 'angdist: incorrect operand');
+            end
+            if nargin == 2
+                method = 1
+            end
+            
+            switch method
+                case 1
+                    d = norm(eye(3) - R1.R * R2.R')
+                case 2
+                    d = norm(trlog(R1.R * R2.R'))
+            end
+        end
  
 
         function s = SE3(obj)

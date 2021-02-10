@@ -950,6 +950,37 @@ classdef UnitQuaternion < Quaternion
                 error('SMTB:UnitQuaternion:eq: badargs');
             end
         end
+        
+        
+        function d = angdist(q1, q2, method)
+            %UnitQuaternion.angdist Distance metric
+            %
+            % Q1.angdist(Q2) is a distance metric between two unit quaternions.
+            %
+            % Q1.angdist(Q2, M) as above but uses the method specified by M
+            %
+            % M = 1 (default): 1 - | < q1, q2> |  in [0,pi/2]
+            % M = 2:           acos | <q1, q2> |  in [0,1]
+            %
+            %  
+            % Note::
+            %   - angdist(q, -q) is equal to zero due to double mapping
+            %
+            % See also: SO3.angdist
+            if ~isa(q2, 'UnitQuaternion')
+                error('SMTB:UnitQuaternion:badarg', 'angdist: incorrect operand');
+            end
+            if nargin == 2
+                method = 1
+            end
+            
+            switch method
+                case 1
+                    d = 1 - abs(q1.inner(q2))
+                case 2
+                    d = acos(abs(q1.inner(q2)))
+            end
+        end
 
     end % methods
     
