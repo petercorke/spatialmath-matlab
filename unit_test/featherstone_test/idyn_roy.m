@@ -13,6 +13,11 @@ robot.Xtree(2) = Twist(inv(SE3([1 0 0])));
 robot.I(1) = SpatialInertia( 1, [0.5 0 0], diag([0 0 0]) );
 robot.I(2) = SpatialInertia( 1, [0.5 0 0], diag([0 0 0]) );
 
+robot.Xtree(1)
+%robot.I(1)
+robot.Xtree(2)
+%robot.I(2)
+
 %% compute inverse dynamics
 tau = ID( robot, q, qd, qdd)' %, f_ext, grav_accn )
 end

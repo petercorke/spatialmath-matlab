@@ -5,11 +5,14 @@ function  tau = ID( model, q, qd, qdd )
     
     for i = 1:model.NB
         [ XJ, S(:,i) ] = jcalc( model.pitch(i), q(i) );
+        XJ
+        S(:,i)
         vJ = SpatialVelocity(S(:,i)*qd(i));
         Xup(i) = XJ*model.Xtree(i);
         if model.parent(i) == 0
             v(i) = vJ;
             a(i) = Xup(i)*(-a_grav) + SpatialAcceleration(S(:,i)*qdd(i));
+            a
         else
             v(i) = Xup(i)*v(model.parent(i)) + vJ;
             a(i) = Xup(i)*a(model.parent(i)) ...
@@ -18,6 +21,10 @@ function  tau = ID( model, q, qd, qdd )
         end
         f(i) = model.I(i)*a(i) + cross( v(i), model.I(i)*v(i) );
     end
+
+    v
+    a
+    f
     
     for i = model.NB:-1:1
         tau(i,1) = S(:,i)' * double(f(i));
