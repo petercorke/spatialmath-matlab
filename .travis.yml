@@ -7,7 +7,7 @@
 
 sudo: required
 services: docker
-language: java
+language: matlab
 dist: xenial
 
 install:
@@ -15,7 +15,7 @@ install:
  - git clone https://github.com/petercorke/help2doc $HOME/bin
  - export PATH="$(dirname "$HOME/bin"):$PATH"
  # install MATLAB unit test runner
- - curl -sL https://storage.googleapis.com/matlabimagesus/public/install.sh | sudo -E bash
+ #- curl -sL https://storage.googleapis.com/matlabimagesus/public/install.sh | sudo -E bash
 
 before_script:
 ## build the doco PDF and place it in the src folder so it gets shipped to MATLAB cloud
