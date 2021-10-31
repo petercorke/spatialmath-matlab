@@ -170,7 +170,7 @@ classdef UnitQuaternion < Quaternion
                 uq.s = 1;
             elseif isa(s, 'Quaternion')
                 % passed a quaternion of some kind, optionally normalize
-                if ~isa(s, 'UnitQuaternion');
+                if ~isa(s, 'UnitQuaternion')
                     s = s.unit();
                 end
                 uq.s = s.s;
@@ -286,7 +286,7 @@ classdef UnitQuaternion < Quaternion
                 if cosTheta < 0
                     q1 = - q1;
                     cosTheta = - cosTheta;
-                end;
+                end
             end
                       
             theta = acos(cosTheta);
@@ -490,7 +490,7 @@ classdef UnitQuaternion < Quaternion
                 % get the superclass to do this for us
                 qp = mtimes@Quaternion(q1, q2);
 
-            elseif isa(q1, 'Quaternion') && (isnumeric(q2) | isa(q2, 'sym'))
+            elseif isa(q1, 'Quaternion') && (isnumeric(q2) || isa(q2, 'sym'))
 
                 %QVMUL  Multiply vector by UnitQuaternion
                 %
@@ -699,7 +699,7 @@ classdef UnitQuaternion < Quaternion
             
             if length(q) > 1
                 s = [];
-                for qq = q;
+                for qq = q
                     if isempty(s)
                         s = char(qq);
                     else
@@ -984,14 +984,14 @@ classdef UnitQuaternion < Quaternion
                 error('SMTB:UnitQuaternion:badarg', 'angdist: incorrect operand');
             end
             if nargin == 2
-                method = 1
+                method = 1;
             end
             
             switch method
                 case 1
-                    d = 1 - abs(q1.inner(q2))
+                    d = 1 - abs(q1.inner(q2));
                 case 2
-                    d = acos(abs(q1.inner(q2)))
+                    d = acos(abs(q1.inner(q2)));
             end
         end
 
