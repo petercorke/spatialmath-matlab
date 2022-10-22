@@ -114,32 +114,35 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
     end
     
     assert(iscell(argv), 'SMTB:tboptparse:badargs', 'input must be a cell array');
-    
-    if ~verLessThan('matlab', '9.1')
-        % is only appeared in 2016b
-        
-        % handle new style string inputs
-        % quick and dirty solution is to convert any string to a char array and
-        % then carry on as before
-        
-        % convert any passed strings to character arrays
-        for i=1:length(argv)
-            if isstring(argv{i}) && length(argv{i}) == 1
-                argv{i} = char(argv{i});
-            end
-        end
-        % convert strings in opt struct to character arrays
-        if ~isempty(in)
-            fields = fieldnames(in);
-            for i=1:length(fields)
-                field = fields{i};
-                % simple string elements
-                if isstring(in.(field))
-                    in.(field) = char(in.(field));
+
+    is_octave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
+    if ~is_octave
+        if ~verLessThan('matlab', '9.1')
+            % is only appeared in 2016b
+            
+            % handle new style string inputs
+            % quick and dirty solution is to convert any string to a char array and
+            % then carry on as before
+            
+            % convert any passed strings to character arrays
+            for i=1:length(argv)
+                if isstring(argv{i}) && length(argv{i}) == 1
+                    argv{i} = char(argv{i});
                 end
-                % strings in cell array elements
-                if iscell(in.(field))
-                    in.(field) = cellfun(@(x) char(x), in.(field), 'UniformOutput', false);
+            end
+            % convert strings in opt struct to character arrays
+            if ~isempty(in)
+                fields = fieldnames(in);
+                for i=1:length(fields)
+                    field = fields{i};
+                    % simple string elements
+                    if isstring(in.(field))
+                        in.(field) = char(in.(field));
+                    end
+                    % strings in cell array elements
+                    if iscell(in.(field))
+                        in.(field) = cellfun(@(x) char(x), in.(field), 'UniformOutput', false);
+                    end
                 end
             end
         end
@@ -396,3 +399,6 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
     elseif nargout == 2
         others = arglist;
     end
+    
+end
+
