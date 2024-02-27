@@ -228,7 +228,7 @@ classdef (Abstract) RTBPose
         function e = eq(obj1, obj2)
             e = false;
             
-            if ~isa(obj2, class(obj2)) || ~(length(obj1) == length(obj2))
+            if ~isa(obj1, class(obj2)) || ~(length(obj1) == length(obj2))
                 return;
             end
             
